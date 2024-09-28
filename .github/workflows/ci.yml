@@ -1,4 +1,4 @@
-name: Node.js CI
+name: CI
 
 on:
   push:
@@ -9,36 +9,41 @@ on:
       - main
 
 jobs:
-  test:
+  backend-tests:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies
-      run: npm install
+      - name: Change directory to backend
+        run: cd backend
 
-    - name: Run tests
-      env:
-        NODE_ENV: test  # Set the environment to test
-      run: npm run test
+      - name: Install dependencies
+        run: npm install
+        working-directory: backend
 
-    - name: Upload Jest test results
-      if: always()
-      uses: actions/upload-artifact@v3
-      with:
-        name: jest-results
-        path: jest-results.xml
+      - name: Run backend tests
+        run: npm run test
+        working-directory: backend
 
-    - name: Upload coverage report
-      if: success()
-      uses: actions/upload-artifact@v3
-      with:
-        name: coverage-report
-        path: coverage/
+      - name: Upload Jest test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: jest-results
+          path: backend/jest-results.xml
+
+      - name: Upload coverage report
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: backend/coverage/
