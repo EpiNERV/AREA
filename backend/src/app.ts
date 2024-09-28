@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import helloRoutes from './routes/hello';
 
 dotenv.config();
 
@@ -8,10 +9,6 @@ const app: Application = express();
 app.disable("x-powered-by");
 
 app.use(express.json());
-
-app.use('/api/v1/hello', (_, res) => {
-    res.send({ message: 'Hello World!' });
-});
 
 export const connectDB = async (mongoUri?: string) => {
   try {
@@ -27,5 +24,7 @@ export const connectDB = async (mongoUri?: string) => {
     process.exit(1);
   }
 };
+
+app.use('/api/v1', helloRoutes);
 
 export default app;
