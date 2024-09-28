@@ -10,19 +10,22 @@ app.disable("x-powered-by");
 app.use(express.json());
 
 app.use('/api/v1/hello', (_, res) => {
-    res.send('Hello World!');
+    res.send({ message: 'Hello World!' });
 });
 
-const connectDB = async () => {
+export const connectDB = async (mongoUri?: string) => {
   try {
-    await mongoose.connect(process.env.MONGO_URI ?? '');
-    console.log('MongoDB connected');
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
+    const mongoConnectionUri =
+      process.env.NODE_ENV === 'test' && mongoUri
+        ? mongoUri
+        : process.env.MONGO_URI ?? '';
+
+    await mongoose.connect(mongoConnectionUri);
+    console.log('MongoDB connected to ${mongoConnectionUri}');
+  } catch (error: any) {
+    console.error('MongoDB connection error:', error.message ?? 'Unknown error');
     process.exit(1);
   }
 };
-
-connectDB();
 
 export default app;
