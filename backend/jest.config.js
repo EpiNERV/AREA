@@ -4,6 +4,7 @@ module.exports = {
     testMatch: ['**/?(*.)+(test).ts'],
     collectCoverage: true,
     coverageDirectory: './coverage',
+    coverageReporters: ['lcov'],
     reporters: [
         'default',
         [
@@ -14,5 +15,4 @@ module.exports = {
           },
         ],
     ],
-    coverageReporters: ['lcov'],
 };
