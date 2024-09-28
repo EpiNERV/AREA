@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      target: development
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      target: development
+    volumes:
+      - ./frontend:/app
+    ports:
+      - '8081:5173'
+  
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_USER}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_PASS}
+      - ME_CONFIG_MONGODB_URL=${MONGO_URI}
+      - ME_CONFIG_BASICAUTH=false
+    depends_on:
+      - mongo
+    ports:
+      - '8082:8081'

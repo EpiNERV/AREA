@@ -1,0 +1,12 @@
+services:
+  backend:
+    build:
+      target: production
+    environment:
+      - NODE_ENV=production
+
+  frontend:
+    build:
+      target: production
+    ports:
+      - '8081:8080'
