@@ -3,7 +3,7 @@ module.exports = {
     testEnvironment: 'node',
     testMatch: ['**/?(*.)+(test).ts'],
     collectCoverage: true,
-    coverageDirectory: 'coverage',
+    coverageDirectory: './coverage',
     reporters: [
         'default',
         [
@@ -14,5 +14,5 @@ module.exports = {
           },
         ],
     ],
-    coverageReporters: ['text', 'lcov'],
+    coverageReporters: ['lcov'],
 };
