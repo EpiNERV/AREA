@@ -31,19 +31,7 @@ jobs:
 
       - name: Build and start Docker Compose (Dev or Prod)
         run: |
-          if [ "${{ matrix.environment }}" == "dev" ]; then
-            docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d;
-          else
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d;
-          fi
-
-      - name: Check Docker Compose services status (Dev or Prod)
-        run: |
-          if [ "${{ matrix.environment }}" == "dev" ]; then
-            docker-compose -f docker-compose.yml -f docker-compose.dev.yml ps;
-          else
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml ps;
-          fi
+          docker-compose -f docker-compose.yml -f docker-compose.${{ matrix.environment }}.yml up --build -d;
 
       - name: Wait for services to initialize (Dev or Prod)
         run: sleep 10
@@ -58,9 +46,9 @@ jobs:
         if: always()
         run: |
           if [ "${{ matrix.environment }}" == "dev" ]; then
-            docker-compose -f docker-compose.yml -f docker-compose.dev.yml down;
+            docker-compose down;
           else
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml down;
+            docker-compose down;
           fi
 
   backend-tests:
