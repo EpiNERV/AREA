@@ -9,6 +9,56 @@ on:
       - main
 
 jobs:
+  test-docker-compose:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        environment: [dev, prod]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install docker-compose -y
+
+      - name: Build and start Docker Compose (Dev or Prod)
+        run: |
+          if [ "${{ matrix.environment }}" == "dev" ]; then
+            docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d;
+          else
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d;
+          fi
+
+      - name: Check Docker Compose services status (Dev or Prod)
+        run: |
+          if [ "${{ matrix.environment }}" == "dev" ]; then
+            docker-compose -f docker-compose.yml -f docker-compose.dev.yml ps;
+          else
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml ps;
+          fi
+
+      - name: Wait for services to initialize (Dev or Prod)
+        run: sleep 10
+
+      - name: Run health check (Dev or Prod)
+        run: |
+          # Example: Replace with your actual health check, e.g., curl to a service or check logs
+          curl -f http://localhost:8080 || exit 1
+          curl -f http://localhost:8081 || exit 1
+
+      - name: Tear down Docker Compose (Dev or Prod)
+        if: always()
+        run: |
+          if [ "${{ matrix.environment }}" == "dev" ]; then
+            docker-compose -f docker-compose.yml -f docker-compose.dev.yml down;
+          else
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml down;
+          fi
+
   backend-tests:
     runs-on: ubuntu-latest
     steps:
