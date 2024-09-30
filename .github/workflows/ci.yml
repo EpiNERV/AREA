@@ -29,11 +29,11 @@ jobs:
           cp .env.example ./.env
 
       - name: Set up Docker Compose
-      - uses: hoverkraft-tech/compose-action@v2.0.1
-          with:
-            compose-file: |
-              "./docker-compose.yml"
-              "./docker-compose.${{ matrix.environment }}.yml"
+        uses: hoverkraft-tech/compose-action@v2.0.1
+        with:
+          compose-file: |
+            "./docker-compose.yml"
+            "./docker-compose.${{ matrix.environment }}.yml"
 
       - name: Wait for services to initialize (Dev or Prod)
         run: sleep 10
