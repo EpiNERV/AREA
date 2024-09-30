@@ -25,6 +25,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install docker-compose -y
 
+      - name: Copy .env file
+        run: |
+          cp .env.example ./.env
+
       - name: Build and start Docker Compose (Dev or Prod)
         run: |
           if [ "${{ matrix.environment }}" == "dev" ]; then
