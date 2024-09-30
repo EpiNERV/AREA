@@ -11,6 +11,7 @@ services:
       target: development
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     ports:
       - '8081:5173'
   
