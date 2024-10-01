@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 *.env
+coverage
+jest-results.xml
