@@ -32,7 +32,7 @@ const CreateNewPassword = () => {
     minLength: formData.newPassword.length >= 8,
     hasUppercase: /[A-Z]/.test(formData.newPassword),
     hasLowercase: /[a-z]/.test(formData.newPassword),
-    hasNumber: /[0-9]/.test(formData.newPassword),
+	hasNumber: /\d/.test(formData.newPassword),
     hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(formData.newPassword),
   };
 

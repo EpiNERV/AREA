@@ -17,16 +17,16 @@ const AuthVerification = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="flex justify-center mb-6 space-x-2">
-            <InputOTP maxLength={6} pattern={/^[0-9]+$/}>
-              <InputOTPGroup>
-                <InputOTPSlot index={0} />
-                <InputOTPSlot index={1} />
-                <InputOTPSlot index={2} />
-                <InputOTPSlot index={3} />
-                <InputOTPSlot index={4} />
-                <InputOTPSlot index={5} />
-              </InputOTPGroup>
-            </InputOTP>
+		  <InputOTP maxLength={6} pattern="^[0-9]+$">
+			<InputOTPGroup>
+				<InputOTPSlot index={0} />
+				<InputOTPSlot index={1} />
+				<InputOTPSlot index={2} />
+				<InputOTPSlot index={3} />
+				<InputOTPSlot index={4} />
+				<InputOTPSlot index={5} />
+			</InputOTPGroup>
+			</InputOTP>
           </div>
 
           <Button type="submit" className="w-full bg-black text-white py-2">
@@ -37,7 +37,7 @@ const AuthVerification = () => {
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
             Didn’t receive the code?{' '}
-            <a href="#" className="text-blue-500 hover:underline">
+            <a href="/login" className="text-blue-500 hover:underline">
               Resend
             </a>
           </p>

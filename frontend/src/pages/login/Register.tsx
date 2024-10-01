@@ -35,7 +35,7 @@ const Register = () => {
     minLength: formData.password.length >= 8,
     hasUppercase: /[A-Z]/.test(formData.password),
     hasLowercase: /[a-z]/.test(formData.password),
-    hasNumber: /[0-9]/.test(formData.password),
+	hasNumber: /\d/.test(formData.password),
     hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(formData.password),
   };
 

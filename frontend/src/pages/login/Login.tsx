@@ -3,7 +3,7 @@ import { EyeOpenIcon, EyeNoneIcon } from '@radix-ui/react-icons';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import deco from '/icons/utils/login.png';
+import deco from '../../assets/login.png';
 
 const Login = () => {
   const [formData, setFormData] = useState({
