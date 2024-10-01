@@ -1,34 +1,47 @@
+version: '3'
 services:
-  backend:
+  server:
     build:
       context: ./backend
-    container_name: backend
-    depends_on:
-      - mongo
     ports:
-      - '8080:5000'
+      - "8080:5000"
     environment:
-      - MONGO_URI=${MONGO_URI}
-      - PORT=5000
+      - NODE_ENV=production
+      - MONGO_URL=mongodb://db:27017/area
+    depends_on:
+      - db
+    restart: always
 
-  frontend:
+  client_web:
     build:
       context: ./frontend
-    container_name: frontend
-    depends_on:
-      - backend
-
-  mongo:
-    image: mongo:latest
-    container_name: mongo
     ports:
-      - '27017:27017'
+      - "8081:80"
+    depends_on:
+      - server
+      # - client_mobile
     volumes:
-      - mongo-data:/data/db
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS}
-      
+      - shared_volume:/usr/share/nginx/html
+    restart: always
+
+  # client_mobile:
+  #   build:
+  #     context: ./mobile
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     - server
+  #   volumes:
+  #     - shared_volume:/usr/share/nginx/html
+  #   restart: always
+
+  db:
+    image: mongo:latest
+    volumes:
+      - mongo_data:/data/db
+    restart: always
 
 volumes:
-  mongo-data:
+  mongo_data:
+    driver: local
+  shared_volume:
+    driver: local

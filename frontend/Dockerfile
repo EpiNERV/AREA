@@ -1,19 +1,17 @@
-FROM node:lts-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-COPY . . 
-RUN npm install
+FROM node:lts AS builder
 
-ARG REACT_APP_ENV=production
-RUN if [ "$REACT_APP_ENV" = "production" ]; then npm run build; fi
-FROM nginx:alpine AS production
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 8080
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN npm ci && npm run build
+
+FROM nginx:alpine
+
+COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
+
+# COPY --from=builder /usr/src/mobile/client.apk /usr/share/nginx/html/client.apk
+
+EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]
-
-FROM build AS development
-WORKDIR /app
-COPY --from=build /app .
-EXPOSE 5173
-CMD ["npm", "run", "dev"]
