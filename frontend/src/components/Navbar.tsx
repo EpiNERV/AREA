@@ -36,7 +36,7 @@ const Navbar = () => {
 				{/* Profile Section */}
 				<div className="relative mb-20">
 					<img
-						src="/icons/Navbar/adrien.lachambre@epitech.eu.JPG"
+						src="/icons/Navbar/adrien.lachambre@epitech.eu.jpg"
 						alt="Profile"
 						className="h-10 w-10 rounded-lg object-cover flex-shrink-0 z-10 relative"
 					/>
