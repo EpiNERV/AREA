@@ -2,7 +2,6 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter } from "@/components/ui/alert-dialog";
 import { Separator } from "@/components/ui/separator";
 import { useTheme } from "@/components/ThemeProvider"
 import { Link } from "react-router-dom";
