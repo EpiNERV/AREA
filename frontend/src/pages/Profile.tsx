@@ -1,6 +1,6 @@
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs.tsx";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { Carousel } from "@/components/ui/carousel.tsx";
+// import { Carousel } from "@/components/ui/carousel.tsx";
 import { useState } from "react";
 
 export default function ProfilePage() {
@@ -45,30 +45,32 @@ export default function ProfilePage() {
 									alt="Profile"
 									className="w-40 h-40 rounded-xl mb-4 border-2 p-1 object-cover"
 								/>
-								<Button variant="primary">Change Profile Picture</Button>
+								<Button variant="ghost">Change Profile Picture</Button>
 							</div>
 
 							{/* Username Form */}
 							<div className="p-6 rounded-lg shadow-md col-span-1">
 								<form className="space-y-4">
 									<div>
-										<label className="block text-sm font-medium">Current Username</label>
+										<label htmlFor="current-username" className="block text-sm font-medium">Current Username</label>
 										<input
 											type="text"
+											id="current-username"
 											className="input w-full border border-gray-300 p-3 rounded"
 											placeholder="Old Username"
 											disabled
 										/>
 									</div>
 									<div>
-										<label className="block text-sm font-medium">New Username</label>
+										<label htmlFor="new-username" className="block text-sm font-medium">New Username</label>
 										<input
 											type="text"
+											id="new-username"
 											className="input w-full border border-gray-300 p-3 rounded"
 											placeholder="Enter new username"
 										/>
 									</div>
-									<Button type="submit" variant="primary">
+									<Button type="submit" variant="ghost">
 										Change Username
 									</Button>
 								</form>
@@ -78,22 +80,24 @@ export default function ProfilePage() {
 							<div className="p-6 rounded-lg shadow-md col-span-1">
 								<form className="space-y-4">
 									<div>
-										<label className="block text-sm font-medium">Current Email</label>
+										<label htmlFor="current-email" className="block text-sm font-medium">Current Email</label>
 										<input
 											type="email"
+											id="current-email"
 											className="input w-full border border-gray-300 p-3 rounded"
 											placeholder="Enter current email"
 										/>
 									</div>
 									<div>
-										<label className="block text-sm font-medium">New Email</label>
+										<label htmlFor="new-email" className="block text-sm font-medium">New Email</label>
 										<input
 											type="email"
+											id="new-email"
 											className="input w-full border border-gray-300 p-3 rounded"
 											placeholder="Enter new email"
 										/>
 									</div>
-									<Button type="submit" variant="primary">
+									<Button type="submit" variant="ghost">
 										Change Email
 									</Button>
 								</form>
@@ -103,22 +107,24 @@ export default function ProfilePage() {
 							<div className="p-6 rounded-lg shadow-md col-span-1">
 								<form className="space-y-4">
 									<div>
-										<label className="block text-sm font-medium">Current Password</label>
+										<label htmlFor="current-password" className="block text-sm font-medium">Current Password</label>
 										<input
 											type="password"
+											id="current-password"
 											className="input w-full border border-gray-300 p-3 rounded"
 											placeholder="Enter current password"
 										/>
 									</div>
 									<div>
-										<label className="block text-sm font-medium">New Password</label>
+										<label htmlFor="new-password" className="block text-sm font-medium">New Password</label>
 										<input
 											type="password"
+											id="new-password"
 											className="input w-full border border-gray-300 p-3 rounded"
 											placeholder="Enter new password"
 										/>
 									</div>
-									<Button type="submit" variant="primary">
+									<Button type="submit" variant="ghost">
 										Change Password
 									</Button>
 								</form>
