@@ -4,13 +4,15 @@ import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useTheme } from "@/components/ThemeProvider"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ChevronDownIcon } from "@radix-ui/react-icons"
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
 
 export default function Sidebar() {
 	const { setTheme, theme } = useTheme();
 	const [language, setLanguage] = useState("en");
+	const [isProfileOpen, setIsProfileOpen] = useState(false);
+	const navigate = useNavigate();
 
 	const getLanguageLabel = (lang: string) => {
 		switch (lang) {
@@ -30,6 +32,16 @@ export default function Sidebar() {
 	const handleLanguageChange = (value: string) => {
 		setLanguage(value);
 		localStorage.setItem("selectedLanguage", value);
+	};
+
+	const toggleProfile = () => {
+		setIsProfileOpen(!isProfileOpen);
+
+		if (!isProfileOpen) {
+			navigate("/user/profile");
+		} else {
+			navigate("/");
+		}
 	};
 
 	useEffect(() => {
@@ -52,25 +64,43 @@ export default function Sidebar() {
 			</div>
 
 			{/* User Profile */}
-			<div className="mt-8 flex items-center space-x-4">
-				<div className="rounded-xl border-2 p-1">
-					<img src="/icons/Navbar/adrien.lachambre@epitech.eu.JPG" alt="User Profile" className="w-10 h-10 rounded-lg" />
+			<div className="mt-8 flex items-center justify-between">
+				<div className="flex items-center space-x-4">
+					<div className="rounded-xl border-2 p-1">
+						<img
+							src="/icons/Navbar/adrien.lachambre@epitech.eu.JPG"
+							alt="User Profile"
+							className="w-10 h-10 rounded-lg object-cover"
+						/>
+					</div>
+					<div>
+						<h2 className="font-semibold">Username</h2>
+						<p className="text-sm">example.email@gmail.com</p>
+					</div>
 				</div>
-				<div>
-					<h2 className="font-semibold">Adrien LACHAMBRE</h2>
-					<p className="text-sm">adrien.lachambre@epitech.eu</p>
-				</div>
+				<button
+					onClick={toggleProfile}
+					aria-expanded={isProfileOpen}
+					className="cursor-pointer p-0 bg-transparent border-none"
+				>
+					{isProfileOpen ? (
+						<ChevronRightIcon className="h-6 w-6 text-muted-foreground"/>
+					) : (
+						<ChevronLeftIcon className="h-6 w-6 text-muted-foreground"/>
+					)}
+				</button>
 			</div>
 
-			<Separator className="my-4" />
+			<Separator className="my-4"/>
 			{/* Pages */}
 			<nav>
 				<Link to="/" className="text-xl flex items-center space-x-4 visited:text-inherit">
 					<div className="flex justify-center items-center w-[52px] h-[52px]">
 						<div className="rounded-xl border-2 p-1">
-							<svg width="20" height="20" viewBox="0 0 1024 1024" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+							<svg width="20" height="20" viewBox="0 0 1024 1024" fill="currentColor"
+							     xmlns="http://www.w3.org/2000/svg">
 								<path
-									d="M946.5 505L534.6 93.4a31.93 31.93 0 00-45.2 0L77.5 505c-12 12-18.8 28.3-18.8 45.3 0 35.3 28.7 64 64 64h43.4V908c0 17.7 14.3 32 32 32H448V716h112v224h265.9c17.7 0 32-14.3 32-32V614.3h43.4c17 0 33.3-6.7 45.3-18.8 24.9-25 24.9-65.5-.1-90.5z" />
+									d="M946.5 505L534.6 93.4a31.93 31.93 0 00-45.2 0L77.5 505c-12 12-18.8 28.3-18.8 45.3 0 35.3 28.7 64 64 64h43.4V908c0 17.7 14.3 32 32 32H448V716h112v224h265.9c17.7 0 32-14.3 32-32V614.3h43.4c17 0 33.3-6.7 45.3-18.8 24.9-25 24.9-65.5-.1-90.5z"/>
 							</svg>
 						</div>
 					</div>
