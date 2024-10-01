@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import Navbar from './Navbar'; // Assurez-vous que le chemin est correct
+import Sidebar from './sidebar';
 
 interface LayoutProps {
 	children: ReactNode;
@@ -8,8 +8,8 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
 	return (
 		<div className="flex">
-			<Navbar />
-			<main className="flex-1 bg-page_background">
+			<Sidebar />
+			<main className="flex-1">
 				{children}
 			</main>
 		</div>
