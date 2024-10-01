@@ -13,6 +13,17 @@ export default function Sidebar() {
 	const { setTheme, theme } = useTheme();
 	const [language, setLanguage] = useState("en");
 
+	const getLanguageLabel = (lang: string) => {
+		switch (lang) {
+			case "en":
+				return "English";
+			case "fr":
+				return "French";
+			default:
+				return "Not selected";
+		}
+	};
+
 	const handleThemeChange = () => {
 		setTheme(theme === "light" ? "dark" : "light");
 	};
@@ -110,7 +121,7 @@ export default function Sidebar() {
 							<div className="py-2">
 								<Select onValueChange={handleLanguageChange} value={language}>
 									<SelectTrigger id="language">
-										{language === "en" ? "English" : language === "fr" ? "French" : ""}
+										{getLanguageLabel(language)}
 									</SelectTrigger>
 									<SelectContent>
 										<SelectItem value="en">English</SelectItem>
