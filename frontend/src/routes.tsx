@@ -28,7 +28,6 @@ function AppRoutes() {
 	return (
 		<Router>
 			<Routes>
-				{/* Pages without navbar */}
 				<Route path="/welcome" element={<Layout><Welcome /></Layout>} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/register" element={<Register />} />
@@ -37,18 +36,15 @@ function AppRoutes() {
 				<Route path="/create_new_password" element={<CreateNewPassword />} />
 				<Route path="/password_changed" element={<PasswordChanged />} />
 
-				{/* Pages with navbar */}
 				<Route path="/" element={<Layout><Home /></Layout>} />
 				<Route path="/NewWorkflow" element={<Layout><NewWorkflow /></Layout>} />
 				<Route path="/backend-settings" element={<Layout><BackendSettings /></Layout>} />
 				<Route path="/user-management" element={<Layout><UserManagement /></Layout>} />
 				<Route path="/settings" element={<Layout><Settings /></Layout>} />
 
-				{/* Profile */}
 				<Route path={"/user/integrations"} element={<Layout><Integrations /></Layout>} />
 				<Route path={"/user/edit-profile"} element={<Layout><EditProfile /></Layout>} />
 
-				{/* Page 404 */}
 				<Route path="*" element={<NotFound />} />
 			</Routes>
 		</Router>
