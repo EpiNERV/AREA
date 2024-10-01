@@ -10,15 +10,12 @@ app.disable("x-powered-by");
 
 app.use(express.json());
 
-export const connectDB = async (mongoUri?: string) => {
+export const connectDB = async () => {
+  if (process.env.NODE_ENV === 'test')
+    process.env.MONGO_URL = process.env.MONGO_TEST_URL;
   try {
-    const mongoConnectionUri =
-      process.env.NODE_ENV === 'test' && mongoUri
-        ? mongoUri
-        : process.env.MONGO_URL ?? '';
-
-    await mongoose.connect(mongoConnectionUri);
-    console.log('MongoDB connected');
+    await mongoose.connect(process.env.MONGO_URL ?? '');
+    console.log('MongoDB connected ' + process.env.MONGO_URL);
   } catch (error: any) {
     console.error('MongoDB connection error:', error.message ?? 'Unknown error');
     process.exit(1);
