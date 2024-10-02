@@ -2,6 +2,8 @@ import express, { Application } from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import helloRoutes from './routes/hello';
+import userRoutes from './routes/user';
+import errorHandler from './middleware/error';
 
 dotenv.config();
 
@@ -23,5 +25,7 @@ export const connectDB = async () => {
 };
 
 app.use('/api/v1', helloRoutes);
+app.use('/api/v1/user', userRoutes);
+app.use(errorHandler);
 
 export default app;

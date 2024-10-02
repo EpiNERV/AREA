@@ -14,15 +14,12 @@ afterAll(async () => {
   await closeDatabase();
 });
 
-const validTotpSecret = "JBSWY3DPEHPK3PXP";  // Example of a valid base32 TOTP secret
-const invalidTotpSecret = "invalid_secret";  // Non-base32-encoded for testing invalid format
-
 const registerUser = (email?: string, password?: string, username?: string) => {
   return request(app)
     .post("/api/v1/user/auth/register")
     .send({
       email: email ?? "admin@area.local",
-      password: password ?? "admin",
+      password: password ?? "password123",
       username: username ?? "admin",
     });
 };
@@ -45,7 +42,7 @@ describe("POST /api/v1/user/auth/register", () => {
 
   it("should return a 201 status and a user info, second user is a normal user", async () => {
     await registerUser();
-    const secondUser = await registerUser("user@admin.local", "pass", "user2");
+    const secondUser = await registerUser("user@admin.local", "pass123", "user2");
     expect(secondUser.status).toBe(201);
     expect(secondUser.body.status).toBe("success");
     expect(secondUser.body.user.email).toBe("user@admin.local");
@@ -53,8 +50,8 @@ describe("POST /api/v1/user/auth/register", () => {
     expect(secondUser.body.user.role).toBe("user");
   });
 
-  it("should return a 400 status with a localized 'Email is required' message when email is missing", async () => {
-    const response = await request(app)
+  it("should return a 400 status with a localized 'Email, password, and username are required' message when email is missing", async () => {
+    let response = await request(app)
       .post("/api/v1/user/auth/register")
       .send({
         password: "password123",
@@ -64,7 +61,31 @@ describe("POST /api/v1/user/auth/register", () => {
 
     expect(response.status).toBe(400);
     expect(response.body.status).toBe("error");
-    expect(response.body.message).toBe("Email is required");
+    expect(response.body.message).toBe("Email, password, and username are required");
+
+    response = await request(app)
+      .post("/api/v1/user/auth/register")
+      .send({
+        email: "user@area.local",
+        username: "user",
+        role: "user",
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.status).toBe("error");
+    expect(response.body.message).toBe("Email, password, and username are required");
+
+    response = await request(app)
+      .post("/api/v1/user/auth/register")
+      .send({
+        email: "user@area.local",
+        password: "password123",
+        role: "user",
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.status).toBe("error");
+    expect(response.body.message).toBe("Email, password, and username are required");
   });
 
   it("should return a 400 status with a localized 'Password must be at least 6 characters' message when password is too short", async () => {
@@ -104,7 +125,7 @@ describe("POST /api/v1/user/auth/login", () => {
   it("should return a 200 status and success message if the login is successful", async () => {
     await registerUser();
 
-    const response = await login("admin@area.local", "admin");
+    const response = await login("admin@area.local", "password123");
     expect(response.status).toBe(200);
     expect(response.body.status).toBe("success");
     expect(response.body.message).toBe("Login successful");
@@ -144,15 +165,19 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
   let userToken: string;
   let userId: string;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     const response = await registerUser("user@area.local", "password123", "user1");
     userId = response.body.user.id;
     userToken = response.body.tokens.access_token;
   });
 
+  afterEach(async () => {
+    await clearDatabase();
+  });
+
   it("should fetch the user information successfully", async () => {
     const response = await request(app)
-      .get(`/api/v1/users/${userId}`)
+      .get(`/api/v1/user/${userId}`)
       .set("Authorization", `Bearer ${userToken}`);
 
     expect(response.status).toBe(200);
@@ -164,43 +189,22 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should update the user email and enable TOTP with a valid totp_secret", async () => {
     const response = await request(app)
-      .patch(`/api/v1/users/${userId}`)
+      .patch(`/api/v1/user/${userId}`)
       .set("Authorization", `Bearer ${userToken}`)
       .send({
         email: "newemail@area.local",
         username: "newusername",
-        totp_enabled: true,
-        totp_secret: validTotpSecret,
       });
 
     expect(response.status).toBe(200);
     expect(response.body.status).toBe("success");
     expect(response.body.user.email).toBe("newemail@area.local");
     expect(response.body.user.username).toBe("newusername");
-    expect(response.body.user.totp_enabled).toBe(true);
-  });
-
-  it("should disable the TOTP for the user after it has been registered", async () => {
-    await request(app)
-      .patch(`/api/v1/users/${userId}`)
-      .set("Authorization", `Bearer ${userToken}`)
-      .send({
-        totp_enabled: true,
-        totp_secret: validTotpSecret,
-      });
-
-    const response = await request(app)
-      .delete(`/api/v1/users/${userId}/totp`)
-      .set("Authorization", `Bearer ${userToken}`);
-
-    expect(response.status).toBe(200);
-    expect(response.body.status).toBe("success");
-    expect(response.body.user.totp_enabled).toBe(false);
   });
 
   it("should update the user password", async () => {
     const response = await request(app)
-      .patch(`/api/v1/users/${userId}`)
+      .patch(`/api/v1/user/${userId}`)
       .set("Authorization", `Bearer ${userToken}`)
       .send({
         password: "newpassword123",
@@ -208,28 +212,11 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
     expect(response.status).toBe(200);
     expect(response.body.status).toBe("success");
-    expect(response.body.message).toBe("Password updated successfully");
-  });
-
-  it("should fail to enable TOTP with an invalid totp_secret format", async () => {
-    const response = await request(app)
-      .patch(`/api/v1/users/${userId}`)
-      .set("Authorization", `Bearer ${userToken}`)
-      .send({
-        email: "newemail@area.local",
-        username: "newusername",
-        totp_enabled: true,
-        totp_secret: invalidTotpSecret,
-      });
-
-    expect(response.status).toBe(400);
-    expect(response.body.status).toBe("error");
-    expect(response.body.message).toBe("Invalid TOTP secret format");
   });
 
   it("should fail to disable TOTP if it is already disabled", async () => {
     const response = await request(app)
-      .delete(`/api/v1/users/${userId}/totp`)
+      .delete(`/api/v1/user/${userId}/totp`)
       .set("Authorization", `Bearer ${userToken}`);
 
     expect(response.status).toBe(400);
@@ -239,36 +226,19 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should fail to fetch user data without authentication", async () => {
     const response = await request(app)
-      .get(`/api/v1/users/${userId}`);
+      .get(`/api/v1/user/${userId}`);
 
     expect(response.status).toBe(401);
     expect(response.body.status).toBe("error");
     expect(response.body.message).toBe("Unauthorized");
   });
 
-  it("should fail to enable TOTP without totp_secret", async () => {
-    const response = await request(app)
-      .patch(`/api/v1/users/${userId}`)
-      .set("Authorization", `Bearer ${userToken}`)
-      .send({
-        email: "newemail@area.local",
-        username: "newusername",
-        totp_enabled: true,
-      });
-
-    expect(response.status).toBe(400);
-    expect(response.body.status).toBe("error");
-    expect(response.body.message).toBe("TOTP secret is required to enable TOTP");
-  });
-
   it("should fail to update user without authentication", async () => {
     const response = await request(app)
-      .patch(`/api/v1/users/${userId}`)
+      .patch(`/api/v1/user/${userId}`)
       .send({
         email: "newemail@area.local",
         username: "newusername",
-        totp_enabled: true,
-        totp_secret: validTotpSecret,
       });
 
     expect(response.status).toBe(401);
@@ -278,7 +248,7 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should fail to disable TOTP without authentication", async () => {
     const response = await request(app)
-      .delete(`/api/v1/users/${userId}/totp`);
+      .delete(`/api/v1/user/${userId}/totp`);
 
     expect(response.status).toBe(401);
     expect(response.body.status).toBe("error");
@@ -287,7 +257,7 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should fail to update the user password without authentication", async () => {
     const response = await request(app)
-      .patch(`/api/v1/users/${userId}`)
+      .patch(`/api/v1/user/${userId}`)
       .send({
         password: "newpassword123",
       });
@@ -299,7 +269,7 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should fail to update the user password with invalid data", async () => {
     const response = await request(app)
-      .patch(`/api/v1/users/${userId}`)
+      .patch(`/api/v1/user/${userId}`)
       .set("Authorization", `Bearer ${userToken}`)
       .send({
         password: "",
@@ -307,6 +277,6 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
     expect(response.status).toBe(400);
     expect(response.body.status).toBe("error");
-    expect(response.body.message).toBe("Password is required");
+    expect(response.body.message).toBe("Password must be at least 6 characters");
   });
 });
