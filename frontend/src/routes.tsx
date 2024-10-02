@@ -16,7 +16,7 @@ import BackendSettings from './pages/BackendSettings';
 import UserManagement from './pages/UserManagement';
 import Settings from './pages/Settings';
 import NewWorkflow  from "./pages/NewWorkflow.tsx";
-
+import AreaPage from './pages/AreaPage.tsx';
 // profile pages import
 import Integrations from "./pages/profil/Integrations.tsx";
 import EditProfile from "./pages/profil/EditProfile.tsx";
@@ -37,6 +37,7 @@ function AppRoutes() {
 				<Route path="/password_changed" element={<PasswordChanged />} />
 
 				<Route path="/" element={<Layout><Home /></Layout>} />
+				<Route path="/AreaPage" element={<Layout><AreaPage /></Layout>} />
 				<Route path="/NewWorkflow" element={<Layout><NewWorkflow /></Layout>} />
 				<Route path="/backend-settings" element={<Layout><BackendSettings /></Layout>} />
 				<Route path="/user-management" element={<Layout><UserManagement /></Layout>} />
