@@ -16,7 +16,7 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as jwt.Secret) as JwtPayload;
     const user: IUser | null = await User.findById(decoded.id);
     
     if (!user) {
@@ -24,7 +24,7 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
       return;
     }
 
-    req.user = user;  // Attach the user to the request object
+    req.body.user = user;
     next();
   } catch (err) {
     res.status(401).json({ status: 'error', message: 'Unauthorized' });
