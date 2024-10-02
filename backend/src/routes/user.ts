@@ -3,18 +3,12 @@ import jwt from 'jsonwebtoken';
 import { hash } from 'bcrypt';
 import User, { IUser } from '../models/user';
 import authMiddleware from '../middleware/auth';
-// import { totp } from 'speakeasy';
 
 const router = express.Router();
 
-interface JwtPayload {
-  id: string;
-  role: string;
-}
-
 const generateTokens = (user: IUser) => {
-  const access_token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET!, { expiresIn: '1h' });
-  const refresh_token = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET!, { expiresIn: '7d' });
+  const access_token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET as jwt.Secret, { expiresIn: '1h' });
+  const refresh_token = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET as jwt.Secret, { expiresIn: '7d' });
   return { access_token, refresh_token };
 };
 
