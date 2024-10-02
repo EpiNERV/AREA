@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx ts-node-dev src/server.ts",
-    "test": "NODE_ENV=test MONGO_TEST_URL=mongodb://localhost:27017/test-area jest"
+    "test": "NODE_ENV=test MONGO_TEST_URL=mongodb://localhost:27017/test-area JWT_SECRET=secret JWT_REFRESH_SECRET=secret jest"
   },
   "keywords": [],
   "author": "",
