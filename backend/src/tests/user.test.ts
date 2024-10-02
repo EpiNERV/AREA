@@ -267,6 +267,19 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
     expect(response.body.message).toBe("Unauthorized");
   });
 
+  it("should fail to update the user password with invalid token", async () => {
+    const response = await request(app)
+      .patch(`/api/v1/user/${userId}`)
+      .set("Authorization", `Bearer INVALIDTOKEN`)
+      .send({
+        password: "newpassword123",
+      });
+
+    expect(response.status).toBe(401);
+    expect(response.body.status).toBe("error");
+    expect(response.body.message).toBe("Unauthorized");
+  });
+
   it("should fail to update the user password with invalid data", async () => {
     const response = await request(app)
       .patch(`/api/v1/user/${userId}`)
@@ -278,5 +291,38 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
     expect(response.status).toBe(400);
     expect(response.body.status).toBe("error");
     expect(response.body.message).toBe("Password must be at least 6 characters");
+  });
+
+  it("should fail to update the user password with invalid userid", async () => {
+    const response = await request(app)
+      .patch(`/api/v1/user/ffffffffffffffffffffffff`)
+      .set("Authorization", `Bearer ${userToken}`)
+      .send({
+        password: "hello12356",
+      });
+
+    expect(response.status).toBe(404);
+    expect(response.body.status).toBe("error");
+    expect(response.body.message).toBe("User not found");
+  });
+
+  it("should fail to fetch user data with invalid userid", async () => {
+    const response = await request(app)
+      .get(`/api/v1/user/ffffffffffffffffffffffff`)
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(response.status).toBe(404);
+    expect(response.body.status).toBe("error");
+    expect(response.body.message).toBe("User not found");
+  });
+
+  it("should fail to delete user totp with invalid userid", async () => {
+    const response = await request(app)
+      .delete(`/api/v1/user/ffffffffffffffffffffffff/totp`)
+      .set("Authorization", `Bearer ${userToken}`);
+
+      expect(response.status).toBe(404);
+      expect(response.body.status).toBe("error");
+      expect(response.body.message).toBe("User not found");
   });
 });
