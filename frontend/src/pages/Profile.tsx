@@ -80,7 +80,7 @@ export default function ProfilePage() {
 							{/* Profile Picture */}
 							<div className="flex flex-col items-center col-span-3">
 								<img
-									src="/icons/Navbar/adrien.lachambre@epitech.eu.JPG"
+									src="/icons/Navbar/adrien.lachambre@epitech.eu.jpg"
 									alt="Profile"
 									className="w-40 h-40 rounded-xl mb-4 border-2 p-1 object-cover"
 								/>

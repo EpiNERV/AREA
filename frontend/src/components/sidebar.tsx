@@ -68,7 +68,7 @@ export default function Sidebar() {
 				<div className="flex items-center space-x-4">
 					<div className="rounded-xl border-2 p-1">
 						<img
-							src="/icons/Navbar/adrien.lachambre@epitech.eu.JPG"
+							src="/icons/Navbar/adrien.lachambre@epitech.eu.jpg"
 							alt="User Profile"
 							className="w-10 h-10 rounded-lg object-cover"
 						/>
