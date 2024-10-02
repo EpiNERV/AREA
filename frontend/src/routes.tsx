@@ -18,8 +18,7 @@ import Settings from './pages/Settings';
 import NewWorkflow  from "./pages/NewWorkflow.tsx";
 import AreaPage from './pages/AreaPage.tsx';
 // profile pages import
-import Integrations from "./pages/profil/Integrations.tsx";
-import EditProfile from "./pages/profil/EditProfile.tsx";
+import Profile from "./pages/Profile.tsx";
 
 // component layout import
 import Layout from './components/Layout.tsx';
@@ -43,8 +42,8 @@ function AppRoutes() {
 				<Route path="/user-management" element={<Layout><UserManagement /></Layout>} />
 				<Route path="/settings" element={<Layout><Settings /></Layout>} />
 
-				<Route path={"/user/integrations"} element={<Layout><Integrations /></Layout>} />
-				<Route path={"/user/edit-profile"} element={<Layout><EditProfile /></Layout>} />
+				{/* Profile */}
+				<Route path={"/user/profile"} element={<Layout><Profile /></Layout>} />
 
 				<Route path="*" element={<NotFound />} />
 			</Routes>
