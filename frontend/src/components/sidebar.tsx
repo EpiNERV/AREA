@@ -7,12 +7,14 @@ import { useTheme } from "@/components/ThemeProvider"
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
+import { useAuth } from '@/lib/auth/AuthContext'; // For logout
 
 export default function Sidebar() {
 	const { setTheme, theme } = useTheme();
 	const [language, setLanguage] = useState("en");
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const navigate = useNavigate();
+	const { logout } = useAuth();
 
 	const getLanguageLabel = (lang: string) => {
 		switch (lang) {
@@ -211,8 +213,7 @@ export default function Sidebar() {
 
 					{/* Logout Button */}
 					<div>
-						<Button className="flex justify-center items-center w-[260.3px] h-[52px]" variant="destructive">Log
-							Out</Button>
+						<Button onClick={ logout } className="flex justify-center items-center w-[260.3px] h-[52px]" variant="destructive">Log Out</Button>
 					</div>
 				</div>
 			</div>
