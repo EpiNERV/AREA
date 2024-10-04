@@ -163,11 +163,9 @@ describe("POST /api/v1/user/auth/login", () => {
 
 describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and Deletion", () => {
   let userToken: string;
-  let userId: string;
 
   beforeEach(async () => {
     const response = await registerUser("user@area.local", "password123", "user1");
-    userId = response.body.user.id;
     userToken = response.body.tokens.access_token;
   });
 
@@ -177,7 +175,7 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should fetch the user information successfully", async () => {
     const response = await request(app)
-      .get(`/api/v1/user/${userId}`)
+      .get(`/api/v1/user/`)
       .set("Authorization", `Bearer ${userToken}`);
 
     expect(response.status).toBe(200);
@@ -189,7 +187,7 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should update the user email and enable TOTP with a valid totp_secret", async () => {
     const response = await request(app)
-      .patch(`/api/v1/user/${userId}`)
+      .patch(`/api/v1/user/`)
       .set("Authorization", `Bearer ${userToken}`)
       .send({
         email: "newemail@area.local",
@@ -204,7 +202,7 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should update the user password", async () => {
     const response = await request(app)
-      .patch(`/api/v1/user/${userId}`)
+      .patch(`/api/v1/user/`)
       .set("Authorization", `Bearer ${userToken}`)
       .send({
         password: "newpassword123",
@@ -216,7 +214,7 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should fail to disable TOTP if it is already disabled", async () => {
     const response = await request(app)
-      .delete(`/api/v1/user/${userId}/totp`)
+      .delete(`/api/v1/user/totp`)
       .set("Authorization", `Bearer ${userToken}`);
 
     expect(response.status).toBe(400);
@@ -226,7 +224,7 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should fail to fetch user data without authentication", async () => {
     const response = await request(app)
-      .get(`/api/v1/user/${userId}`);
+      .get(`/api/v1/user/`);
 
     expect(response.status).toBe(401);
     expect(response.body.status).toBe("error");
@@ -235,7 +233,7 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should fail to update user without authentication", async () => {
     const response = await request(app)
-      .patch(`/api/v1/user/${userId}`)
+      .patch(`/api/v1/user/`)
       .send({
         email: "newemail@area.local",
         username: "newusername",
@@ -248,7 +246,7 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should fail to disable TOTP without authentication", async () => {
     const response = await request(app)
-      .delete(`/api/v1/user/${userId}/totp`);
+      .delete(`/api/v1/user/totp`);
 
     expect(response.status).toBe(401);
     expect(response.body.status).toBe("error");
@@ -257,7 +255,7 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should fail to update the user password without authentication", async () => {
     const response = await request(app)
-      .patch(`/api/v1/user/${userId}`)
+      .patch(`/api/v1/user/`)
       .send({
         password: "newpassword123",
       });
@@ -269,7 +267,7 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should fail to update the user password with invalid token", async () => {
     const response = await request(app)
-      .patch(`/api/v1/user/${userId}`)
+      .patch(`/api/v1/user/`)
       .set("Authorization", `Bearer INVALIDTOKEN`)
       .send({
         password: "newpassword123",
@@ -282,7 +280,7 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
 
   it("should fail to update the user password with invalid data", async () => {
     const response = await request(app)
-      .patch(`/api/v1/user/${userId}`)
+      .patch(`/api/v1/user/`)
       .set("Authorization", `Bearer ${userToken}`)
       .send({
         password: "",
@@ -291,38 +289,5 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
     expect(response.status).toBe(400);
     expect(response.body.status).toBe("error");
     expect(response.body.message).toBe("Password must be at least 6 characters");
-  });
-
-  it("should fail to update the user password with invalid userid", async () => {
-    const response = await request(app)
-      .patch(`/api/v1/user/ffffffffffffffffffffffff`)
-      .set("Authorization", `Bearer ${userToken}`)
-      .send({
-        password: "hello12356",
-      });
-
-    expect(response.status).toBe(404);
-    expect(response.body.status).toBe("error");
-    expect(response.body.message).toBe("User not found");
-  });
-
-  it("should fail to fetch user data with invalid userid", async () => {
-    const response = await request(app)
-      .get(`/api/v1/user/ffffffffffffffffffffffff`)
-      .set("Authorization", `Bearer ${userToken}`);
-
-    expect(response.status).toBe(404);
-    expect(response.body.status).toBe("error");
-    expect(response.body.message).toBe("User not found");
-  });
-
-  it("should fail to delete user totp with invalid userid", async () => {
-    const response = await request(app)
-      .delete(`/api/v1/user/ffffffffffffffffffffffff/totp`)
-      .set("Authorization", `Bearer ${userToken}`);
-
-      expect(response.status).toBe(404);
-      expect(response.body.status).toBe("error");
-      expect(response.body.message).toBe("User not found");
   });
 });
