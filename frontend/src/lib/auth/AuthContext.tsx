@@ -8,6 +8,7 @@ interface TokenType {
 }
 
 interface AuthContextType {
+  loading: boolean;
   accessToken: string | null;
   login: (token: string, refreshToken: string) => void;
   logout: () => void;
@@ -19,6 +20,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +30,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setAccessToken(storedToken);
       setRefreshToken(storedRefreshToken);
     }
+
+    setLoading(false);
   }, []);
 
   const login = (accessToken: string, refreshToken: string) => {
@@ -57,7 +61,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ accessToken, login, logout, refreshAccessToken }}>
+    <AuthContext.Provider value={{ loading, accessToken, login, logout, refreshAccessToken }}>
       {children}
     </AuthContext.Provider>
   );

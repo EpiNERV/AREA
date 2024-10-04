@@ -40,7 +40,7 @@ export default function Sidebar() {
 		if (!isProfileOpen) {
 			navigate("/user/profile");
 		} else {
-			navigate("/AreaPage");
+			navigate("/home");
 		}
 	};
 
@@ -94,7 +94,7 @@ export default function Sidebar() {
 			<Separator className="my-4"/>
 			{/* Pages */}
 			<nav>
-				<Link to="/AreaPage" className="text-xl flex items-center space-x-4 visited:text-inherit">
+				<Link to="/home" className="text-xl flex items-center space-x-4 visited:text-inherit">
 					<div className="flex justify-center items-center w-[52px] h-[52px]">
 						<div className="rounded-xl border-2 p-1">
 							<svg width="20" height="20" viewBox="0 0 1024 1024" fill="currentColor"
