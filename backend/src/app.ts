@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import helloRoutes from './routes/hello';
 import userRoutes from './routes/user';
 import errorHandler from './middleware/error';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -11,6 +12,22 @@ const app: Application = express();
 app.disable("x-powered-by");
 
 app.use(express.json());
+
+const allowedOrigins = process.env.SERVER_URLS?.split(',') || ['http://localhost:5173'];
+
+const corsOptions = {
+  origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,  // Enable credentials (cookies, authorization headers, etc.)
+};
+
+app.use(cors(corsOptions));  // Apply the CORS middleware to all routes
 
 export const connectDB = async () => {
   if (process.env.NODE_ENV === 'test')

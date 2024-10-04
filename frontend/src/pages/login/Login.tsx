@@ -1,15 +1,31 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { EyeOpenIcon, EyeNoneIcon } from '@radix-ui/react-icons';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import deco from '../../assets/login.png';
+import AxiosInstance from '@/lib/auth/axiosInstance';
+import { useAuth } from '@/lib/auth/AuthContext';
+
+interface TokenType {
+  tokens: {
+    access_token: string;
+    refresh_token: string;
+  }
+}
 
 const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();  // Use the login function from AuthContext
+
+  const from = location.state?.from?.pathname || '/home';  // Default to '/home' if no previous path
 
   const [errors, setErrors] = useState<{
     email?: string;
@@ -45,13 +61,31 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     validateEmail(formData.email);
 
     if (!errors.email) {
-      console.log('Formulaire valide. Soumission en cours...', formData);
+      try {
+        // Send a login request with the email and password
+        const response = await AxiosInstance.post<TokenType>('/user/auth/login', {
+          email: formData.email,
+          password: formData.password,
+        });
+
+        // Extract tokens from the response
+        const { access_token, refresh_token } = response.data.tokens;
+
+        // Log the user in by saving tokens in the context
+        login(access_token, refresh_token);
+
+        // Navigate the user back to the intended route or default to /home
+        navigate(from, { replace: true });
+      } catch (error) {
+        console.error('Login failed', error);
+        // Handle login errors, such as showing error messages to the user
+      }
     } else {
       console.log('Le formulaire contient des erreurs.');
     }
