@@ -291,3 +291,44 @@ describe("User CRUD (Read, Update, Partial Delete) with TOTP Registration and De
     expect(response.body.message).toBe("Password must be at least 6 characters");
   });
 });
+
+describe('POST /api/v1/user/auth/refresh_token', () => {
+  let refreshToken: string;
+
+  beforeAll(async () => {
+    const res = await registerUser();
+    refreshToken = res.body.tokens.refresh_token;
+  });
+
+  afterAll(async () => {
+    await clearDatabase();
+  });
+
+  it('should refresh the access token using a valid refresh token', async () => {
+    const res = await request(app)
+      .post('/api/v1/user/auth/refresh_token')
+      .send({ refresh_token: refreshToken });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.access_token).toBeDefined();
+    expect(res.body.refresh_token).toBeDefined();
+  });
+
+  it('should return 400 if refresh token is not provided', async () => {
+    const res = await request(app)
+      .post('/api/v1/user/auth/refresh_token')
+      .send({});
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toEqual('Refresh token is required');
+  });
+
+  it('should return 401 if refresh token is invalid', async () => {
+    const res = await request(app)
+      .post('/api/v1/user/auth/refresh_token')
+      .send({ refresh_token: 'invalidtoken' });
+
+    expect(res.statusCode).toEqual(401);
+    expect(res.body.message).toEqual('Invalid refresh token');
+  });
+});

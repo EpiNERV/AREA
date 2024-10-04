@@ -77,6 +77,35 @@ router.post('/auth/login', async (req: Request, res: Response, next: NextFunctio
   }
 });
 
+// POST /api/v1/user/auth/refresh_token
+router.post('/auth/refresh_token', async (req: Request, res: Response) => {
+  const { refresh_token } = req.body;
+
+  if (!refresh_token) {
+    res.status(400).json({ message: 'Refresh token is required' });
+    return;
+  }
+
+  try {
+    const decoded = jwt.verify(refresh_token, process.env.JWT_REFRESH_SECRET as jwt.Secret) as { id: string };
+
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      res.status(401).json({ message: 'User not found' });
+      return;
+    }
+
+    const tokens = generateTokens(user);
+
+    res.json(tokens);
+    return;
+
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid refresh token' });
+    return;
+  }
+});
+
 // GET /api/v1/user/ - Get user information
 router.get('/', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
