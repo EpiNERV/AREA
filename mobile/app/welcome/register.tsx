@@ -19,7 +19,7 @@ export default function Register() {
     <TextInput style={s.input} placeholder='Password' autoCapitalize='none' secureTextEntry/>
     <TextInput style={s.input} placeholder='Confirm Password' autoCapitalize='none' secureTextEntry/>
     <Spacer size={80} />
-    <Button title={"Agree and Register"} onPress={() => router.navigate("/main/home/notifications")} />
+    <Button title={"Agree and Register"} onPress={() => router.navigate("/main/home/dashboard")} />
       <Text>Already have an account? <Link href={"/welcome/login"}>Login now</Link></Text>
   </View>
   )

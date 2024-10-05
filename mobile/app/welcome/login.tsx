@@ -1,23 +1,66 @@
-import { View, Text, TextInput, } from 'react-native'
-import React from 'react'
+import { View, Text, TextInput, Alert } from 'react-native';
+import React, { useState } from 'react';
 import { HelloWave } from '@/components/HelloWave';
 import Spacer from '@/components/Spacer';
 import Button from '@/components/Button';
 import { Link, useRouter } from 'expo-router';
+import axios from 'axios';
 
 const s = require('../style');
 
+interface TokenType {
+  tokens: {
+    access_token: string;
+    refresh_token: string;
+  }
+}
+
 export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const router = useRouter();
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post<TokenType>('http://10.0.2.2:5000/api/v1/user/auth/login', {
+        email,
+        password,
+      });
+      const { access_token, refresh_token } = response.data.tokens;
+      console.log(access_token);
+      if (access_token) {
+        router.navigate('/main/home/dashboard');
+      } else {
+        Alert.alert('Login Failed', 'Invalid email or password.');
+      }
+    } catch (error: any) {
+      Alert.alert('Error', 'An error occurred. Please try again.');
+    }
+  };
+
   return (
     <View>
       <Text style={s.titleText}>Welcome Back <HelloWave /> </Text>
       <Text>Sign in to start managing your projects.</Text>
       <Spacer size={20} />
-      <TextInput style={s.input} placeholder='Enter your Email' autoCapitalize='none' keyboardType="email-address" />
-      <TextInput style={s.input} placeholder='Enter your Password' autoCapitalize='none' secureTextEntry/>
+      <TextInput
+        style={s.input}
+        placeholder='Enter your Email'
+        autoCapitalize='none'
+        keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail} // Update email state
+      />
+      <TextInput
+        style={s.input}
+        placeholder='Enter your Password'
+        autoCapitalize='none'
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword} // Update password state
+      />
       <Spacer size={80} />
-      <Button title={"Login"} onPress={() => router.navigate("/main/home/dashboard")} />
+      <Button title={"Login"}  onPress={handleLogin} />
         <Text>Don't have an account? <Link href={"/welcome/register"}>Register now</Link></Text>
     </View>
   )
