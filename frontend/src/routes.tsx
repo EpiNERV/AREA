@@ -7,7 +7,6 @@ import ProtectedRoute from './lib/auth/ProtectedRoute';
 // login pages import
 import Login from './pages/login/Login.tsx';
 import Register from './pages/login/Register';
-import Welcome from './pages/login/Welcome';
 import PasswordForgotten from './pages/login/PasswordForgotten';
 import AuthVerification from './pages/login/AuthVerification';
 import CreateNewPassword from './pages/login/CreateNewPassword';

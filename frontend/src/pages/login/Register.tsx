@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { CheckIcon, Cross1Icon, EyeOpenIcon, EyeNoneIcon } from "@radix-ui/react-icons";
+import AxiosInstance from "@/lib/auth/axiosInstance";
 
 const PasswordCriteria = ({ label, isValid }: { label: string; isValid: boolean }) => (
   <div className="flex items-center">
@@ -30,6 +32,9 @@ const Register = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   const passwordCriteria = {
     minLength: formData.password.length >= 8,
@@ -76,10 +81,20 @@ const Register = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!errors.email && !errors.passwordMatch && isPasswordComplex) {
-      console.log("Form is valid. Submitting...");
+      try {
+        await AxiosInstance.post("/user/auth/register", {
+          email: formData.email,
+          password: formData.password,
+          username: formData.username,
+        });
+
+        navigate("/login", { replace: true });
+      } catch (error: any) {
+        setErrorMessage(error.response.data.message);
+      }
     } else {
       console.log("Form contains errors.");
     }
@@ -92,6 +107,9 @@ const Register = () => {
         <p className="text-gray-600 mb-6">
           Register to start creating and managing your projects.
         </p>
+        {errorMessage && (
+          <p className="text-red-500 text-sm mb-4">{errorMessage}</p>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
