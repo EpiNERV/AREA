@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import deco from '../../assets/login.png';
-import AxiosInstance from '@/lib/auth/axiosInstance';
+import axios from 'axios';
 import { useAuth } from '@/lib/auth/AuthContext';
 
 interface TokenType {
@@ -71,7 +71,7 @@ const Login = () => {
       try {
         setErrorMessage(null);
 
-        const response = await AxiosInstance.post<TokenType>('/user/auth/login', {
+        const response = await axios.post<TokenType>('http://localhost:5000/api/v1/user/auth/login', {
           email: formData.email,
           password: formData.password,
         });

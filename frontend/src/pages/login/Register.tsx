@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { CheckIcon, Cross1Icon, EyeOpenIcon, EyeNoneIcon } from "@radix-ui/react-icons";
-import AxiosInstance from "@/lib/auth/axiosInstance";
+import axios from "axios";
 
 const PasswordCriteria = ({ label, isValid }: { label: string; isValid: boolean }) => (
   <div className="flex items-center">
@@ -85,7 +85,7 @@ const Register = () => {
     e.preventDefault();
     if (!errors.email && !errors.passwordMatch && isPasswordComplex) {
       try {
-        await AxiosInstance.post("/user/auth/register", {
+        await axios.post("http://localhost:5000/api/v1/user/auth/register", {
           email: formData.email,
           password: formData.password,
           username: formData.username,
