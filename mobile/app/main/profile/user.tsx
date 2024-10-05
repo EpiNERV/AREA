@@ -2,6 +2,7 @@ import { View, Text, Image, Button, StyleSheet, ScrollView } from 'react-native'
 import React from 'react'
 import { useNavigation } from 'expo-router'
 import { DrawerActions } from '@react-navigation/native';
+import Spacer from '@/components/Spacer';
 
 export default function Notifications() {
     const navigation = useNavigation();
@@ -10,6 +11,8 @@ export default function Notifications() {
       <View style={styles.userboxContainer}>
         <Image src="" style={styles.userImage}></Image>
         <Text style={styles.text}>Name</Text>
+        <Spacer size={10} />
+        <Text >email here</Text>
       </View>
       <Text>User info</Text>
 
