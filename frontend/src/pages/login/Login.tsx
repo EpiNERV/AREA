@@ -18,7 +18,8 @@ interface TokenType {
 
 const Login = () => {
   const { theme, setTheme } = useTheme()
-  setTheme("light")
+  if (theme === "dark")
+    setTheme("light")
 
   const [formData, setFormData] = useState({
     email: '',
@@ -85,6 +86,7 @@ const Login = () => {
 
         navigate(from, { replace: true });
       } catch (error) {
+        console.log(error)
         setErrorMessage('Login failed. Please check your email and password and try again.');
       }
     } else {

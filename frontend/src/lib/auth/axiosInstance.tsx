@@ -1,19 +1,18 @@
 import axios from 'axios';
 import { refreshAccessToken } from './TokenManager';
-
 const AxiosInstance = axios.create({
   baseURL: 'http://localhost:5000/api/v1',
 });
 
 AxiosInstance.interceptors.request.use(
-  (config: any) => {
+  (config) => {
     const token = localStorage.getItem('accessToken');
-    if (token) {
+    if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(new Error(error))
 );
 
 AxiosInstance.interceptors.response.use(
@@ -33,10 +32,10 @@ AxiosInstance.interceptors.response.use(
         localStorage.removeItem('refreshToken');
 
         window.location.href = '/login';
-        return Promise.reject(refreshError);
+        return Promise.reject(new Error("Error when refreshing token: " + refreshError));
       }
     }
-    return Promise.reject(error);
+    return Promise.reject(new Error(error));
   }
 );
 

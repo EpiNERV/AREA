@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
@@ -12,9 +12,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [_, setRefreshToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  console.log(refreshToken)
 
   useEffect(() => {
     const storedToken = localStorage.getItem('accessToken');
@@ -27,23 +29,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false);
   }, []);
 
-  const login = (accessToken: string, refreshToken: string) => {
+  const login = useCallback((accessToken: string, refreshToken: string) => {
     setAccessToken(accessToken);
     setRefreshToken(refreshToken);
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setAccessToken(null);
     setRefreshToken(null);
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     navigate('/login');
-  };
+  }, [navigate]);
 
+  const authContectProviderValue = useMemo(() =>
+    ({loading, accessToken, login, logout}),
+  [loading, accessToken, login, logout]);
   return (
-    <AuthContext.Provider value={{ loading, accessToken, login, logout }}>
+    <AuthContext.Provider value={authContectProviderValue}>
       {children}
     </AuthContext.Provider>
   );

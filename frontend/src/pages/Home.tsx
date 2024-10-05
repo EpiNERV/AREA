@@ -4,7 +4,8 @@ import { useTheme } from "@/components/ThemeProvider"
 
 const Home: React.FC = () => {
 	const { theme, setTheme } = useTheme()
-	setTheme("light")
+  if (theme === "dark")
+	  setTheme("light")
 
   return (
     <div className="min-h-screen bg-gray-50">

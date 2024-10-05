@@ -20,7 +20,8 @@ const PasswordCriteria = ({ label, isValid }: { label: string; isValid: boolean 
 
 const Register = () => {
   const { theme, setTheme } = useTheme()
-  setTheme("light")
+  if (theme === "dark")
+      setTheme("light")
 
   const [formData, setFormData] = useState({
     username: "",

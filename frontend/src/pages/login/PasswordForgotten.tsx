@@ -5,7 +5,8 @@ import { useTheme } from "@/components/ThemeProvider"
 
 function PasswordForgotten() {
   const { theme, setTheme } = useTheme()
-  setTheme("light")
+  if (theme === "dark")
+    setTheme("light")
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-50">
