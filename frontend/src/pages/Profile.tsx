@@ -36,7 +36,7 @@ export default function ProfilePage() {
 	);
 	setConnections(initialConnections);
   }, []);
-
+  
   const toggleConnection = (serviceKey: string) => {
     setConnections((prev) => ({
       ...prev,
@@ -100,7 +100,7 @@ export default function ProfilePage() {
                     variant="default"
                     className={`${
                       connections[service.key] ? "bg-red-500" : "bg-blue-500"
-                    } mt-4`}
+                    } mt-4 text-white`}
                     onClick={() => toggleConnection(service.key)}
                   >
                     {connections[service.key] ? "Sign out" : "Sign in"}

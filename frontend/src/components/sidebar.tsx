@@ -7,12 +7,14 @@ import { useTheme } from "@/components/ThemeProvider"
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
+import { useAuth } from '@/lib/auth/AuthContext'; // For logout
 
 export default function Sidebar() {
 	const { setTheme, theme } = useTheme();
 	const [language, setLanguage] = useState("en");
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const navigate = useNavigate();
+	const { logout } = useAuth();
 
 	const getLanguageLabel = (lang: string) => {
 		switch (lang) {
@@ -40,7 +42,7 @@ export default function Sidebar() {
 		if (!isProfileOpen) {
 			navigate("/user/profile");
 		} else {
-			navigate("/");
+			navigate("/home");
 		}
 	};
 
@@ -68,7 +70,7 @@ export default function Sidebar() {
 				<div className="flex items-center space-x-4">
 					<div className="rounded-xl border-2 p-1">
 						<img
-							src="/icons/Navbar/adrien.lachambre@epitech.eu.JPG"
+							src="/icons/Navbar/adrien.lachambre@epitech.eu.jpg"
 							alt="User Profile"
 							className="w-10 h-10 rounded-lg object-cover"
 						/>
@@ -94,7 +96,7 @@ export default function Sidebar() {
 			<Separator className="my-4"/>
 			{/* Pages */}
 			<nav>
-				<Link to="/" className="text-xl flex items-center space-x-4 visited:text-inherit">
+				<Link to="/home" className="text-xl flex items-center space-x-4 visited:text-inherit">
 					<div className="flex justify-center items-center w-[52px] h-[52px]">
 						<div className="rounded-xl border-2 p-1">
 							<svg width="20" height="20" viewBox="0 0 1024 1024" fill="currentColor"
@@ -211,8 +213,7 @@ export default function Sidebar() {
 
 					{/* Logout Button */}
 					<div>
-						<Button className="flex justify-center items-center w-[260.3px] h-[52px]" variant="destructive">Log
-							Out</Button>
+						<Button onClick={ logout } className="flex justify-center items-center w-[260.3px] h-[52px]" variant="destructive">Log Out</Button>
 					</div>
 				</div>
 			</div>

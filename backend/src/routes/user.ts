@@ -1,0 +1,173 @@
+import express, { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import { hash } from 'bcrypt';
+import User, { IUser } from '../models/user';
+import authMiddleware from '../middleware/auth';
+
+const router = express.Router();
+
+const generateTokens = (user: IUser) => {
+  const access_token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET as jwt.Secret, { expiresIn: '1h' });
+  const refresh_token = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET as jwt.Secret, { expiresIn: '7d' });
+  return { access_token, refresh_token };
+};
+
+// POST /api/v1/user/auth/register
+router.post('/auth/register', async (req: Request, res: Response, next: NextFunction) => {
+  const { email, password, username } = req.body;
+
+  if (!email || !password || !username) {
+    res.status(400).json({ status: 'error', message: 'Email, password, and username are required' });
+    return;
+  }
+
+  if (password.length < 6) {
+    res.status(400).json({ status: 'error', message: 'Password must be at least 6 characters' });
+    return;
+  }
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      res.status(409).json({ status: 'error', message: 'Email is already in use' });
+    } else {
+      const newUser = new User({ email, password, username });
+      await newUser.save();
+
+      const tokens = generateTokens(newUser);
+
+      res.status(201).json({
+        status: 'success',
+        message: 'Registration successful',
+        user: { id: newUser._id, email: newUser.email, username: newUser.username, role: newUser.role },
+        tokens,
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+});
+
+// POST /api/v1/user/auth/login
+router.post('/auth/login', async (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } = req.body;
+  
+  if (!email || !password) {
+    res.status(400).json({ status: 'error', message: 'Email and password are required' });
+    return;
+  }
+  
+  try {
+    const user = await User.findOne({ email });
+    if (!user || !(await user.comparePassword(password))) {
+      res.status(401).json({ status: 'error', message: 'Invalid email or password' });
+    } else {
+      const tokens = generateTokens(user);
+      
+      res.status(200).json({
+        status: 'success',
+        message: 'Login successful',
+        user: { id: user._id, email: user.email, username: user.username, role: user.role },
+        tokens,
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/v1/user/auth/refresh_token
+router.post('/auth/refresh_token', async (req: Request, res: Response) => {
+  const { refresh_token } = req.body;
+
+  if (!refresh_token) {
+    res.status(400).json({ message: 'Refresh token is required' });
+    return;
+  }
+
+  try {
+    const decoded = jwt.verify(refresh_token, process.env.JWT_REFRESH_SECRET as jwt.Secret) as { id: string };
+
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      res.status(401).json({ message: 'User not found' });
+      return;
+    }
+
+    const tokens = generateTokens(user);
+
+    res.json(tokens);
+    return;
+
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid refresh token' });
+    return;
+  }
+});
+
+// GET /api/v1/user/ - Get user information
+router.get('/', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = req.body.user;
+    res.status(200).json({
+      status: 'success',
+      user,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// PATCH /api/v1/user/ - Update user information (email, TOTP, etc.)
+router.patch('/', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+  const { user, email, username, password } = req.body;
+  try {
+    if (email) user.email = email;
+    if (username != undefined) {
+      if (username == "") {
+        res.status(400).json({ status: 'error', message: 'Username cannot be empty' });
+        return;
+      }
+      user.username = username;
+    }
+    if (password != undefined) {
+      if (password.length < 6) {
+        res.status(400).json({ status: 'error', message: 'Password must be at least 6 characters' });
+        return;
+      }
+      user.password = await hash(password, 10);
+    }
+    await user.save();
+
+    res.status(200).json({
+      status: 'success',
+      user: { id: user._id, email: user.email, username: user.username, totp_enabled: user.totp_enabled },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// DELETE /api/v1/user/:id/totp - Disable TOTP
+router.delete('/totp', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = req.body.user;
+    if (!user.totp_enabled) {
+      res.status(400).json({ status: 'error', message: 'TOTP is already disabled' });
+    } else {
+      user.totp_enabled = false;
+      user.totp_secret = undefined;
+      await user.save();
+
+      res.status(200).json({
+        status: 'success',
+        user: { id: user._id, email: user.email, username: user.username, totp_enabled: user.totp_enabled },
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+export default router;
