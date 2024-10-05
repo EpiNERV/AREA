@@ -1,7 +1,11 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { useTheme } from "@/components/ThemeProvider"
 
 const Home: React.FC = () => {
+	const { theme, setTheme } = useTheme()
+	setTheme("light")
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-blue-600 text-white p-10 text-center">

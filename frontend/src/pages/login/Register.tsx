@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { CheckIcon, Cross1Icon, EyeOpenIcon, EyeNoneIcon } from "@radix-ui/react-icons";
 import axios from "axios";
+import { useTheme } from "@/components/ThemeProvider"
 
 const PasswordCriteria = ({ label, isValid }: { label: string; isValid: boolean }) => (
   <div className="flex items-center">
@@ -18,6 +19,9 @@ const PasswordCriteria = ({ label, isValid }: { label: string; isValid: boolean 
 );
 
 const Register = () => {
+  const { theme, setTheme } = useTheme()
+  setTheme("light")
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",

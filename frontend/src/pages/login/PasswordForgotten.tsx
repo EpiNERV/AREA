@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useTheme } from "@/components/ThemeProvider"
 
 function PasswordForgotten() {
+  const { theme, setTheme } = useTheme()
+  setTheme("light")
+
   return (
     <div className="flex items-center justify-center h-screen bg-gray-50">
       <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">

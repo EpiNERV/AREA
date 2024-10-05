@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import deco from '../../assets/login.png';
 import axios from 'axios';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { useTheme } from "@/components/ThemeProvider"
 
 interface TokenType {
   tokens: {
@@ -16,6 +17,9 @@ interface TokenType {
 }
 
 const Login = () => {
+  const { theme, setTheme } = useTheme()
+  setTheme("light")
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
