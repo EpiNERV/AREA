@@ -31,6 +31,17 @@ export default function _layout() {
 
             }}
         />
+        <Drawer.Screen
+            name="profile"
+            options={{
+                drawerLabel: 'Profile',
+                title: 'Profile',
+                drawerIcon: ({size, color})=>(
+                    <Ionicons name='person' size={size} color={color} />
+                )
+
+            }}
+        />
     </Drawer>
     </>
 }
