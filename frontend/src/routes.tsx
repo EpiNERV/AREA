@@ -9,7 +9,6 @@ import Login from './pages/login/Login.tsx';
 import Register from './pages/login/Register';
 import PasswordForgotten from './pages/login/PasswordForgotten';
 import AuthVerification from './pages/login/AuthVerification';
-import CreateNewPassword from './pages/login/CreateNewPassword';
 import PasswordChanged from './pages/login/PasswordChanged';
 
 // other import pages
@@ -36,7 +35,6 @@ function AppRoutes() {
 					<Route path="/register" element={<Register />} />
 					<Route path="/password_forgotten" element={<PasswordForgotten />} />
 					<Route path="/auth_verification" element={<AuthVerification />} />
-					<Route path="/create_new_password" element={<CreateNewPassword />} />
 					<Route path="/password_changed" element={<PasswordChanged />} />
 		
 					<Route path="/" element={<Layout><Home /></Layout>} />
