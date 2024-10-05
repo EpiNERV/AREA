@@ -23,14 +23,15 @@ const Login = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();  // Use the login function from AuthContext
+  const { login } = useAuth();
 
-  const from = location.state?.from?.pathname || '/home';  // Default to '/home' if no previous path
+  const from = location.state?.from?.pathname || '/home';
 
   const [errors, setErrors] = useState<{
     email?: string;
   }>({});
 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,23 +69,19 @@ const Login = () => {
 
     if (!errors.email) {
       try {
-        // Send a login request with the email and password
+        setErrorMessage(null);
+
         const response = await AxiosInstance.post<TokenType>('/user/auth/login', {
           email: formData.email,
           password: formData.password,
         });
 
-        // Extract tokens from the response
         const { access_token, refresh_token } = response.data.tokens;
-
-        // Log the user in by saving tokens in the context
         login(access_token, refresh_token);
 
-        // Navigate the user back to the intended route or default to /home
         navigate(from, { replace: true });
       } catch (error) {
-        console.error('Login failed', error);
-        // Handle login errors, such as showing error messages to the user
+        setErrorMessage('Login failed. Please check your email and password and try again.');
       }
     } else {
       console.log('Le formulaire contient des erreurs.');
@@ -97,6 +94,9 @@ const Login = () => {
         <div className="max-w-md p-6 rounded-md shadow-lg bg-white">
           <h1 className="text-3xl font-bold mb-6">Welcome Back 👋</h1>
           <p className="mb-6 text-gray-600">Action REAction.</p>
+          {errorMessage && (
+            <p className="text-red-500 text-sm mb-4">{errorMessage}</p>
+          )}
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <Label htmlFor="email">Email</Label>
