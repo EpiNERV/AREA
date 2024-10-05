@@ -11,7 +11,7 @@ export default function Welcome() {
       <Image style={{height: 300}} resizeMode='contain' source={require('../../assets/images/welcome.png')} />
       <Spacer size={20} />
       <Button title={"Login"} onPress={() => router.navigate("/welcome/login")} />
-      <Button title={"Register"} color='white' textcolor='black' />
+      <Button title={"Register"} onPress={() => router.navigate("/welcome/register")} color='white' textcolor='black' />
     </View>
   )
 }
