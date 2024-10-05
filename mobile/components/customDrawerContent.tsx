@@ -4,15 +4,23 @@ import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawe
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useNavigation, Link, useRouter } from 'expo-router';
 import { DrawerActions } from '@react-navigation/native';
+import Button from '@/components/Button'
 
 export default function CustomDrawerContent(props:any) {
 
     const {bottom} = useSafeAreaInsets();
     const navigation = useNavigation();
+    const router = useRouter();
 
     const closeDrawer = ()=>{
         navigation.dispatch(DrawerActions.closeDrawer())
     }
+
+    const handleLogout = ()=>{
+      router.navigate("/welcome/welcomeScreen")
+      closeDrawer
+    }
+
   return (
     <View
         style={{flex: 1}}
@@ -23,7 +31,7 @@ export default function CustomDrawerContent(props:any) {
       </DrawerContentScrollView>
 
       <Pressable onPress={closeDrawer} style={{padding: 20, paddingBottom: bottom+10}}>
-        <Link href="/welcome/welcomeScreen" style={{color: "red"}}>Logout</Link>
+        <Button title={"Logout"} onPress={handleLogout} color='red' textcolor='white' />
       </Pressable>
     </View>
   )

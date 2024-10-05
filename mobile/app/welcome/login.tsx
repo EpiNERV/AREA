@@ -17,7 +17,7 @@ export default function Login() {
       <TextInput style={s.input} placeholder='Enter your Email' autoCapitalize='none' keyboardType="email-address" />
       <TextInput style={s.input} placeholder='Enter your Password' autoCapitalize='none' secureTextEntry/>
       <Spacer size={80} />
-      <Button title={"Login"} onPress={() => router.navigate("/main/home/notifications")} />
+      <Button title={"Login"} onPress={() => router.navigate("/main/home/dashboard")} />
         <Text>Don't have an account? <Link href={"/welcome/register"}>Register now</Link></Text>
     </View>
   )

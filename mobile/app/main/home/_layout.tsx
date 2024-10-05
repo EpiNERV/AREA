@@ -10,21 +10,22 @@ export default function _layout() {
         headerShown: false
     }}>
         <Tabs.Screen
-            name="settings"
+            name="dashboard"
             options={{
+                tabBarLabel: "Dashboard",
                 tabBarIcon: ({size, color})=>(
                     <Ionicons name='settings' size={size} color={color} />
                 )
             }}
         />
-        <Tabs.Screen
+        {/* <Tabs.Screen
             name="notifications"
             options={{
                 tabBarIcon: ({size, color})=>(
                     <Ionicons name='notifications' size={size} color={color} />
                 )
             }}
-        />
+        /> */}
 
     </Tabs>
   )

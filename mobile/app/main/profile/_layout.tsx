@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 
 import { Tabs } from 'expo-router'
@@ -12,6 +12,7 @@ export default function _layout() {
         <Tabs.Screen
             name="user"
             options={{
+                tabBarLabel: 'User Info',
                 tabBarIcon: ({size, color})=>(
                     <Ionicons name='person' size={size} color={color} />
                 )
@@ -20,6 +21,7 @@ export default function _layout() {
         <Tabs.Screen
             name="integration"
             options={{
+                tabBarLabel: 'Integrations',
                 tabBarIcon: ({size, color})=>(
                     <Ionicons name='person-add' size={size} color={color} />
                 )
