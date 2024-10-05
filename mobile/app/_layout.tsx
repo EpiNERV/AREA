@@ -6,8 +6,8 @@ import { Slot, Stack } from 'expo-router';
 export default function _layout() {
     return (
         <Stack screenOptions={{ animation: 'slide_from_right'}} >
+            <Stack.Screen options={{headerShown: false}} name="welcome"/>
             <Stack.Screen options={{headerShown: false}} name="main"/>
-            <Stack.Screen options={{headerShown: true}} name="welcome"/>
         </Stack>
     );
 }

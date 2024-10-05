@@ -3,7 +3,7 @@ import React from 'react'
 import { HelloWave } from '@/components/HelloWave';
 import Spacer from '@/components/Spacer';
 import Button from '@/components/Button';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 
 const s = require('../style');
 
@@ -18,6 +18,7 @@ export default function Login() {
       <TextInput style={s.input} placeholder='Enter your Password' autoCapitalize='none' secureTextEntry/>
       <Spacer size={80} />
       <Button title={"Login"} onPress={() => router.navigate("/main/home/notifications")} />
+        <Text>Don't have an account? <Link href={"/welcome/register"}>Register now</Link></Text>
     </View>
   )
 }
