@@ -12,14 +12,13 @@ interface AuthContextType {
   accessToken: string | null;
   login: (token: string, refreshToken: string) => void;
   logout: () => void;
-  refreshAccessToken: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [_, setRefreshToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -49,19 +48,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     navigate('/login');
   };
 
-  const refreshAccessToken = async () => {
-    try {
-      const response = await axios.post<TokenType>('/refresh-token', { accessToken: refreshToken });
-      const { accessToken } = response.data;
-      setAccessToken(accessToken);
-      localStorage.setItem('accessToken', accessToken);
-    } catch (error) {
-      logout(); // If refresh fails, log out the user
-    }
-  };
-
   return (
-    <AuthContext.Provider value={{ loading, accessToken, login, logout, refreshAccessToken }}>
+    <AuthContext.Provider value={{ loading, accessToken, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useAuth } from './AuthContext';
+import { refreshAccessToken } from './TokenManager';
 
 const AxiosInstance = axios.create({
   baseURL: 'http://localhost:5000/api/v1',
@@ -7,7 +7,7 @@ const AxiosInstance = axios.create({
 
 AxiosInstance.interceptors.request.use(
   (config: any) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('accessToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -24,10 +24,17 @@ AxiosInstance.interceptors.response.use(
 
     if (statusCode === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const { refreshAccessToken } = useAuth();
-      await refreshAccessToken();
-      originalRequest.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
-      return axios(originalRequest);
+      try {
+        const newAccessToken = await refreshAccessToken();
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return AxiosInstance(originalRequest);
+      } catch (refreshError) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      }
     }
     return Promise.reject(error);
   }
