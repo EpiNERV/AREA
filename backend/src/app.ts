@@ -5,6 +5,7 @@ import helloRoutes from './routes/hello';
 import userRoutes from './routes/user';
 import errorHandler from './middleware/error';
 import cors from 'cors';
+import morgan from 'morgan';
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ const app: Application = express();
 app.disable("x-powered-by");
 
 app.use(express.json());
+app.use(morgan('dev'));
 
 const allowedOrigins = process.env.SERVER_URLS?.split(',') || ['http://localhost:5173'];
 
