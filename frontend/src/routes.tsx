@@ -29,26 +29,28 @@ function AppRoutes() {
 	return (
 		<Router>
 			<AuthProvider>
-				<Routes>
-					{/* <Route path="/welcome" element={<Layout><Welcome /></Layout>} /> */}
-					<Route path="/login" element={<Login />} />
-					<Route path="/register" element={<Register />} />
-					<Route path="/password_forgotten" element={<PasswordForgotten />} />
-					<Route path="/auth_verification" element={<AuthVerification />} />
-					<Route path="/password_changed" element={<PasswordChanged />} />
-		
-					<Route path="/" element={<Layout><Welcome /></Layout>} />
-					<Route path="/home" element={<Layout><ProtectedRoute><Home /></ProtectedRoute></Layout>} />
-					<Route path="/NewWorkflow" element={<Layout><ProtectedRoute><NewWorkflow /></ProtectedRoute></Layout>} />
-					<Route path="/backend-settings" element={<Layout><ProtectedRoute><BackendSettings /></ProtectedRoute></Layout>} />
-					<Route path="/user-management" element={<Layout><ProtectedRoute><UserManagement /></ProtectedRoute></Layout>} />
-					<Route path="/settings" element={<Layout><ProtectedRoute><Settings /></ProtectedRoute></Layout>} />
-		
-					{/* Profile */}
-					<Route path={"/user/profile"} element={<Layout><ProtectedRoute><Profile /></ProtectedRoute></Layout>} />
-		
-					<Route path="*" element={<NotFound />} />
-				</Routes>
+				<Layout>
+					<Routes>
+						{/* <Route path="/welcome" element={<Layout><Welcome /></Layout>} /> */}
+						<Route path="/" element={<Welcome />} />
+						<Route path="/login" element={<Login />} />
+						<Route path="/register" element={<Register />} />
+						<Route path="/password_forgotten" element={<PasswordForgotten />} />
+						<Route path="/auth_verification" element={<AuthVerification />} />
+						<Route path="/password_changed" element={<PasswordChanged />} />
+			
+						<Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+						<Route path="/NewWorkflow" element={<ProtectedRoute><NewWorkflow /></ProtectedRoute>} />
+						<Route path="/backend-settings" element={<ProtectedRoute><BackendSettings /></ProtectedRoute>} />
+						<Route path="/user-management" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
+						<Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+			
+						{/* Profile */}
+						<Route path={"/user/profile"} element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+			
+						<Route path="*" element={<NotFound />} />
+					</Routes>
+				</Layout>
 			</AuthProvider>
 		</Router>
 	);
