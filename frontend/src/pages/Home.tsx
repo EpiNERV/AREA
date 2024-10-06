@@ -143,9 +143,12 @@ const Home: React.FC = () => {
             >
               <p className="text-lg font-semibold text-center">{workflow.name}</p>
               {/* Edit and Delete Buttons */}
-              <div
+              <button
                 className="absolute top-2 right-2 flex space-x-2"
-                onClick={(e) => e.stopPropagation()} // Prevent card click
+                onClick={(e) => e.stopPropagation()}
+				onKeyDown={(e) => e.stopPropagation()}
+				tabIndex={0}
+				// Prevent card click
               >
                 <Button
                   variant="ghost"
@@ -191,7 +194,7 @@ const Home: React.FC = () => {
                     </div>
                   </DialogContent>
                 </Dialog>
-              </div>
+              </button>
             </Card>
           ))}
         </div>
@@ -246,7 +249,7 @@ const NewWorkflowForm: React.FC<NewWorkflowFormProps> = ({ onWorkflowCreated }) 
 
   const onSubmit = async (data: FormData) => {
     try {
-      await onWorkflowCreated(data.name);
+      onWorkflowCreated(data.name);
       reset();
     } catch (err) {
       console.error('Error creating workflow:', err);
@@ -314,7 +317,7 @@ const EditWorkflowForm: React.FC<EditWorkflowFormProps> = ({ workflow, onWorkflo
 
   const onSubmit = async (data: FormData) => {
     try {
-      await onWorkflowUpdated(workflow._id, data.name);
+      onWorkflowUpdated(workflow._id, data.name);
       reset();
     } catch (err) {
       console.error('Error updating workflow:', err);

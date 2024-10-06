@@ -62,8 +62,6 @@ describe('Workflow API', () => {
   });
 
   it('should fetch all workflows', async () => {
-    // await Workflow.create({ name: 'Workflow 1' });
-    // await Workflow.create({ name: 'Workflow 2' });
 
     await createWorkflow("Workflow 1", userToken);
     await createWorkflow("Workflow 2", userToken);

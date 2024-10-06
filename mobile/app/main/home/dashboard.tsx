@@ -11,10 +11,9 @@ import {
 import { 
   Text, 
   TextInput, 
-  FAB, 
+  FAB as Fab, 
   Portal, 
   Modal, 
-  Button, 
   Card, 
   ActivityIndicator 
 } from 'react-native-paper';
@@ -123,26 +122,25 @@ const HomeScreen: React.FC = () => {
     }
   };
 
+  const onDeleteConfirm = async (id: string) => {
+    try {
+      await deleteWorkflow(id);
+      setWorkflows(prev => prev.filter(wf => wf._id !== id));
+      Alert.alert('Success', 'Workflow deleted successfully.');
+    } catch (error: any) {
+      console.error('Error deleting workflow:', error);
+      Alert.alert('Error', error.response?.data?.message || 'Failed to delete workflow.');
+    }
+  };
+
   const handleDeleteWorkflow = (id: string) => {
+    onDeleteConfirm(id);
     Alert.alert(
       'Delete Workflow',
       'Are you sure you want to delete this workflow? This action cannot be undone.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Delete', 
-          style: 'destructive', 
-          onPress: async () => {
-            try {
-              await deleteWorkflow(id);
-              setWorkflows(prev => prev.filter(wf => wf._id !== id));
-              Alert.alert('Success', 'Workflow deleted successfully.');
-            } catch (error: any) {
-              console.error('Error deleting workflow:', error);
-              Alert.alert('Error', error.response?.data?.message || 'Failed to delete workflow.');
-            }
-          } 
-        },
+        { text: 'Delete', style: 'destructive', onPress: () => onDeleteConfirm(id) },
       ]
     );
   };
@@ -204,7 +202,7 @@ const HomeScreen: React.FC = () => {
       )}
 
       {/* Floating Action Button to Add Workflow */}
-      <FAB
+      <Fab
         style={styles.fab}
         small
         icon="plus"
