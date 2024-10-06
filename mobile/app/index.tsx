@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import * as React from 'react'
-import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useAuth } from '@/lib/AuthContext';
 
 import { Redirect } from 'expo-router';
 
@@ -9,9 +9,14 @@ const Stack = createNativeStackNavigator();
 const s = require('./style');
 
 export default function Index() {
-  return (
-       <Redirect href={"./welcome/welcomeScreen"} />
-  );
+
+  const { loading, accessToken } = useAuth();
+
+  if (!loading) {
+    return (
+      <Redirect href={accessToken ? "/main/home/dashboard" : "./welcome/welcomeScreen"} />
+    );
+  }
 }
 
 const styles = StyleSheet.create({

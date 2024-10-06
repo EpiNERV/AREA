@@ -3,8 +3,10 @@ import React, { useState } from 'react';
 import { HelloWave } from '@/components/HelloWave';
 import Spacer from '@/components/Spacer';
 import Button from '@/components/Button';
-import { Link, useRouter } from 'expo-router';
+import { ErrorBoundary, Link, useRouter } from 'expo-router';
 import axios from 'axios';
+import { useAuth } from '@/lib/AuthContext';
+
 
 const s = require('../style');
 
@@ -13,28 +15,32 @@ interface TokenType {
     access_token: string;
     refresh_token: string;
   }
+  status: string;
+  message: string;
 }
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const { login } = useAuth();
 
-  const handleLogin = async () => {
+  const Login = async () => {
     try {
-      const response = await axios.post<TokenType>('http://10.0.2.2:5000/api/v1/user/auth/login', {
+      const response = await axios.post<TokenType>('http://192.168.209.228:5000/api/v1/user/auth/login', {
         email,
         password,
-      });
-      const { access_token, refresh_token } = response.data.tokens;
-      console.log(access_token);
-      if (access_token) {
-        router.navigate('/main/home/dashboard');
+      }); 
+      if (response.data.status == "success") {
+        const { access_token, refresh_token } = response.data.tokens;
+        login(access_token, refresh_token);
+        router.replace('/main/home/dashboard');
       } else {
-        Alert.alert('Login Failed', 'Invalid email or password.');
+        Alert.alert('Login Failed', `${response.data.message ?? "Error"}`);
       }
     } catch (error: any) {
-      Alert.alert('Error', 'An error occurred. Please try again.');
+      console.log(error)
+      Alert.alert('Login Failed', `${error.response.data.message ?? "Error"}`);
     }
   };
 
@@ -60,7 +66,7 @@ export default function Login() {
         onChangeText={setPassword} // Update password state
       />
       <Spacer size={80} />
-      <Button title={"Login"}  onPress={handleLogin} />
+      <Button title={"Login"}  onPress={Login} />
         <Text>Don't have an account? <Link href={"/welcome/register"}>Register now</Link></Text>
     </View>
   )

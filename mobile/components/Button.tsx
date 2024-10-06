@@ -1,12 +1,20 @@
 import React from 'react';
 import { Text, StyleSheet, Pressable } from 'react-native';
 
-export default function Button({ onPress = () => {}, title = '', color = 'black', textcolor = 'white' }) {
-  return (
-    <Pressable style={[styles.button, { backgroundColor: color }]} onPress={onPress}>
-      <Text style={[styles.text, { color: textcolor }]}>{title}</Text>
-    </Pressable>
-  );
+export default function Button({ onPress = () => {}, title = '', color = 'black', textcolor = 'white', enabled = true }) {
+  if (enabled) {
+    return (
+      <Pressable style={[styles.button, { backgroundColor: color }]} onPress={onPress}>
+        <Text style={[styles.text, { color: textcolor }]}>{title}</Text>
+      </Pressable>
+    );
+  } else {
+    return (
+      <Pressable style={[styles.button, { backgroundColor: 'grey', borderColor: 'grey' }]}>
+        <Text style={[styles.text, { color: 'white' }]}>{title}</Text>
+      </Pressable>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
