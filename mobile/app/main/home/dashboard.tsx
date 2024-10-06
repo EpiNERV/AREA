@@ -1,11 +1,12 @@
 // screens/HomeScreen.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { 
   View, 
   StyleSheet, 
   FlatList, 
   TouchableOpacity, 
-  Alert 
+  Alert, 
+  RefreshControl 
 } from 'react-native';
 import { 
   Text, 
@@ -15,76 +16,27 @@ import {
   Modal, 
   Button, 
   Card, 
-  Title, 
-  Paragraph 
+  ActivityIndicator 
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-
-import * as z from 'zod';
 import WorkflowForm from '@/components/WorkflowForm';
-
-// Mock API functions (imported or defined here)
+import { 
+  fetchWorkflows, 
+  createWorkflow, 
+  updateWorkflow, 
+  deleteWorkflow 
+} from '@/lib/api/workflow';
 
 interface Workflow {
-  id: number;
+  _id: string; // or _id: string based on your backend
   name: string;
 }
 
-// Define the form validation schema using zod
-const formSchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
-});
-
-type FormData = z.infer<typeof formSchema>;
-
-// Mock API functions
-const mockFetchWorkflows = (): Promise<Workflow[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([
-        { id: 1, name: 'Workflow Alpha' },
-        { id: 2, name: 'Workflow Beta' },
-        { id: 3, name: 'Workflow Gamma' },
-      ]);
-    }, 500); // Simulate network delay
-  });
-};
-
-const mockCreateWorkflow = (name: string): Promise<Workflow> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newWorkflow: Workflow = {
-        id: Math.floor(Math.random() * 1000) + 4, // Random ID for example
-        name,
-      };
-      resolve(newWorkflow);
-    }, 500); // Simulate network delay
-  });
-};
-
-const mockUpdateWorkflow = (id: number, name: string): Promise<Workflow> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ id, name });
-    }, 500);
-  });
-};
-
-const mockDeleteWorkflow = (id: number): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 500);
-  });
-};
-
 type RootStackParamList = {
   Home: undefined;
-  WorkflowDetail: { id: number };
+  WorkflowDetail: { id: string };
 };
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
@@ -98,20 +50,42 @@ const HomeScreen: React.FC = () => {
   const [isAddModalVisible, setIsAddModalVisible] = useState<boolean>(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [currentWorkflow, setCurrentWorkflow] = useState<Workflow | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false); // New state for refreshing
 
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
+  // Data fetching function
+  const loadWorkflows = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const data = await fetchWorkflows();
+      setWorkflows(data);
+    } catch (error: any) {
+      console.error('Error fetching workflows:', error);
+      Alert.alert('Error', 'Failed to fetch workflows.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Initial data load
   useEffect(() => {
-    // Fetch workflows from the mock API
-    const fetchWorkflows = async () => {
-      try {
-        const data: Workflow[] = await mockFetchWorkflows();
-        setWorkflows(data);
-      } catch (error) {
-        console.error('Error fetching workflows:', error);
-      }
-    };
-    fetchWorkflows();
+    loadWorkflows();
+  }, [loadWorkflows]);
+
+  // Pull-to-refresh handler
+  const onRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      const data = await fetchWorkflows();
+      setWorkflows(data);
+    } catch (error: any) {
+      console.error('Error refreshing workflows:', error);
+      Alert.alert('Error', 'Failed to refresh workflows.');
+    } finally {
+      setIsRefreshing(false);
+    }
   }, []);
 
   // Filter workflows based on the search term
@@ -119,23 +93,37 @@ const HomeScreen: React.FC = () => {
     workflow.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleCardPress = (workflowId: number) => {
+  const handleCardPress = (workflowId: string) => {
     navigation.navigate('WorkflowDetail', { id: workflowId });
   };
 
-  const handleAddWorkflow = (newWorkflow: Workflow) => {
-    setWorkflows(prev => [...prev, newWorkflow]);
-    setIsAddModalVisible(false);
+  const handleAddWorkflow = async (name: string) => {
+    try {
+      const newWorkflow = await createWorkflow(name);
+      setWorkflows(prev => [...prev, newWorkflow]);
+      setIsAddModalVisible(false);
+      Alert.alert('Success', 'Workflow created successfully.');
+    } catch (error: any) {
+      console.error('Error creating workflow:', error);
+      Alert.alert('Error', error.response?.data?.message || 'Failed to create workflow.');
+    }
   };
 
-  const handleUpdateWorkflow = (updatedWorkflow: Workflow) => {
-    setWorkflows(prev =>
-      prev.map(wf => (wf.id === updatedWorkflow.id ? updatedWorkflow : wf))
-    );
-    setIsEditModalVisible(false);
+  const handleUpdateWorkflow = async (id: string, name: string) => {
+    try {
+      const updatedWorkflow = await updateWorkflow(id, name);
+      setWorkflows(prev =>
+        prev.map(wf => (wf._id === updatedWorkflow._id ? updatedWorkflow : wf))
+      );
+      setIsEditModalVisible(false);
+      Alert.alert('Success', 'Workflow updated successfully.');
+    } catch (error: any) {
+      console.error('Error updating workflow:', error);
+      Alert.alert('Error', error.response?.data?.message || 'Failed to update workflow.');
+    }
   };
 
-  const handleDeleteWorkflow = (id: number) => {
+  const handleDeleteWorkflow = (id: string) => {
     Alert.alert(
       'Delete Workflow',
       'Are you sure you want to delete this workflow? This action cannot be undone.',
@@ -146,11 +134,12 @@ const HomeScreen: React.FC = () => {
           style: 'destructive', 
           onPress: async () => {
             try {
-              await mockDeleteWorkflow(id);
-              setWorkflows(prev => prev.filter(wf => wf.id !== id));
-            } catch (error) {
+              await deleteWorkflow(id);
+              setWorkflows(prev => prev.filter(wf => wf._id !== id));
+              Alert.alert('Success', 'Workflow deleted successfully.');
+            } catch (error: any) {
               console.error('Error deleting workflow:', error);
-              Alert.alert('Error', 'Failed to delete the workflow.');
+              Alert.alert('Error', error.response?.data?.message || 'Failed to delete workflow.');
             }
           } 
         },
@@ -164,13 +153,13 @@ const HomeScreen: React.FC = () => {
   };
 
   const renderItem = ({ item }: { item: Workflow }) => (
-    <Card style={styles.card} onPress={() => handleCardPress(item.id)}>
+    <Card style={styles.card} onPress={() => handleCardPress(item._id)}>
       <Card.Title title={item.name} right={() => (
         <View style={styles.cardActions}>
           <TouchableOpacity onPress={() => openEditModal(item)}>
             <Icon name="pencil" size={20} color="#6200ee" style={styles.icon} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleDeleteWorkflow(item.id)}>
+          <TouchableOpacity onPress={() => handleDeleteWorkflow(item._id)}>
             <Icon name="trash-can" size={20} color="#b00020" style={styles.icon} />
           </TouchableOpacity>
         </View>
@@ -187,20 +176,32 @@ const HomeScreen: React.FC = () => {
         onChangeText={text => setSearchTerm(text)}
         mode="outlined"
         style={styles.searchInput}
+        left={<TextInput.Icon icon="magnify" />}
       />
 
       {/* Workflow List */}
-      <FlatList
-        data={filteredWorkflows}
-        keyExtractor={item => item.id.toString()}
-        renderItem={renderItem}
-        ListEmptyComponent={() => (
-          <View style={styles.emptyContainer}>
-            <Text>No workflows found. Try adjusting your search or add a new workflow.</Text>
-          </View>
-        )}
-        contentContainerStyle={{ flexGrow: 1 }}
-      />
+      {isLoading ? (
+        <ActivityIndicator animating={true} size="large" style={styles.loader} />
+      ) : (
+        <FlatList
+          data={filteredWorkflows}
+          keyExtractor={item => item._id}
+          renderItem={renderItem}
+          ListEmptyComponent={() => (
+            <View style={styles.emptyContainer}>
+              <Text>No workflows found. Try adjusting your search or add a new workflow.</Text>
+            </View>
+          )}
+          contentContainerStyle={{ flexGrow: 1 }}
+          refreshControl={
+            <RefreshControl 
+              refreshing={isRefreshing} 
+              onRefresh={onRefresh} 
+              tintColor="#6200ee" // Optional: Change the color of the refresh indicator
+            />
+          }
+        />
+      )}
 
       {/* Floating Action Button to Add Workflow */}
       <FAB
@@ -237,7 +238,7 @@ const HomeScreen: React.FC = () => {
           {currentWorkflow && (
             <WorkflowForm 
               initialData={currentWorkflow}
-              onSubmit={handleUpdateWorkflow} 
+              onSubmit={(name: string) => handleUpdateWorkflow(currentWorkflow._id, name)} 
               onCancel={() => setIsEditModalVisible(false)} 
             />
           )}
@@ -253,12 +254,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#FFFFFF', // Ensure background is white
   },
   searchInput: {
     marginBottom: 16,
   },
   card: {
     marginBottom: 12,
+    backgroundColor: '#F5F5F5', // Optional: Light grey for cards
   },
   cardActions: {
     flexDirection: 'row',
@@ -290,5 +293,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  loader: {
+    marginTop: 20,
   },
 });

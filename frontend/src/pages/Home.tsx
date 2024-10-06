@@ -14,9 +14,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
+// API functions for interacting with the backend
+import { fetchWorkflows, createWorkflow, updateWorkflow, deleteWorkflow } from '@/lib/api/workflow'; // Adjust the path accordingly
+
 // Define the Workflow interface
 interface Workflow {
-  id: number;
+  _id: string;
   name: string;
 }
 
@@ -28,48 +31,6 @@ const formSchema = z.object({
 // Infer the form data type from the schema
 type FormData = z.infer<typeof formSchema>;
 
-// Mock API functions
-const mockFetchWorkflows = (): Promise<Workflow[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([
-        { id: 1, name: 'Workflow Alpha' },
-        { id: 2, name: 'Workflow Beta' },
-        { id: 3, name: 'Workflow Gamma' },
-      ]);
-    }, 500); // Simulate network delay
-  });
-};
-
-const mockCreateWorkflow = (name: string): Promise<Workflow> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newWorkflow: Workflow = {
-        id: Math.floor(Math.random() * 1000) + 4, // Random ID for example
-        name,
-      };
-      resolve(newWorkflow);
-    }, 500); // Simulate network delay
-  });
-};
-
-// Mock update and delete functions
-const mockUpdateWorkflow = (id: number, name: string): Promise<Workflow> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ id, name });
-    }, 500);
-  });
-};
-
-const mockDeleteWorkflow = (id: number): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 500);
-  });
-};
-
 const Home: React.FC = () => {
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -79,49 +40,58 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch workflows from the mock API
-    const fetchWorkflows = async () => {
+    // Fetch workflows from the real API
+    const fetchWorkflowsData = async () => {
       try {
-        const data: Workflow[] = await mockFetchWorkflows();
+        const data = await fetchWorkflows();
         setWorkflows(data);
       } catch (error) {
         console.error('Error fetching workflows:', error);
       }
     };
-    fetchWorkflows();
+    fetchWorkflowsData();
   }, []);
 
   // Filter workflows based on the search term
-  const filteredWorkflows = workflows.filter(workflow =>
+  const filteredWorkflows = workflows.filter((workflow) =>
     workflow.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleCardClick = (workflowId: number) => {
+  const handleCardClick = (workflowId: string) => {
     navigate(`/workflow/${workflowId}`);
   };
 
   // Handle adding a new workflow and closing the dialog
-  const handleWorkflowCreated = (newWorkflow: Workflow) => {
-    setWorkflows(prev => [...prev, newWorkflow]);
-    setIsAddDialogOpen(false);
+  const handleWorkflowCreated = async (name: string) => {
+    try {
+      const newWorkflow = await createWorkflow(name);
+      setWorkflows((prev) => [...prev, newWorkflow]);
+      setIsAddDialogOpen(false);
+    } catch (err) {
+      console.error('Error creating workflow:', err);
+    }
   };
 
   // Handle updating a workflow
-  const handleWorkflowUpdated = (updatedWorkflow: Workflow) => {
-    setWorkflows(prev =>
-      prev.map(wf => (wf.id === updatedWorkflow.id ? updatedWorkflow : wf))
-    );
-    setIsEditDialogOpen(false);
+  const handleWorkflowUpdated = async (id: string, name: string) => {
+    try {
+      const updatedWorkflow = await updateWorkflow(id, name);
+      setWorkflows((prev) =>
+        prev.map((wf) => (wf._id === updatedWorkflow._id ? updatedWorkflow : wf))
+      );
+      setIsEditDialogOpen(false);
+    } catch (err) {
+      console.error('Error updating workflow:', err);
+    }
   };
 
   // Handle deleting a workflow
-  const handleWorkflowDeleted = async (id: number) => {
+  const handleWorkflowDeleted = async (id: string) => {
     try {
-      await mockDeleteWorkflow(id);
-      setWorkflows(prev => prev.filter(wf => wf.id !== id));
-    } catch (error) {
-      console.error('Error deleting workflow:', error);
-      // Optionally, show an error message to the user
+      await deleteWorkflow(id);
+      setWorkflows((prev) => prev.filter((wf) => wf._id !== id));
+    } catch (err) {
+      console.error('Error deleting workflow:', err);
     }
   };
 
@@ -149,9 +119,7 @@ const Home: React.FC = () => {
           />
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="w-full sm:w-auto">
-                Add Workflow
-              </Button>
+              <Button className="w-full sm:w-auto">Add Workflow</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
               <DialogHeader>
@@ -169,8 +137,8 @@ const Home: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredWorkflows.map((workflow) => (
             <Card
-              key={workflow.id}
-              onClick={() => handleCardClick(workflow.id)}
+              key={workflow._id}
+              onClick={() => handleCardClick(workflow._id)}
               className="relative cursor-pointer p-6 flex flex-col justify-center items-center h-32 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors"
             >
               <p className="text-lg font-semibold text-center">{workflow.name}</p>
@@ -216,7 +184,7 @@ const Home: React.FC = () => {
                       </Button>
                       <Button
                         variant="destructive"
-                        onClick={() => handleWorkflowDeleted(workflow.id)}
+                        onClick={() => handleWorkflowDeleted(workflow._id)}
                       >
                         Delete
                       </Button>
@@ -263,7 +231,7 @@ const Home: React.FC = () => {
 
 // NewWorkflowForm Component
 interface NewWorkflowFormProps {
-  onWorkflowCreated: (newWorkflow: Workflow) => void;
+  onWorkflowCreated: (newWorkflow: string) => void;
 }
 
 const NewWorkflowForm: React.FC<NewWorkflowFormProps> = ({ onWorkflowCreated }) => {
@@ -278,12 +246,10 @@ const NewWorkflowForm: React.FC<NewWorkflowFormProps> = ({ onWorkflowCreated }) 
 
   const onSubmit = async (data: FormData) => {
     try {
-      const newWorkflow: Workflow = await mockCreateWorkflow(data.name);
-      onWorkflowCreated(newWorkflow);
+      await onWorkflowCreated(data.name);
       reset();
     } catch (err) {
       console.error('Error creating workflow:', err);
-      // Optionally, you can add error state to display to the user
     }
   };
 
@@ -297,9 +263,9 @@ const NewWorkflowForm: React.FC<NewWorkflowFormProps> = ({ onWorkflowCreated }) 
             <FormItem>
               <FormLabel>Workflow Name</FormLabel>
               <FormControl>
-                <Input 
-                  placeholder="Enter workflow name" 
-                  {...field} 
+                <Input
+                  placeholder="Enter workflow name"
+                  {...field}
                   className="w-full"
                 />
               </FormControl>
@@ -317,8 +283,8 @@ const NewWorkflowForm: React.FC<NewWorkflowFormProps> = ({ onWorkflowCreated }) 
           >
             Reset
           </Button>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             disabled={isSubmitting}
             className="w-full sm:w-auto"
           >
@@ -333,7 +299,7 @@ const NewWorkflowForm: React.FC<NewWorkflowFormProps> = ({ onWorkflowCreated }) 
 // EditWorkflowForm Component
 interface EditWorkflowFormProps {
   workflow: Workflow;
-  onWorkflowUpdated: (updatedWorkflow: Workflow) => void;
+  onWorkflowUpdated: (id: string, name: string) => void;
 }
 
 const EditWorkflowForm: React.FC<EditWorkflowFormProps> = ({ workflow, onWorkflowUpdated }) => {
@@ -348,12 +314,10 @@ const EditWorkflowForm: React.FC<EditWorkflowFormProps> = ({ workflow, onWorkflo
 
   const onSubmit = async (data: FormData) => {
     try {
-      const updatedWorkflow: Workflow = await mockUpdateWorkflow(workflow.id, data.name);
-      onWorkflowUpdated(updatedWorkflow);
+      await onWorkflowUpdated(workflow._id, data.name);
       reset();
     } catch (err) {
       console.error('Error updating workflow:', err);
-      // Optionally, you can add error state to display to the user
     }
   };
 
@@ -367,9 +331,9 @@ const EditWorkflowForm: React.FC<EditWorkflowFormProps> = ({ workflow, onWorkflo
             <FormItem>
               <FormLabel>Workflow Name</FormLabel>
               <FormControl>
-                <Input 
-                  placeholder="Enter new workflow name" 
-                  {...field} 
+                <Input
+                  placeholder="Enter new workflow name"
+                  {...field}
                   className="w-full"
                 />
               </FormControl>
@@ -387,8 +351,8 @@ const EditWorkflowForm: React.FC<EditWorkflowFormProps> = ({ workflow, onWorkflo
           >
             Reset
           </Button>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             disabled={isSubmitting}
             className="w-full sm:w-auto"
           >
