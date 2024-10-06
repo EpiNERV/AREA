@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import helloRoutes from './routes/hello';
 import userRoutes from './routes/user';
+import workflowRoutes from './routes/workflow';
 import errorHandler from './middleware/error';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -45,6 +46,7 @@ export const connectDB = async () => {
 
 app.use('/api/v1', helloRoutes);
 app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/workflow', workflowRoutes);
 app.use(errorHandler);
 
 export default app;
