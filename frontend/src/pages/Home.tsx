@@ -1,11 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { useTheme } from "@/components/ThemeProvider"
+import { useTheme } from "@/components/ThemeProvider";
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Home: React.FC = () => {
-	const { theme, setTheme } = useTheme()
-  if (theme === "dark")
-	  setTheme("light")
+  const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
+  const [checkedToken, setCheckedToken] = useState(false);
+
+  useEffect(() => {
+    if (theme === "dark") {
+      setTheme("light");
+    }
+
+    const token = Cookies.get('token');
+    if (token) {
+      navigate('/home');
+    } else {
+      setCheckedToken(true);
+    }
+  }, [theme, setTheme, navigate]);
+
+  if (!checkedToken) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
