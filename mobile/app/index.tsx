@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native'
-import * as React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '@/lib/AuthContext';
-
 import { Redirect } from 'expo-router';
 
 const Stack = createNativeStackNavigator();

@@ -1,15 +1,8 @@
-import { View, Text, Button, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
-import { useNavigation } from 'expo-router'
-import { DrawerActions } from '@react-navigation/native';
 import { SearchBar } from '@rneui/themed';
-// import { SearchBar } from 'react-native-screens';
 
 export default function Dashboard() {
-  const navigation = useNavigation();
-  const openDrawer = ()=>{
-    navigation.dispatch(DrawerActions.openDrawer())
-  }
   const [search, setSearch] = useState('');
 
   return (

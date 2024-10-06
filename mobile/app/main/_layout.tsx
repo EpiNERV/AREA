@@ -1,10 +1,8 @@
-import { View, Text } from 'react-native'
 import React from 'react'
 import { Drawer } from 'expo-router/drawer';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import CustomDrawerContent from '../../components/customDrawerContent';
 import ProtectedRoute from '../../components/ProtectedRoute';
-import {Stack} from 'expo-router'
 
 export default function _layout() {
     return (

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { HelloWave } from '@/components/HelloWave';
 import Spacer from '@/components/Spacer';
 import Button from '@/components/Button';
-import { ErrorBoundary, Link, useRouter } from 'expo-router';
+import {Link, useRouter } from 'expo-router';
 import axios from 'axios';
 import { useAuth } from '@/lib/AuthContext';
 

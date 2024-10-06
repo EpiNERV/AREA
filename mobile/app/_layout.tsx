@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React from 'react'
-import { Slot, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import { AuthProvider } from '@/lib/AuthContext';
 
 export default function _layout() {

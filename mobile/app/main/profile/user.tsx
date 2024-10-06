@@ -1,11 +1,8 @@
-import { View, Text, Image, Button, StyleSheet, ScrollView } from 'react-native'
+import { View, Text, Image, StyleSheet, ScrollView } from 'react-native'
 import React from 'react'
-import { useNavigation } from 'expo-router'
-import { DrawerActions } from '@react-navigation/native';
 import Spacer from '@/components/Spacer';
 
 export default function Notifications() {
-    const navigation = useNavigation();
   return (
     <ScrollView style={styles.container} scrollEnabled={true}>
       <View style={styles.userboxContainer}>
@@ -15,7 +12,6 @@ export default function Notifications() {
         <Text >email here</Text>
       </View>
       <Text>User info</Text>
-
     </ScrollView>
   )
 }
@@ -23,7 +19,6 @@ export default function Notifications() {
 const styles = StyleSheet.create({
   container: {
       flex: 1,
-      // alignItems: 'center',
       paddingHorizontal: 30,
   },
   userboxContainer: {

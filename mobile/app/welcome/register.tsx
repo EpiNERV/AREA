@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Alert } from 'react-native'
+import { View, Text, TextInput } from 'react-native'
 import React,  { useState } from 'react'
 import { HelloWave } from '@/components/HelloWave';
 import Spacer from '@/components/Spacer';

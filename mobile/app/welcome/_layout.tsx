@@ -1,7 +1,6 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import React from 'react'
-import { Slot, Stack } from 'expo-router';
-
+import { Slot } from 'expo-router';
 
 export default function _layout() {
     return (
