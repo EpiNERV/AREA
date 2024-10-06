@@ -12,18 +12,18 @@ import AuthVerification from './pages/login/AuthVerification';
 import PasswordChanged from './pages/login/PasswordChanged';
 
 // other import pages
-import Home from './pages/AreaPage.tsx';
 import NotFound from './pages/NotFound';
 import BackendSettings from './pages/BackendSettings';
 import UserManagement from './pages/UserManagement';
 import Settings from './pages/Settings';
-import NewWorkflow  from "./pages/NewWorkflow.tsx";
-import AreaPage from './pages/AreaPage.tsx';
+import NewWorkflow  from "./pages/NewWorkflow";
 // profile pages import
-import Profile from "./pages/Profile.tsx";
+import Profile from "./pages/Profile";
 
 // component layout import
-import Layout from './components/Layout.tsx';
+import Layout from './components/Layout';
+import Welcome from './pages/Welcome.tsx';
+import Home from './pages/Home.tsx';
 
 function AppRoutes() {
 	return (
@@ -37,8 +37,8 @@ function AppRoutes() {
 					<Route path="/auth_verification" element={<AuthVerification />} />
 					<Route path="/password_changed" element={<PasswordChanged />} />
 		
-					<Route path="/" element={<Layout><Home /></Layout>} />
-					<Route path="/home" element={<Layout><ProtectedRoute><AreaPage /></ProtectedRoute></Layout>} />
+					<Route path="/" element={<Layout><Welcome /></Layout>} />
+					<Route path="/home" element={<Layout><ProtectedRoute><Home /></ProtectedRoute></Layout>} />
 					<Route path="/NewWorkflow" element={<Layout><ProtectedRoute><NewWorkflow /></ProtectedRoute></Layout>} />
 					<Route path="/backend-settings" element={<Layout><ProtectedRoute><BackendSettings /></ProtectedRoute></Layout>} />
 					<Route path="/user-management" element={<Layout><ProtectedRoute><UserManagement /></ProtectedRoute></Layout>} />
@@ -54,3 +54,4 @@ function AppRoutes() {
 	);
 }
 
+export default AppRoutes;

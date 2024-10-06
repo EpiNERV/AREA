@@ -1,20 +1,8 @@
-const AreaPage = () => {
-	return (
-		<div className="flex items-center justify-center h-screen">
-			<div className="text-center">
-				<h1 className="text-4xl font-bold">Home Page</h1>
-				<p className="mt-4 text-lg">Bienvenue sur la page d'accueil</p>
-			</div>
-		</div>
-	);
-};
-
-export default AreaPage;
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from "@/components/ThemeProvider"
 
-const Home: React.FC = () => {
+const Welcome: React.FC = () => {
 	const { theme, setTheme } = useTheme()
   if (theme === "dark")
 	  setTheme("light")
@@ -61,4 +49,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Welcome;
