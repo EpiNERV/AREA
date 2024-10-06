@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '@/lib/AuthContext';
 import { Redirect } from 'expo-router';
+import { PaperProvider } from 'react-native-paper';
 
 const Stack = createNativeStackNavigator();
 const s = require('./style');
