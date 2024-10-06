@@ -1,9 +1,13 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { SearchBar } from '@rneui/themed';
+import Button from '@/components/Button'
+import { useRouter } from 'expo-router';
 
 export default function Dashboard() {
   const [search, setSearch] = useState('');
+
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
@@ -12,9 +16,20 @@ export default function Dashboard() {
         onChangeText={setSearch}
         value={search}
         containerStyle={styles.searchBar}
-        inputContainerStyle={styles.inputContainer}></SearchBar>
-      <Text>Dashboard</Text>
-      {/* <Button title="open drawer" onPress={openDrawer}/> */}
+        inputContainerStyle={styles.inputContainer} />
+      <Button title="Add Action"/>
+
+      <ScrollView scrollEnabled={true}>
+
+        <View style={styles.box}>
+          <Text style={styles.text}>Action 1</Text>
+          <View style={{flexDirection: 'row'}}>
+            <Button title="Edit" onPress={() => router.navigate("/main/home/action")}/>
+            <Button title="Delete"/>
+          </View>
+        </View>
+
+      </ScrollView>
     </View>
   )
 }
@@ -36,5 +51,19 @@ const styles = StyleSheet.create({
     padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+  },
+  box: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 40,
+    marginVertical: 20,
+    borderColor: "black",
+    shadowOpacity: 20,
+    borderRadius: 20,
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
   },
 });
