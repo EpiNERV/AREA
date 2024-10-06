@@ -12,7 +12,7 @@ import AuthVerification from './pages/login/AuthVerification';
 import PasswordChanged from './pages/login/PasswordChanged';
 
 // other import pages
-import Home from './pages/Home.tsx';
+import Home from './pages/AreaPage.tsx';
 import NotFound from './pages/NotFound';
 import BackendSettings from './pages/BackendSettings';
 import UserManagement from './pages/UserManagement';
