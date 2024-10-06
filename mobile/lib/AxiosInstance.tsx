@@ -3,7 +3,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AxiosInstance = axios.create({
-  baseURL: 'http://192.168.209.228:5000/api/v1',
+  baseURL: 'http://192.168.1.71:5000/api/v1',
 });
 
 interface TokenType {

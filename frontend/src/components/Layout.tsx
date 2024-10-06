@@ -8,13 +8,21 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
 	const location = useLocation(); // Obtenir la route actuelle
+	const noNavBarLocations = ['/', '/login', '/register', '/password_forgotten', '/auth_verification', '/password_changed'];
+  	const showNavBar = !noNavBarLocations.includes(location.pathname);
+
 
 	return (
-		<div className="flex">
-			{location.pathname !== '/' && <Sidebar />}
-			<main className="flex-1">
-				{children}
-			</main>
+		<div className="flex h-screen">
+			{showNavBar && (
+				<div className="min-w-fit w-auto h-full">
+					<Sidebar />
+				</div>
+			)}
+
+			<div className="flex-1 h-full">
+				<main className="p-4">{children}</main>
+			</div>
 		</div>
 	);
 };

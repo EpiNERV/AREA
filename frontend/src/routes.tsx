@@ -12,43 +12,45 @@ import AuthVerification from './pages/login/AuthVerification';
 import PasswordChanged from './pages/login/PasswordChanged';
 
 // other import pages
-import Home from './pages/Home.tsx';
 import NotFound from './pages/NotFound';
 import BackendSettings from './pages/BackendSettings';
 import UserManagement from './pages/UserManagement';
 import Settings from './pages/Settings';
-import NewWorkflow  from "./pages/NewWorkflow.tsx";
-import AreaPage from './pages/AreaPage.tsx';
+import NewWorkflow  from "./pages/NewWorkflow";
 // profile pages import
-import Profile from "./pages/Profile.tsx";
+import Profile from "./pages/Profile";
 
 // component layout import
-import Layout from './components/Layout.tsx';
+import Layout from './components/Layout';
+import Welcome from './pages/Welcome.tsx';
+import Home from './pages/Home.tsx';
 
 function AppRoutes() {
 	return (
 		<Router>
 			<AuthProvider>
-				<Routes>
-					{/* <Route path="/welcome" element={<Layout><Welcome /></Layout>} /> */}
-					<Route path="/login" element={<Login />} />
-					<Route path="/register" element={<Register />} />
-					<Route path="/password_forgotten" element={<PasswordForgotten />} />
-					<Route path="/auth_verification" element={<AuthVerification />} />
-					<Route path="/password_changed" element={<PasswordChanged />} />
-		
-					<Route path="/" element={<Layout><Home /></Layout>} />
-					<Route path="/home" element={<Layout><ProtectedRoute><AreaPage /></ProtectedRoute></Layout>} />
-					<Route path="/NewWorkflow" element={<Layout><ProtectedRoute><NewWorkflow /></ProtectedRoute></Layout>} />
-					<Route path="/backend-settings" element={<Layout><ProtectedRoute><BackendSettings /></ProtectedRoute></Layout>} />
-					<Route path="/user-management" element={<Layout><ProtectedRoute><UserManagement /></ProtectedRoute></Layout>} />
-					<Route path="/settings" element={<Layout><ProtectedRoute><Settings /></ProtectedRoute></Layout>} />
-		
-					{/* Profile */}
-					<Route path={"/user/profile"} element={<Layout><ProtectedRoute><Profile /></ProtectedRoute></Layout>} />
-		
-					<Route path="*" element={<NotFound />} />
-				</Routes>
+				<Layout>
+					<Routes>
+						{/* <Route path="/welcome" element={<Layout><Welcome /></Layout>} /> */}
+						<Route path="/" element={<Welcome />} />
+						<Route path="/login" element={<Login />} />
+						<Route path="/register" element={<Register />} />
+						<Route path="/password_forgotten" element={<PasswordForgotten />} />
+						<Route path="/auth_verification" element={<AuthVerification />} />
+						<Route path="/password_changed" element={<PasswordChanged />} />
+			
+						<Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+						<Route path="/NewWorkflow" element={<ProtectedRoute><NewWorkflow /></ProtectedRoute>} />
+						<Route path="/backend-settings" element={<ProtectedRoute><BackendSettings /></ProtectedRoute>} />
+						<Route path="/user-management" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
+						<Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+			
+						{/* Profile */}
+						<Route path={"/user/profile"} element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+			
+						<Route path="*" element={<NotFound />} />
+					</Routes>
+				</Layout>
 			</AuthProvider>
 		</Router>
 	);

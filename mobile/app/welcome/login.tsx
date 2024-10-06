@@ -27,7 +27,7 @@ export default function Login() {
 
   const Login = async () => {
     try {
-      const response = await axios.post<TokenType>('http://192.168.209.228:5000/api/v1/user/auth/login', {
+      const response = await axios.post<TokenType>('http://192.168.1.71:5000/api/v1/user/auth/login', {
         email,
         password,
       }); 

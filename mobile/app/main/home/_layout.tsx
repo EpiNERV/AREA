@@ -11,9 +11,9 @@ export default function _layout() {
         <Tabs.Screen
             name="dashboard"
             options={{
-                tabBarLabel: "Dashboard",
+                tabBarLabel: "Home",
                 tabBarIcon: ({size, color})=>(
-                    <Ionicons name='settings' size={size} color={color} />
+                    <Ionicons name='home' size={size} color={color} />
                 )
             }}
         />
