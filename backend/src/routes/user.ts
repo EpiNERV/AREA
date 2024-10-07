@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { hash } from 'bcrypt';
 import User, { IUser } from '../models/user';
+import ServiceInfo, { IServiceInfo } from '../models/serviceInfo';
 import authMiddleware from '../middleware/auth';
 
 const router = express.Router();
@@ -11,6 +12,10 @@ const generateTokens = (user: IUser) => {
   const refresh_token = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET as jwt.Secret, { expiresIn: '7d' });
   return { access_token, refresh_token };
 };
+
+/*
+  User Auth routes
+*/
 
 // POST /api/v1/user/auth/register
 router.post('/auth/register', async (req: Request, res: Response, next: NextFunction) => {
@@ -168,6 +173,91 @@ router.delete('/totp', authMiddleware, async (req: Request, res: Response, next:
   } catch (err) {
     next(err);
   }
+});
+
+/*
+  User Service routes
+*/
+
+// GET /api/v1/services - Fetch all services with connection status for the authenticated user
+router.get('/services', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = await User.findById(req.body.user._id);
+
+    if (!user) {
+      res.status(404).json({ status: 'error', message: 'User not found' });
+      return;
+    }
+
+    res.status(200).json(user.services);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/v1/services/connect/:name - Returns the route to start an OAuth flow
+router.get('/services/connect/:name', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = await User.findById(req.body.user._id);
+
+    if (!user) {
+      res.status(404).json({ status: 'error', message: 'User not found' });
+      return;
+    }
+    
+    const { name } = req.params;
+    const service_info = await ServiceInfo.findOne({ name }) as IServiceInfo;
+
+    if (!service_info) {
+      res.status(404).json({ status: 'error', message: 'Service not found' });
+      return;
+    }
+
+    res.status(200).json({ status: 'success', url: service_info.oauth2_redirect_uri, user_id: user._id });
+
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+// POST /api/v1/services/disconnect/:serviceKey - Disconnect a user from a service
+router.post('/services/disconnect/:serviceKey', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+  res.status(400).json({ status: 'error', message: 'Not implemented' });
+  return;
+
+  // const { serviceKey } = req.params;
+  // console.log(serviceKey);
+
+  // try {
+  //   const user = await User.findById(req.body.user._id);
+
+  //   if (!user) {
+  //     res.status(404).json({ status: 'error', message: 'User not found' });
+  //     return;
+  //   }
+
+  //   const service = user.services.find((service) => service.key === serviceKey);
+
+  //   if (!service) {
+  //     res.status(404).json({ status: 'error', message: 'Service not found' });
+  //     return;
+  //   }
+
+  //   // Update service connection status
+  //   service.token = null;
+  //   service.connected = false;
+
+  //   await user.save();
+
+  //   res.status(200).json({
+  //     status: 'success',
+  //     message: `Disconnected from ${service.name}`,
+  //     service,
+  //   });
+  // } catch (err) {
+  //   next(err);
+  // }
 });
 
 export default router;
