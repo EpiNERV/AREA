@@ -43,6 +43,10 @@ serviceInfoSchema.statics.seed = async function () {
             name: "discord",
             oauth2_redirect_uri: "http://localhost:5000/api/v1/user/services/discord/login",
         },
+        {
+            name: "twitter",
+            oauth2_redirect_uri: "http://localhost:5000/api/v1/user/services/twitter/login",
+        }
     ]);
 };
 

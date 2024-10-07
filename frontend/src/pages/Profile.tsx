@@ -3,6 +3,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs.tsx";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button.tsx";
 import { SiDiscord } from "react-icons/si";
+import { FaTwitter } from "react-icons/fa";
 import { PiImageBroken } from "react-icons/pi";
 import AxiosInstance from "@/lib/auth/axiosInstance";
 
@@ -21,6 +22,7 @@ type ServiceArray = Service[];
 // Icon mapping for services
 const iconMapping: Record<string, React.FC<React.ComponentProps<"svg">>> = {
   discord: SiDiscord,
+  twitter: FaTwitter,
 };
 
 interface UserServiceConnectResponse {

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import helloRoutes from './routes/hello';
 import userRoutes from './routes/user';
 import discordRoutes from './routes/services/discord';
+import twitterRoutes from './routes/services/twitter';
 import errorHandler from './middleware/error';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -49,6 +50,7 @@ export const connectDB = async () => {
 app.use('/api/v1', helloRoutes);
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/user', discordRoutes);
+app.use('/api/v1/user', twitterRoutes);
 app.use(errorHandler);
 
 export default app;

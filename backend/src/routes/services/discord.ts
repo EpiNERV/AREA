@@ -106,15 +106,17 @@ router.get('/services/discord/callback', async (req: Request, res: Response) => 
       console.log(user);
       const existingServiceIndex = user?.services.findIndex(service => service.key === 'discord');
       console.log(existingServiceIndex);
-      if (existingServiceIndex && existingServiceIndex >= 0) {
+      if (existingServiceIndex >= 0) {
+        console.log("Updating Discord service");
         user.services[existingServiceIndex].connected = true;
         user.services[existingServiceIndex].token = access_token;
         user.services[existingServiceIndex].refreshToken = refresh_token;
-      }
-  
-      await user.save();
-  
-      res.send(oauth2SuccessResponse);
+
+        await user.save();
+        res.send(oauth2SuccessResponse);
+      } else {
+        res.send(oauth2FailedResponse);
+      }  
   
     } catch (err: any) {
         console.log(err.message);

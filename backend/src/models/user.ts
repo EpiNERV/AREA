@@ -89,6 +89,7 @@ userSchema.pre('save', async function (next) {
   if (user.isNew) {
     const defaultServices: IService[] = [
       { name: 'Discord', key: 'discord', connected: false, token: '', refreshToken: '', connectedAt: new Date() },
+      { name: 'Twitter', key: 'twitter', connected: false, token: '', refreshToken: '', connectedAt: new Date() },
     ];
 
     user.services = defaultServices;
