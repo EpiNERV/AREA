@@ -3,10 +3,13 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import helloRoutes from './routes/hello';
 import userRoutes from './routes/user';
-import workflowRoutes from './routes/workflow';
+import discordRoutes from './routes/services/discord';
+import twitterRoutes from './routes/services/twitter';
+import workflow from './routes/workflow';
 import errorHandler from './middleware/error';
 import cors from 'cors';
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -15,6 +18,7 @@ app.disable("x-powered-by");
 
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(cookieParser());
 
 const allowedOrigins = process.env.SERVER_URLS?.split(',') || ['http://localhost:5173'];
 
@@ -46,7 +50,9 @@ export const connectDB = async () => {
 
 app.use('/api/v1', helloRoutes);
 app.use('/api/v1/user', userRoutes);
-app.use('/api/v1/workflow', workflowRoutes);
+app.use('/api/v1/user', discordRoutes);
+app.use('/api/v1/user', twitterRoutes);
+app.use('/api/v1/workflow', workflow);
 app.use(errorHandler);
 
 export default app;

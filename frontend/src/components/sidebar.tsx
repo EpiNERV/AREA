@@ -54,7 +54,7 @@ export default function Sidebar() {
 	}, []);
 
 	return (
-		<aside className="h-[95vh] p-4 absolute left-0 mx-5 flex flex-col justify-between rounded-lg"
+		<aside className="h-[95vh] p-4 mt-6 left-0 mx-5 flex flex-col justify-between rounded-lg"
 		       style={{ top: '19px', boxShadow: '2px 0px 10px rgba(0, 0, 0, 0.3)' }}
 		>
 			{/* Header */}

@@ -1,6 +1,16 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { genSalt, hash, compare } from 'bcrypt';
 
+// Interface for the User's connected services
+export interface IService {
+  name: string;
+  key: string;
+  connected: boolean;
+  token: string | null;
+  refreshToken: string | null;
+  connectedAt: Date;
+}
+
 // Interface that extends the mongoose Document
 export interface IUser extends Document {
   email: string;
@@ -9,6 +19,7 @@ export interface IUser extends Document {
   totp_secret?: string;
   totp_enabled: boolean;
   role: 'user' | 'admin';
+  services: IService[];
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -46,6 +57,16 @@ const userSchema = new Schema<IUser>(
       enum: ['user', 'admin'],
       default: 'user',
     },
+    services: [
+      {
+        name: { type: String, required: true, },
+        key: { type: String, required: true, },
+        connected: { type: Boolean, default: false, },
+        token: { type: String, },
+        refreshToken: { type: String, },
+        connectedAt: { type: Date, },
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -58,6 +79,22 @@ userSchema.pre('save', async function (next) {
 
   const salt = await genSalt(10);
   user.password = await hash(user.password, salt);
+  next();
+});
+
+// Pre-save middleware to add default services when the user is created
+userSchema.pre('save', async function (next) {
+  const user = this as IUser;
+
+  if (user.isNew) {
+    const defaultServices: IService[] = [
+      { name: 'Discord', key: 'discord', connected: false, token: '', refreshToken: '', connectedAt: new Date() },
+      { name: 'Twitter', key: 'twitter', connected: false, token: '', refreshToken: '', connectedAt: new Date() },
+    ];
+
+    user.services = defaultServices;
+  }
+
   next();
 });
 
