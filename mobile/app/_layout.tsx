@@ -1,32 +1,37 @@
-import { StyleSheet } from 'react-native'
-import React from 'react'
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import { AuthProvider } from '@/lib/AuthContext';
-import { PaperProvider } from 'react-native-paper';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import 'react-native-reanimated';
 
-export default function _layout() {
-    return (
-        <PaperProvider>
-        <AuthProvider>
-            <Stack screenOptions={{ animation: 'slide_from_right'}} >
-                <Stack.Screen options={{headerShown: false}} name="welcome"/>
-                <Stack.Screen options={{headerShown: false}} name="main"/>
-            </Stack>
-        </AuthProvider>
-        </PaperProvider>
-    );
-}
+import { useColorScheme } from '@/hooks/useColorScheme';
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    header: {
-        backgroundColor: 'green',
-        justifyContent: "center",
-        alignItems: 'center',
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
+
+export default function RootLayout() {
+  const colorScheme = useColorScheme();
+  const [loaded] = useFonts({
+    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  });
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
     }
-});
+  }, [loaded]);
+
+  if (!loaded) {
+    return null;
+  }
+
+  return (
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+    </ThemeProvider>
+  );
+}
