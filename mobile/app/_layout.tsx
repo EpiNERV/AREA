@@ -5,8 +5,9 @@ import {
 } from 'react-native-paper';
 import { useMaterial3Theme } from '@pchmn/expo-material3-theme';
 import { useColorScheme } from 'react-native';
-import Home from './home';
 import { ThemeProp } from 'react-native-paper/lib/typescript/types';
+import { Stack } from 'expo-router';
+import CustomAppBar from '@/components/CustomAppBar';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -19,7 +20,13 @@ export default function RootLayout() {
 
   return (
     <PaperProvider theme={paperTheme}>
-      <Home />
+      <Stack
+        screenOptions={{
+          header: (props) => <CustomAppBar {...props} />,
+        }}
+      >
+        <Stack.Screen name="home" options={{ title: "Home"}} />
+      </Stack>
     </PaperProvider>
   );
 }
