@@ -25,7 +25,8 @@ export default function RootLayout() {
           header: (props) => <CustomAppBar {...props} />,
         }}
       >
-        <Stack.Screen name="home" options={{ title: "Home"}} />
+        <Stack.Screen name="login" options={{ title: "Login"}} />
+        <Stack.Screen name="register" options={{ title: "Register"}} />
       </Stack>
     </PaperProvider>
   );
