@@ -7,7 +7,7 @@ const ProfileInfos = () => {
 	return (
 		<div className="flex flex-1 items-center justify-center w-full h-full">
 			<div className="overflow-hidden">
-				<div className="p-6 grid grid-cols-3 grid-rows-2 gap-6">
+				<div className="p-6 grid grid-cols-3 gap-6">
 					{/* Username Form */}
 					<Card className="w-[350px]">
 						<CardHeader>
