@@ -25,5 +25,37 @@
   "Profile information": "Profile information",
   "Profile services": "Profile services",
   "Log out": "Log out",
-  "Username": "Username"
+  "Username": "Username",
+
+  "ProfileServices": {
+    "services": {
+      "discord": "Discord",
+      "twitter": "Twitter",
+      "spotify": "Spotify",
+      "telegram": "Telegram",
+      "github": "GitHub",
+      "gmail": "Gmail"
+    },
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "connectionFailed": "Failed to automatically connect to {{service_name}}.",
+    "disconnectionFailed": "Failed to disconnect from {{service_name}}.",
+    "disconnected": "Disconnected from {{service_name}}."
+  },
+
+  "ProfileInfos": {
+    "changeUsername": "Change username",
+    "changeUsernameDescription": "Change your username within this card.",
+    "currentUsername": "Current username",
+    "newUsername": "New username",
+    "change": "Change",
+    "changeEmail": "Change your email",
+    "changeEmailDescription": "Change your email within this card.",
+    "currentEmail": "Current email",
+    "newEmail": "New email",
+    "changePassword": "Change your password",
+    "changePasswordDescription": "Change your password within this card.",
+    "currentPassword": "Current password",
+    "newPassword": "New password"
+  }
 }
