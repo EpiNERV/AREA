@@ -61,12 +61,14 @@ export function AppSidebar() {
 			title: t('Profile information'),
 			url: "/user/profile_informations",
 			icon: Settings,
+			className: ''
 		},
 		{
 			key: 'profileServices',
 			title: t('Profile services'),
 			url: "/user/profile_services",
 			icon: BadgeCheck,
+			className: ''
 		},
 		{
 			key: 'logout',
