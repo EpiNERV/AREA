@@ -25,5 +25,37 @@
   "Profile information": "Informations du profil",
   "Profile services": "Services du profil",
   "Log out": "Déconnexion",
-  "Username": "Nom d'utilisateur"
+  "Username": "Nom d'utilisateur",
+
+  "ProfileServices": {
+    "services": {
+      "discord": "Discord",
+      "twitter": "Twitter",
+      "spotify": "Spotify",
+      "telegram": "Telegram",
+      "github": "GitHub",
+      "gmail": "Gmail"
+    },
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "connectionFailed": "Échec de la connexion automatique à {{service_name}}.",
+    "disconnectionFailed": "Échec de la déconnexion de {{service_name}}.",
+    "disconnected": "Déconnecté de {{service_name}}."
+  },
+
+  "ProfileInfos": {
+    "changeUsername": "Changer le nom d'utilisateur",
+    "changeUsernameDescription": "Modifiez votre nom d'utilisateur dans cette carte.",
+    "currentUsername": "Nom d'utilisateur actuel",
+    "newUsername": "Nouveau nom d'utilisateur",
+    "change": "Changer",
+    "changeEmail": "Changer votre email",
+    "changeEmailDescription": "Modifiez votre email dans cette carte.",
+    "currentEmail": "Email actuel",
+    "newEmail": "Nouvel email",
+    "changePassword": "Changer votre mot de passe",
+    "changePasswordDescription": "Modifiez votre mot de passe dans cette carte.",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe"
+  }
 }
