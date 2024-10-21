@@ -74,7 +74,8 @@ export function AppSidebar() {
 			icon: LogOut,
 			onClick: () => {
 				logout();
-			}
+			},
+			className: 'text-red-500'
 		},
 	];
 
@@ -144,13 +145,13 @@ export function AppSidebar() {
 										<SidebarMenuItem key={item.key}>
 											{item.url ? (
 												<SidebarMenuButton asChild>
-													<a href={item.url}>
+													<a href={item.url} className={item.className ? item.className : ''}>
 														<item.icon />
 														<span>{item.title}</span>
 													</a>
 												</SidebarMenuButton>
 											) : (
-												<SidebarMenuButton onClick={item.onClick}>
+												<SidebarMenuButton onClick={item.onClick} className={item.className ? item.className : ''}>
 													<item.icon />
 													<span>{item.title}</span>
 												</SidebarMenuButton>
