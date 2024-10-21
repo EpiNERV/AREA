@@ -1,4 +1,4 @@
-title = "My Docs"
+title = "Area Documentation"
 baseurl = "http://localhost/"
 canonifyURLs = false
 disableAliases = true
@@ -57,7 +57,6 @@ copyRight = "Copyright (c) 2020-2024 Thulite"
   tag = "tags"
 
 [permalinks]
-  blog = "/blog/:slug/"
   docs = "/docs/:sections[1:]/:slug/"
 # docs = "/docs/1.0/:sections[1:]/:slug/"
 

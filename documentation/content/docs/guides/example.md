@@ -1,5 +1,5 @@
 ---
-title: "Example Guide"
+title: "Get Started"
 description: "Guides lead a user through a specific task they want to accomplish, often with a sequence of steps."
 summary: ""
 date: 2023-09-07T16:04:48+02:00
