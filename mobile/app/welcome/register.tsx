@@ -102,7 +102,7 @@ const Register = ({ theme }: Readonly<{ theme: ThemeProp }>) => {
       <Spacer size={20} />
       <Text>
         Already have an account?
-        <Link href="/login">
+        <Link href="/welcome/login">
           <Text style={{color: theme.colors?.primary}}>  Login now</Text>
         </Link>
       </Text>
