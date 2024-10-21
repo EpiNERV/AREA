@@ -1,32 +1,31 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button.tsx";
 import { SiDiscord, SiSpotify, SiTelegram, SiGithub, SiGmail } from "react-icons/si";
 import { FaTwitter } from "react-icons/fa";
 import { PiImageBroken } from "react-icons/pi";
+import { IconType } from "react-icons";
 import AxiosInstance from "@/lib/auth/axiosInstance";
 import { useTranslation } from 'react-i18next';
 
-// Define the Service interface
 interface Service {
 	name: string;
 	key: string;
 	connected: boolean;
 	token: string | null;
 	connectedAt: Date;
-	icon: React.FC<React.ComponentProps<"svg">>;
+	icon: IconType;
 }
 
 type ServiceArray = Service[];
 
-// Icon mapping for services
-const iconMapping: Record<string, React.FC<React.ComponentProps<"svg">>> = {
+const iconMapping: Record<string, IconType> = {
 	discord: SiDiscord,
 	twitter: FaTwitter,
 	spotify: SiSpotify,
 	telegram: SiTelegram,
 	github: SiGithub,
-	gmail: SiGmail
+	gmail: SiGmail,
 };
 
 interface UserServiceConnectResponse {
