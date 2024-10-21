@@ -4,9 +4,11 @@ import Spacer from "@/components/Spacer";
 import { Button, Text, TextInput, withTheme } from "react-native-paper";
 import { ThemeProp } from 'react-native-paper/lib/typescript/types';
 import { HelloWave } from "@/components/HelloWave";
+import { useRouter } from "expo-router";
 
 const Login = ({ theme }: Readonly<{ theme: ThemeProp }>) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const router = useRouter();
 
   return (
     <View
@@ -49,6 +51,7 @@ const Login = ({ theme }: Readonly<{ theme: ThemeProp }>) => {
           contentStyle={buttonContentStyle}
           labelStyle={buttonTextStyle}
           style={buttonStyle}
+          onPress={() => {router.replace("/main")}}
         >
           Submit
         </Button>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Appbar, Dialog, Portal, Button, TextInput } from 'react-native-paper';
+import { Appbar, Dialog, Portal, Button, TextInput, Text } from 'react-native-paper';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { usePathname } from 'expo-router';
 
 const ADDRESS_KEY = 'backend_address';
 const PORT_KEY = 'backend_port';
@@ -10,6 +11,7 @@ const CustomAppBar: React.FC<NativeStackHeaderProps> = ({ navigation, back, opti
   const [visible, setVisible] = useState(false);
   const [address, setAddress] = useState('localhost');
   const [port, setPort] = useState('8080');
+  const path_name = usePathname();
 
   useEffect(() => {
     // Load saved address and port on component mount
@@ -48,16 +50,26 @@ const CustomAppBar: React.FC<NativeStackHeaderProps> = ({ navigation, back, opti
     hideDialog();
   };
 
+  const getHeaderAction = () => {
+    if (back) {
+      return <Appbar.BackAction onPress={navigation.goBack} />;
+    } else if (route.name !== 'index' || path_name.startsWith("/main")) {
+        return <Appbar.Action icon="menu" onPress={() => {}} />;
+    } else {
+      return null;
+    }
+  }
+
   return (
     <>
       <Appbar.Header>
-        {back ? (
-          <Appbar.BackAction onPress={navigation.goBack} />
-        ) : route.name !== 'index' ? (
-          <Appbar.Action icon="menu" onPress={() => {}} />
-        ) : null}
+        <>
+          {getHeaderAction()}
+        </>
         <Appbar.Content title={options.title} />
-        <Appbar.Action icon="dots-vertical" onPress={showDialog} />
+        {path_name.startsWith("welcome") ? 
+          <Appbar.Action icon="dots-vertical" onPress={showDialog} /> : null
+        }
       </Appbar.Header>
 
       <Portal>
