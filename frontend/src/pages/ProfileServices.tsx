@@ -5,6 +5,7 @@ import { SiDiscord, SiSpotify, SiTelegram, SiGithub, SiGmail } from "react-icons
 import { FaTwitter } from "react-icons/fa";
 import { PiImageBroken } from "react-icons/pi";
 import AxiosInstance from "@/lib/auth/axiosInstance";
+import { useTranslation } from 'react-i18next';
 
 // Define the Service interface
 interface Service {
@@ -36,7 +37,7 @@ interface UserServiceConnectResponse {
 
 const mockServices: Service[] = [
 	{
-		name: "Discord",
+		name: "discord",
 		key: "discord",
 		connected: false,
 		token: null,
@@ -44,7 +45,7 @@ const mockServices: Service[] = [
 		icon: iconMapping["discord"],
 	},
 	{
-		name: "Twitter",
+		name: "twitter",
 		key: "twitter",
 		connected: false,
 		token: null,
@@ -52,7 +53,7 @@ const mockServices: Service[] = [
 		icon: iconMapping["twitter"],
 	},
 	{
-		name: "Spotify",
+		name: "spotify",
 		key: "spotify",
 		connected: false,
 		token: null,
@@ -60,7 +61,7 @@ const mockServices: Service[] = [
 		icon: iconMapping["spotify"],
 	},
 	{
-		name: "Telegram",
+		name: "telegram",
 		key: "telegram",
 		connected: false,
 		token: null,
@@ -68,7 +69,7 @@ const mockServices: Service[] = [
 		icon: iconMapping["telegram"],
 	},
 	{
-		name: "GitHub",
+		name: "github",
 		key: "github",
 		connected: false,
 		token: null,
@@ -76,7 +77,7 @@ const mockServices: Service[] = [
 		icon: iconMapping["github"],
 	},
 	{
-		name: "Gmail",
+		name: "gmail",
 		key: "gmail",
 		connected: false,
 		token: null,
@@ -86,6 +87,7 @@ const mockServices: Service[] = [
 ];
 
 const ProfileServices = () => {
+	const { t } = useTranslation();
 	const [services, setServices] = useState<Service[]>([]);
 	const [connections, setConnections] = useState<Record<string, boolean>>({});
 
@@ -157,17 +159,18 @@ const ProfileServices = () => {
 
 				console.error(err);
 
-				alert(`Failed to automatically connect to ${service_name}.`);
+				alert(t('ProfileServices.connectionFailed', { service_name: t(`ProfileServices.services.${service_name}`) }));
 				return;
 			}
 		} else {
-			// Disconnect logic
+			// Disconnect logic (mocked)
+			// Uncomment and implement as needed for real logic
 			// try {
 			//   setConnections((prev) => ({ ...prev, [service_name]: false }));
-			//   alert(`Disconnected from ${service_name}.`);
+			//   alert(t('ProfileServices.disconnected', { service_name: t(`ProfileServices.services.${service_name}`) }));
 			// } catch (err) {
 			//   console.error(err);
-			//   alert(`Failed to disconnect from ${service_name}.`);
+			//   alert(t('ProfileServices.disconnectionFailed', { service_name: t(`ProfileServices.services.${service_name}`) }));
 			// }
 		}
 	};
@@ -186,7 +189,7 @@ const ProfileServices = () => {
 					{services.map((service) => (
 						<Card key={service.key} className="w-[350px]">
 							<CardHeader className="flex items-center justify-center">
-								<CardTitle>{service.name}</CardTitle>
+								<CardTitle>{t(`ProfileServices.services.${service.key}`)}</CardTitle>
 							</CardHeader>
 							<CardContent className="flex justify-center">
 								{service.icon ? (
@@ -203,7 +206,7 @@ const ProfileServices = () => {
 									} text-white`}
 									onClick={() => toggleConnection(service.key)}
 								>
-									{connections[service.key] ? "Sign out" : "Sign in"}
+									{connections[service.key] ? t('ProfileServices.signOut') : t('ProfileServices.signIn')}
 								</Button>
 							</CardFooter>
 						</Card>
