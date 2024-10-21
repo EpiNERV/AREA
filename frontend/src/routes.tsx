@@ -15,10 +15,13 @@ import PasswordChanged from './pages/login/PasswordChanged';
 import NotFound from './pages/NotFound';
 import BackendSettings from './pages/BackendSettings';
 import UserManagement from './pages/UserManagement';
-import Settings from './pages/Settings';
+import Accessibility from './pages/Accessibility.tsx';
 import NewWorkflow  from "./pages/NewWorkflow";
+
 // profile pages import
 import Profile from "./pages/Profile";
+import ProfileInfos from "@/pages/ProfileInfos.tsx";
+import ProfileServices from "@/pages/ProfileServices.tsx";
 
 // component layout import
 import Layout from './components/Layout';
@@ -43,10 +46,12 @@ function AppRoutes() {
 						<Route path="/NewWorkflow" element={<ProtectedRoute><NewWorkflow /></ProtectedRoute>} />
 						<Route path="/backend-settings" element={<ProtectedRoute><BackendSettings /></ProtectedRoute>} />
 						<Route path="/user-management" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
-						<Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+						<Route path="/accessibility" element={<ProtectedRoute><Accessibility /></ProtectedRoute>} />
 			
 						{/* Profile */}
 						<Route path={"/user/profile"} element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+						<Route path={"/user/profile_informations"} element={<ProtectedRoute><ProfileInfos /></ProtectedRoute>} />
+						<Route path={"/user/profile_services"} element={<ProtectedRoute><ProfileServices /></ProtectedRoute>} />
 			
 						<Route path="*" element={<NotFound />} />
 					</Routes>
