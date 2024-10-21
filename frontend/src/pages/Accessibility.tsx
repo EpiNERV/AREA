@@ -16,8 +16,15 @@ const Accessibility = () => {
 	const { i18n, t } = useTranslation();
 
 	const handleLanguageChange = (language: string) => {
-		i18n.changeLanguage(language);
-		localStorage.setItem('language', language); // Save the preference
+		i18n.changeLanguage(language)
+			.then(() => {
+				// Language change was successful, save the preference
+				localStorage.setItem('language', language);
+			})
+			.catch((error) => {
+				// Handle error (optional: show a message to the user)
+				console.error("Failed to change language:", error);
+			});
 	};
 
 	return (
