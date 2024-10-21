@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button.tsx";
 import { SiDiscord, SiSpotify, SiTelegram, SiGithub, SiGmail } from "react-icons/si";
 import { FaTwitter } from "react-icons/fa";
@@ -182,26 +182,32 @@ const ProfileServices = () => {
 	return (
 		<div className="flex flex-1 items-center justify-center w-full h-full">
 			<div className="overflow-hidden">
-				<div className="p-6 grid grid-cols-3 gap-4">
-					{
-						services.map((service) => (
-							<div key={service.key} className="flex flex-col items-center mb-4">
-								<div className="p-1">
-									<Card>
-										<CardContent className="flex aspect-square items-center justify-center p-6">
-											{service.icon ? <service.icon fontSize={64}/> : <PiImageBroken fontSize={64}/>}
-										</CardContent>
-									</Card>
-								</div>
+				<div className="p-6 grid grid-cols-3 gap-6">
+					{services.map((service) => (
+						<Card key={service.key} className="w-[350px]">
+							<CardHeader className="flex items-center justify-center">
+								<CardTitle>{service.name}</CardTitle>
+							</CardHeader>
+							<CardContent className="flex justify-center">
+								{service.icon ? (
+									<service.icon size={64} />
+								) : (
+									<PiImageBroken size={64} />
+								)}
+							</CardContent>
+							<CardFooter className="flex justify-center">
 								<Button
 									variant="default"
-									className={`${connections[service.key] ? "bg-red-500" : "bg-blue-500"} mt-4 text-white`}
+									className={`${
+										connections[service.key] ? "bg-red-500" : "bg-blue-500"
+									} text-white`}
 									onClick={() => toggleConnection(service.key)}
 								>
 									{connections[service.key] ? "Sign out" : "Sign in"}
 								</Button>
-							</div>
-						))}
+							</CardFooter>
+						</Card>
+					))}
 				</div>
 			</div>
 		</div>
