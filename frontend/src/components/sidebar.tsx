@@ -28,7 +28,7 @@ export function AppSidebar() {
 	const AreaList = [
 		{
 			key: 'home',
-			title: t('Home'),
+			title: t('HomeSidebar'),
 			url: "/home",
 			icon: Home,
 		},
