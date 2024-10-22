@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Edit, Trash } from 'lucide-react';
+import { Edit, Trash, Plus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogAction, AlertDialogCancel, AlertDialogTitle, AlertDialogDescription } from '@/components/ui/alert-dialog';
@@ -12,9 +12,10 @@ interface User {
 	id: number;
 	username: string;
 	email: string;
-	workflows: number;
-	userType: 'Admin' | 'User';
-	lastConnection: string;
+	nbr_workflow: number;
+	role: 'Admin' | 'User';
+	last_connection: string;
+	password?: string;
 }
 
 const UserManagement = () => {
@@ -22,14 +23,15 @@ const UserManagement = () => {
 	const [users, setUsers] = useState<User[]>([]);
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const [isNewUser, setIsNewUser] = useState(false);
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-	const [userToDelete, setUserToDelete] = useState<User | null>(null); // Track the user to be deleted
+	const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
 	const mockUsers: User[] = [
-		{ id: 1, username: 'Alice', email: 'alice@example.com', workflows: 5, userType: 'Admin', lastConnection: '20-10-2024' },
-		{ id: 2, username: 'Bob', email: 'bob@example.com', workflows: 3, userType: 'User', lastConnection: '20-09-2024' },
-		{ id: 3, username: 'Charlie', email: 'charlie@example.com', workflows: 7, userType: 'User', lastConnection: '20-08-2024' },
+		{ id: 1, username: 'Alice', email: 'alice@example.com', nbr_workflow: 5, role: 'Admin', last_connection: '20-10-2024' },
+		{ id: 2, username: 'Bob', email: 'bob@example.com', nbr_workflow: 3, role: 'User', last_connection: '20-09-2024' },
+		{ id: 3, username: 'Charlie', email: 'charlie@example.com', nbr_workflow: 7, role: 'User', last_connection: '20-08-2024' },
 	];
 
 	const fetchUsers = useCallback((): Promise<User[]> => {
@@ -72,6 +74,13 @@ const UserManagement = () => {
 
 	const handleOpenEditDialog = (user: User) => {
 		setCurrentUser(user);
+		setIsNewUser(false); // Set isNewUser to false since we are editing
+		setIsDialogOpen(true);
+	};
+
+	const handleOpenAddDialog = () => {
+		setCurrentUser({ id: Date.now(), username: '', email: '', role: 'User', nbr_workflow: 0, last_connection: new Date().toISOString().slice(0, 10), password: '' });
+		setIsNewUser(true); // Set isNewUser to true since we are adding a new user
 		setIsDialogOpen(true);
 	};
 
@@ -87,17 +96,21 @@ const UserManagement = () => {
 
 	const handleSaveChanges = async () => {
 		if (currentUser) {
-			const updatedUsers = await editUser(currentUser.id, currentUser);
-			setUsers(updatedUsers);
+			if (isNewUser) {
+				setUsers([...users, currentUser]);
+			} else {
+				const updatedUsers = await editUser(currentUser.id, currentUser);
+				setUsers(updatedUsers);
+			}
 			setIsDialogOpen(false);
 		}
 	};
 
 	const handleSort = (field: keyof User, direction: 'asc' | 'desc') => {
 		const sortedUsers = [...users].sort((a, b) => {
-			if (field === 'lastConnection') {
-				const dateA = new Date(a.lastConnection.split('-').reverse().join('-')).getTime();
-				const dateB = new Date(b.lastConnection.split('-').reverse().join('-')).getTime();
+			if (field === 'last_connection') {
+				const dateA = new Date(a.last_connection.split('-').reverse().join('-')).getTime();
+				const dateB = new Date(b.last_connection.split('-').reverse().join('-')).getTime();
 				return direction === 'asc' ? dateB - dateA : dateA - dateB;
 			} else if (typeof a[field] === 'string' && typeof b[field] === 'string') {
 				return direction === 'asc'
@@ -141,15 +154,19 @@ const UserManagement = () => {
 							<SelectItem value="username:desc">{t('UserManagement.usernameDesc')}</SelectItem>
 							<SelectItem value="email:asc">{t('UserManagement.emailAsc')}</SelectItem>
 							<SelectItem value="email:desc">{t('UserManagement.emailDesc')}</SelectItem>
-							<SelectItem value="workflows:asc">{t('UserManagement.workflowsAsc')}</SelectItem>
-							<SelectItem value="workflows:desc">{t('UserManagement.workflowsDesc')}</SelectItem>
-							<SelectItem value="userType:asc">{t('UserManagement.userTypeAsc')}</SelectItem>
-							<SelectItem value="userType:desc">{t('UserManagement.userTypeDesc')}</SelectItem>
-							<SelectItem value="lastConnection:asc">{t('UserManagement.lastConnectionAsc')}</SelectItem>
-							<SelectItem value="lastConnection:desc">{t('UserManagement.lastConnectionDesc')}</SelectItem>
+							<SelectItem value="nbr_workflow:asc">{t('UserManagement.workflowsAsc')}</SelectItem>
+							<SelectItem value="nbr_workflow:desc">{t('UserManagement.workflowsDesc')}</SelectItem>
+							<SelectItem value="role:asc">{t('UserManagement.userTypeAsc')}</SelectItem>
+							<SelectItem value="role:desc">{t('UserManagement.userTypeDesc')}</SelectItem>
+							<SelectItem value="last_connection:asc">{t('UserManagement.lastConnectionAsc')}</SelectItem>
+							<SelectItem value="last_connection:desc">{t('UserManagement.lastConnectionDesc')}</SelectItem>
 						</SelectGroup>
 					</SelectContent>
 				</Select>
+
+				<Button className="bg-green-600 hover:bg-green-700 text-white flex items-center space-x-2" onClick={() => handleOpenAddDialog()}>
+					<Plus className="w-4 h-4" />
+				</Button>
 			</div>
 
 			<Table className="mt-4 mx-auto w-[800px]">
@@ -168,9 +185,9 @@ const UserManagement = () => {
 						<TableRow key={user.id}>
 							<TableCell>{user.username}</TableCell>
 							<TableCell>{user.email}</TableCell>
-							<TableCell>{user.workflows}</TableCell>
-							<TableCell>{user.userType}</TableCell>
-							<TableCell>{user.lastConnection}</TableCell>
+							<TableCell>{user.nbr_workflow}</TableCell>
+							<TableCell>{user.role}</TableCell>
+							<TableCell>{user.last_connection}</TableCell>
 							<TableCell className="flex space-x-2">
 								<Button variant="outline" size="sm" onClick={() => handleOpenEditDialog(user)}>
 									<Edit className="w-4 h-4" />
@@ -184,28 +201,27 @@ const UserManagement = () => {
 				</TableBody>
 			</Table>
 
-			{/* Dialog for editing user */}
 			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>{t('UserManagement.editUser')}</DialogTitle>
+						<DialogTitle>{isNewUser ? t('UserManagement.addUser') : t('UserManagement.editUser')}</DialogTitle>
 					</DialogHeader>
 					<div className="space-y-4">
 						<Input
 							type="text"
-							placeholder="Username"
+							placeholder={t('UserManagement.username')}
 							value={currentUser?.username || ''}
 							onChange={(e) => setCurrentUser((prev) => (prev ? { ...prev, username: e.target.value } : prev))}
 						/>
 						<Input
 							type="email"
-							placeholder="Email"
+							placeholder={t('UserManagement.email')}
 							value={currentUser?.email || ''}
 							onChange={(e) => setCurrentUser((prev) => (prev ? { ...prev, email: e.target.value } : prev))}
 						/>
 						<Select
-							value={currentUser?.userType || 'User'}
-							onValueChange={(value: 'Admin' | 'User') => setCurrentUser((prev) => (prev ? { ...prev, userType: value } : prev))}
+							value={currentUser?.role || 'User'}
+							onValueChange={(value: 'Admin' | 'User') => setCurrentUser((prev) => (prev ? { ...prev, role: value } : prev))}
 						>
 							<SelectTrigger>
 								<SelectValue placeholder="Select User Type" />
@@ -215,6 +231,15 @@ const UserManagement = () => {
 								<SelectItem value="User">{t('UserManagement.user')}</SelectItem>
 							</SelectContent>
 						</Select>
+
+						{isNewUser && (
+							<Input
+								type="password"
+								placeholder={t('UserManagement.password')}
+								value={currentUser?.password || ''}
+								onChange={(e) => setCurrentUser((prev) => (prev ? { ...prev, password: e.target.value } : prev))}
+							/>
+						)}
 					</div>
 					<DialogFooter>
 						<Button onClick={handleSaveChanges}>{t('UserManagement.save')}</Button>
