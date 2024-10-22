@@ -263,7 +263,6 @@ html, body, #root {
       --chart-5: 340 75% 55%;
     }
 
-
   .theme-gray {
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
@@ -317,7 +316,6 @@ html, body, #root {
       --chart-4: 280 65% 60%;
       --chart-5: 340 75% 55%;
     }
-
 
   .theme-neutral {
       --background: 0 0% 100%;
@@ -373,7 +371,6 @@ html, body, #root {
       --chart-5: 340 75% 55%;
     }
 
-
   .theme-red {
       --background: 0 0% 100%;
       --foreground: 0 0% 3.9%;
@@ -427,7 +424,6 @@ html, body, #root {
       --chart-4: 280 65% 60%;
       --chart-5: 340 75% 55%;
     }
-
 
   .theme-rose {
       --background: 0 0% 100%;
@@ -483,7 +479,6 @@ html, body, #root {
       --chart-5: 340 75% 55%;
     }
 
-
   .theme-orange {
       --background: 0 0% 100%;
       --foreground: 20 14.3% 4.1%;
@@ -537,7 +532,6 @@ html, body, #root {
       --chart-4: 280 65% 60%;
       --chart-5: 340 75% 55%;
     }
-
 
   .theme-green {
       --background: 0 0% 100%;
@@ -646,7 +640,6 @@ html, body, #root {
       --chart-4: 280 65% 60%;
       --chart-5: 340 75% 55%;
     }
-
 
   .theme-yellow {
       --background: 0 0% 100%;

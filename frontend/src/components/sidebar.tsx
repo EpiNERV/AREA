@@ -1,25 +1,8 @@
 import { useAuth } from '@/lib/auth/AuthContext';
 import { ChevronUp, HelpingHandIcon, Home, Search, Settings, UserIcon, BadgeCheck, LogOut } from "lucide-react";
 import { useTranslation } from 'react-i18next';
-
-import {
-	Sidebar,
-	SidebarContent,
-	SidebarGroup,
-	SidebarGroupContent,
-	SidebarGroupLabel,
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
-	SidebarHeader,
-	SidebarFooter,
-} from "@/components/ui/sidebar";
-
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter } from "@/components/ui/sidebar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export function AppSidebar() {
 	const { logout } = useAuth();
