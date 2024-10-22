@@ -57,5 +57,32 @@
     "changePasswordDescription": "Modifiez votre mot de passe dans cette carte.",
     "currentPassword": "Mot de passe actuel",
     "newPassword": "Nouveau mot de passe"
+  },
+
+  "UserManagement": {
+    "title": "Gestion des utilisateurs",
+    "searchPlaceholder": "Rechercher par nom d'utilisateur",
+    "sortBy": "Trier par",
+    "usernameAsc": "Nom d'utilisateur (A-Z)",
+    "usernameDesc": "Nom d'utilisateur (Z-A)",
+    "emailAsc": "Email (A-Z)",
+    "emailDesc": "Email (Z-A)",
+    "workflowsAsc": "Nombre de workflows (Croissant)",
+    "workflowsDesc": "Nombre de workflows (Décroissant)",
+    "userTypeAsc": "Type d'utilisateur (Admin d'abord)",
+    "userTypeDesc": "Type d'utilisateur (Utilisateur d'abord)",
+    "lastConnectionAsc": "Dernière connexion (La plus récente)",
+    "lastConnectionDesc": "Dernière connexion (La plus ancienne)",
+    "username": "Nom d'utilisateur",
+    "email": "Email",
+    "workflows": "Nombre de workflows",
+    "userType": "Type d'utilisateur",
+    "lastConnection": "Dernière connexion",
+    "actions": "Actions",
+    "editUser": "Modifier l'utilisateur",
+    "save": "Sauvegarder",
+    "admin": "Admin",
+    "user": "Utilisateur",
+    "delete": "Supprimer"
   }
 }
