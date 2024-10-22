@@ -6,7 +6,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { CheckCircle } from 'lucide-react';
 
 const PasswordChanged = () => {
-  const { theme, setTheme } = useTheme();
+  const { themeMode, setThemeMode } = useTheme();
   const { t, i18n } = useTranslation();
 
   const handleLanguageChange = (language: string) => {
@@ -23,13 +23,14 @@ const PasswordChanged = () => {
   return (
     <div className="flex h-screen">
       <div className="absolute top-4 right-4 flex space-x-4">
-        <Select value={theme} onValueChange={setTheme}>
+        <Select value={themeMode} onValueChange={setThemeMode}>
           <SelectTrigger className="w-[120px]">
-            <SelectValue placeholder={t('Theme')} />
+            <SelectValue placeholder={t('Accessibility.Theme')}/>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">{t('Light')}</SelectItem>
-            <SelectItem value="dark">{t('Dark')}</SelectItem>
+            <SelectItem value="light">{t('Accessibility.Light')}</SelectItem>
+            <SelectItem value="dark">{t('Accessibility.Dark')}</SelectItem>
+            <SelectItem value="system">{t('Accessibility.System')}</SelectItem>
           </SelectContent>
         </Select>
 
@@ -38,11 +39,11 @@ const PasswordChanged = () => {
           onValueChange={(value) => handleLanguageChange(value)}
         >
           <SelectTrigger className="w-[120px]">
-            <SelectValue placeholder={t('Language')} />
+            <SelectValue placeholder={t('Accessibility.Language')}/>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="en">{t('English')}</SelectItem>
-            <SelectItem value="fr">{t('French')}</SelectItem>
+            <SelectItem value="en">{t('Accessibility.English')}</SelectItem>
+            <SelectItem value="fr">{t('Accessibility.French')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -51,7 +52,7 @@ const PasswordChanged = () => {
         <Card className="w-full max-w-md text-center">
           <CardHeader className="pt-8">
             <div className="flex justify-center mb-4">
-              <CheckCircle className="text-green-500 h-16 w-16" />
+              <CheckCircle className="text-green-500 h-16 w-16"/>
             </div>
 
             <CardTitle className="text-2xl font-bold mb-2">

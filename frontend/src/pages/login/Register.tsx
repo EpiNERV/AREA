@@ -22,7 +22,7 @@ const PasswordCriteria = ({ label, isValid }: { label: string; isValid: boolean 
 );
 
 const Register = () => {
-  const { theme, setTheme } = useTheme();
+  const { themeMode, setThemeMode } = useTheme();
   const { t, i18n } = useTranslation();
 
   const [formData, setFormData] = useState({
@@ -139,13 +139,14 @@ const Register = () => {
   return (
     <div className="flex h-screen">
       <div className="absolute top-4 right-4 flex space-x-4">
-        <Select value={theme} onValueChange={setTheme}>
+        <Select value={themeMode} onValueChange={setThemeMode}>
           <SelectTrigger className="w-[120px]">
-            <SelectValue placeholder={t('Theme')} />
+            <SelectValue placeholder={t('Accessibility.Theme')}/>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">{t('Light')}</SelectItem>
-            <SelectItem value="dark">{t('Dark')}</SelectItem>
+            <SelectItem value="light">{t('Accessibility.Light')}</SelectItem>
+            <SelectItem value="dark">{t('Accessibility.Dark')}</SelectItem>
+            <SelectItem value="system">{t('Accessibility.System')}</SelectItem>
           </SelectContent>
         </Select>
 
@@ -154,11 +155,11 @@ const Register = () => {
           onValueChange={(value) => handleLanguageChange(value)}
         >
           <SelectTrigger className="w-[120px]">
-            <SelectValue placeholder={t('Language')} />
+            <SelectValue placeholder={t('Accessibility.Language')}/>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="en">{t('English')}</SelectItem>
-            <SelectItem value="fr">{t('French')}</SelectItem>
+            <SelectItem value="en">{t('Accessibility.English')}</SelectItem>
+            <SelectItem value="fr">{t('Accessibility.French')}</SelectItem>
           </SelectContent>
         </Select>
       </div>

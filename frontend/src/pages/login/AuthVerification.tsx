@@ -8,7 +8,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 
 const AuthVerification = () => {
-	const { theme, setTheme } = useTheme();
+	const { themeMode, setThemeMode } = useTheme();
 	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
 
@@ -34,13 +34,14 @@ const AuthVerification = () => {
 	return (
 		<div className="flex h-screen">
 			<div className="absolute top-4 right-4 flex space-x-4">
-				<Select value={theme} onValueChange={setTheme}>
+				<Select value={themeMode} onValueChange={setThemeMode}>
 					<SelectTrigger className="w-[120px]">
-						<SelectValue placeholder={t('Theme')} />
+						<SelectValue placeholder={t('Accessibility.Theme')}/>
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value="light">{t('Light')}</SelectItem>
-						<SelectItem value="dark">{t('Dark')}</SelectItem>
+						<SelectItem value="light">{t('Accessibility.Light')}</SelectItem>
+						<SelectItem value="dark">{t('Accessibility.Dark')}</SelectItem>
+						<SelectItem value="system">{t('Accessibility.System')}</SelectItem>
 					</SelectContent>
 				</Select>
 
@@ -49,11 +50,11 @@ const AuthVerification = () => {
 					onValueChange={(value) => handleLanguageChange(value)}
 				>
 					<SelectTrigger className="w-[120px]">
-						<SelectValue placeholder={t('Language')} />
+						<SelectValue placeholder={t('Accessibility.Language')}/>
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value="en">{t('English')}</SelectItem>
-						<SelectItem value="fr">{t('French')}</SelectItem>
+						<SelectItem value="en">{t('Accessibility.English')}</SelectItem>
+						<SelectItem value="fr">{t('Accessibility.French')}</SelectItem>
 					</SelectContent>
 				</Select>
 			</div>
@@ -79,7 +80,7 @@ const AuthVerification = () => {
 								>
 									<InputOTPGroup>
 										{[...Array(6)].map((_, index) => (
-											<InputOTPSlot key={index} index={index} />
+											<InputOTPSlot key={index} index={index}/>
 										))}
 									</InputOTPGroup>
 								</InputOTP>
@@ -92,7 +93,7 @@ const AuthVerification = () => {
 
 						<div className="mt-4 text-center">
 							<p className="text-sm text-gray-600">
-								{t('AuthVerification.didNotReceive')}{' '}
+							{t('AuthVerification.didNotReceive')}{' '}
 								<button
 									onClick={() => {
 										console.log('Resend OTP');

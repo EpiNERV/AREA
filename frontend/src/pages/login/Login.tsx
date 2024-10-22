@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Select,  SelectTrigger,  SelectValue,  SelectContent,  SelectItem } from '@/components/ui/select';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import axios from 'axios';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useTheme } from '@/components/ThemeProvider';
@@ -19,7 +19,7 @@ interface TokenType {
 }
 
 const Login = () => {
-  const { theme, setTheme } = useTheme();
+  const { themeMode, setThemeMode } = useTheme();
   const { t, i18n } = useTranslation();
 
   const [formData, setFormData] = useState({
@@ -91,11 +91,7 @@ const Login = () => {
         navigate(from, { replace: true });
       } catch (error) {
         console.log(error);
-        setErrorMessage(
-          t(
-            'LoginPage.loginFailed'
-          )
-        );
+        setErrorMessage(t('LoginPage.loginFailed'));
       }
     } else {
       console.log('Le formulaire contient des erreurs.');
@@ -116,26 +112,29 @@ const Login = () => {
   return (
     <div className="flex h-screen">
       <div className="absolute top-4 right-4 flex space-x-4">
-        <Select value={theme} onValueChange={setTheme}>
+        {/* Sélection du Mode de Thème */}
+        <Select value={themeMode} onValueChange={setThemeMode}>
           <SelectTrigger className="w-[120px]">
-            <SelectValue placeholder={t('Theme')} />
+            <SelectValue placeholder={t('Accessibility.ModeTheme')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">{t('Light')}</SelectItem>
-            <SelectItem value="dark">{t('Dark')}</SelectItem>
+            <SelectItem value="light">{t('Accessibility.Light')}</SelectItem>
+            <SelectItem value="dark">{t('Accessibility.Dark')}</SelectItem>
+            <SelectItem value="system">{t('Accessibility.System')}</SelectItem>
           </SelectContent>
         </Select>
 
+        {/* Sélection de la Langue */}
         <Select
           value={i18n.language}
           onValueChange={(value) => handleLanguageChange(value)}
         >
           <SelectTrigger className="w-[120px]">
-            <SelectValue placeholder={t('Language')} />
+            <SelectValue placeholder={t('Accessibility.Language')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="en">{t('English')}</SelectItem>
-            <SelectItem value="fr">{t('French')}</SelectItem>
+            <SelectItem value="en">{t('Accessibility.English')}</SelectItem>
+            <SelectItem value="fr">{t('Accessibility.French')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -211,32 +210,32 @@ const Login = () => {
               </div>
             </form>
 
-            {/*<div className="mt-6">*/}
-            {/*  <p className="text-center text-gray-600">{t('LoginPage.orLoginWith')}</p>*/}
-            {/*  <div className="flex justify-center mt-4 space-x-4">*/}
-            {/*    <Button variant="outline" className="p-2 rounded-full">*/}
-            {/*      <img*/}
-            {/*        src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"*/}
-            {/*        alt="Google"*/}
-            {/*        className="h-6 w-6"*/}
-            {/*      />*/}
-            {/*    </Button>*/}
-            {/*    <Button variant="outline" className="p-2 rounded-full">*/}
-            {/*      <img*/}
-            {/*        src="https://cdn-icons-png.flaticon.com/512/733/733547.png"*/}
-            {/*        alt="Facebook"*/}
-            {/*        className="h-6 w-6"*/}
-            {/*      />*/}
-            {/*    </Button>*/}
-            {/*    <Button variant="outline" className="p-2 rounded-full">*/}
-            {/*      <img*/}
-            {/*        src="https://cdn-icons-png.flaticon.com/512/731/731985.png"*/}
-            {/*        alt="Apple"*/}
-            {/*        className="h-6 w-6"*/}
-            {/*      />*/}
-            {/*    </Button>*/}
-            {/*  </div>*/}
-            {/*</div>*/}
+            {/* <div className="mt-6">
+              <p className="text-center text-gray-600">{t('LoginPage.orLoginWith')}</p>
+              <div className="flex justify-center mt-4 space-x-4">
+                <Button variant="outline" className="p-2 rounded-full">
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
+                    alt="Google"
+                    className="h-6 w-6"
+                  />
+                </Button>
+                <Button variant="outline" className="p-2 rounded-full">
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/733/733547.png"
+                    alt="Facebook"
+                    className="h-6 w-6"
+                  />
+                </Button>
+                <Button variant="outline" className="p-2 rounded-full">
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/731/731985.png"
+                    alt="Apple"
+                    className="h-6 w-6"
+                  />
+                </Button>
+              </div>
+            </div> */}
 
             <div className="mt-6 text-center">
               <p className="text-gray-600">
