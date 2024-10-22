@@ -1,13 +1,59 @@
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { useTheme } from "@/components/ThemeProvider"
+// Accessibility.tsx
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useTheme } from "@/components/ThemeProvider";
+import { useEffect } from "react";
 import { useTranslation } from 'react-i18next';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
+import { EyeOff } from "lucide-react";
 
 const Accessibility = () => {
-	const { themeMode, setThemeMode, themeColor, setThemeColor } = useTheme();
+	const { themeMode, setThemeMode, themeColor, setThemeColor, colorBlindnessMode, setColorBlindnessMode } = useTheme();
 	const { i18n, t } = useTranslation();
+
+	type ColorBlindOption = {
+		name: string;
+		value: "regular" | "deuteranopia" | "protanopia" | "tritanopia" | "monochromacy";
+		iconColors: string[];
+	};
+
+	type ColorOption = {
+		name: string;
+		value: "zinc" | "slate" | "stone" | "gray" | "neutral" | "red" | "rose" | "orange" | "green" | "blue" | "yellow" | "violet";
+		colorClass: string;
+	};
+
+	const colorBlindOptions: ColorBlindOption[] = [
+		{ name: "Regular vision", value: "regular", iconColors: ["text-gray-500"] },
+		{ name: "Deuteranopia", value: "deuteranopia", iconColors: ["text-green-500"] },
+		{ name: "Protanopia", value: "protanopia", iconColors: ["text-red-500"] },
+		{ name: "Tritanopia", value: "tritanopia", iconColors: ["text-blue-500"] },
+		{ name: "Monochromacy", value: "monochromacy", iconColors: ["text-gray-500"] },
+	];
+
+	const colorOptions: ColorOption[] = [
+		{ name: "Zinc", value: "zinc", colorClass: "bg-gray-400" },
+		{ name: "Slate", value: "slate", colorClass: "bg-gray-600" },
+		{ name: "Stone", value: "stone", colorClass: "bg-gray-300" },
+		{ name: "Gray", value: "gray", colorClass: "bg-gray-500" },
+		{ name: "Neutral", value: "neutral", colorClass: "bg-gray-700" },
+		{ name: "Red", value: "red", colorClass: "bg-red-500" },
+		{ name: "Rose", value: "rose", colorClass: "bg-rose-500" },
+		{ name: "Orange", value: "orange", colorClass: "bg-orange-500" },
+		{ name: "Green", value: "green", colorClass: "bg-green-500" },
+		{ name: "Blue", value: "blue", colorClass: "bg-blue-500" },
+		{ name: "Yellow", value: "yellow", colorClass: "bg-yellow-500" },
+		{ name: "Violet", value: "violet", colorClass: "bg-purple-500" },
+	];
+
+	const isColorSelectionDisabled =
+		colorBlindnessMode === "monochromacy";
+
+	useEffect(() => {
+		if (colorBlindnessMode === "monochromacy") {
+			setThemeColor("neutral");
+		}
+	}, [colorBlindnessMode, setThemeColor]);
 
 	const handleLanguageChange = (language: string) => {
 		i18n.changeLanguage(language)
@@ -20,117 +66,108 @@ const Accessibility = () => {
 	};
 
 	return (
-		<div className="flex flex-1 items-center justify-center w-full h-full">
-			<div className="overflow-hidden">
-				<Table>
-					<TableHeader>
-						<TableRow>
-							<TableHead className="w-[400px]">{t('Accessibility')}</TableHead>
-							<TableHead>{t('Status')}</TableHead>
-						</TableRow>
-					</TableHeader>
+		<Card className="w-full items-center justify-center max-w-lg mx-auto">
+			<CardContent>
+				<div className="flex flex-col items-center justify-center w-full h-full space-y-8">
+					<h2 className="text-2xl font-semibold">{t('Accessibility.Customize')}</h2>
+					<p className="text-center">{t('Accessibility.Description')}</p>
 
-					<TableBody>
-						<TableRow>
-							<TableCell className="font-medium">{t('Colorblind mode')}</TableCell>
-							<TableCell>
-								<RadioGroup defaultValue="off">
-									<div className="flex items-center space-x-2">
-										<RadioGroupItem value="on" id="colorblind-on" />
-										<Label htmlFor="colorblind-on">{t('On')}</Label>
-									</div>
-									<div className="flex items-center space-x-2">
-										<RadioGroupItem value="off" id="colorblind-off" />
-										<Label htmlFor="colorblind-off">{t('Off')}</Label>
-									</div>
-								</RadioGroup>
-							</TableCell>
-						</TableRow>
+					<div className="space-y-2 w-full">
+						<label className="block text-lg font-medium">{t('Accessibility.ColorBlindness')}</label>
+						<div className="grid grid-cols-3 gap-2">
+							{colorBlindOptions.slice(0, 3).map((option) => (
+								<Button
+									key={option.value}
+									variant={colorBlindnessMode === option.value ? "outline" : "default"}
+									onClick={() => setColorBlindnessMode(option.value)}
+									className="flex items-center space-x-2"
+								>
+									{option.iconColors.map((iconColor, index) => (
+										<EyeOff key={index} className={`w-5 h-5 ${iconColor}`} />
+									))}
+									<span>{t(`Accessibility.${option.name}`)}</span>
+								</Button>
+							))}
+						</div>
+						<div className="grid grid-cols-2 gap-2">
+							{colorBlindOptions.slice(3).map((option) => (
+								<Button
+									key={option.value}
+									variant={colorBlindnessMode === option.value ? "outline" : "default"}
+									onClick={() => setColorBlindnessMode(option.value)}
+									className="flex items-center space-x-2"
+								>
+									{option.iconColors.map((iconColor, index) => (
+										<EyeOff key={index} className={`w-5 h-5 ${iconColor}`} />
+									))}
+									<span>{t(`Accessibility.${option.name}`)}</span>
+								</Button>
+							))}
+						</div>
+					</div>
 
-						<TableRow>
-							<TableCell className="font-medium">{t('Mode')}</TableCell>
-							<TableCell>
-								<RadioGroup value={themeMode} onValueChange={setThemeMode}>
-									<div className="flex items-center space-x-2">
-										<RadioGroupItem value="light" id="theme-light" />
-										<Label htmlFor="theme-light">{t('Clair')}</Label>
-									</div>
-									<div className="flex items-center space-x-2">
-										<RadioGroupItem value="dark" id="theme-dark" />
-										<Label htmlFor="theme-dark">{t('Sombre')}</Label>
-									</div>
-									<div className="flex items-center space-x-2">
-										<RadioGroupItem value="system" id="theme-system" />
-										<Label htmlFor="theme-system">{t('Système')}</Label>
-									</div>
-								</RadioGroup>
-							</TableCell>
-						</TableRow>
+					<div className="space-y-2 w-full">
+						<label className="block text-lg font-medium">{t('Accessibility.ColorTheme')}</label>
+						<div className="grid grid-cols-3 gap-2">
+							{colorOptions.map((color) => (
+								<Button
+									key={color.value}
+									variant={themeColor === color.value ? "outline" : "default"}
+									onClick={() => setThemeColor(color.value)}
+									className="flex items-center space-x-2"
+									disabled={isColorSelectionDisabled}
+								>
+									<span className={`w-4 h-4 rounded-full ${color.colorClass}`}></span>
+									<span>{t(`Accessibility.${color.name}`)}</span>
+								</Button>
+							))}
+						</div>
+					</div>
 
-						<TableRow>
-							<TableCell className="font-medium">{t('Couleur')}</TableCell>
-							<TableCell>
-								<Select value={themeColor} onValueChange={setThemeColor}>
-									<SelectTrigger className="w-[200px]">
-										<SelectValue placeholder={t('Sélectionner la couleur du thème')} />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="zync">{t('Zync')}</SelectItem>
-										<SelectItem value="slate">{t('Ardoise')}</SelectItem>
-										<SelectItem value="stone">{t('Pierre')}</SelectItem>
-										<SelectItem value="gray">{t('Gris')}</SelectItem>
-										<SelectItem value="neutral">{t('Neutre')}</SelectItem>
-										<SelectItem value="red">{t('Rouge')}</SelectItem>
-										<SelectItem value="rose">{t('Rose')}</SelectItem>
-										<SelectItem value="orange">{t('Orange')}</SelectItem>
-										<SelectItem value="green">{t('Vert')}</SelectItem>
-										<SelectItem value="blue">{t('Bleu')}</SelectItem>
-										<SelectItem value="yellow">{t('Jaune')}</SelectItem>
-										<SelectItem value="violet">{t('Violet')}</SelectItem>
-									</SelectContent>
-								</Select>
-							</TableCell>
-						</TableRow>
+					<div className="space-y-2 w-full">
+						<label className="block text-lg font-medium">{t('Accessibility.ModeTheme')}</label>
+						<div className="flex space-x-2">
+							<Button
+								variant={themeMode === "light" ? "outline" : "default"}
+								onClick={() => setThemeMode("light")}
+							>
+								{t('Accessibility.Light')}
+							</Button>
+							<Button
+								variant={themeMode === "dark" ? "outline" : "default"}
+								onClick={() => setThemeMode("dark")}
+							>
+								{t('Accessibility.Dark')}
+							</Button>
+							<Button
+								variant={themeMode === "system" ? "outline" : "default"}
+								onClick={() => setThemeMode("system")}
+							>
+								{t('Accessibility.System')}
+							</Button>
+						</div>
+					</div>
 
-						<TableRow>
-							<TableCell className="font-medium">{t('Text size adjustment')}</TableCell>
-							<TableCell>
-								<RadioGroup defaultValue="medium">
-									<div className="flex items-center space-x-2">
-										<RadioGroupItem value="small" id="text-size-small" />
-										<Label htmlFor="text-size-small">{t('Small')}</Label>
-									</div>
-									<div className="flex items-center space-x-2">
-										<RadioGroupItem value="medium" id="text-size-medium" />
-										<Label htmlFor="text-size-medium">{t('Medium')}</Label>
-									</div>
-									<div className="flex items-center space-x-2">
-										<RadioGroupItem value="large" id="text-size-large" />
-										<Label htmlFor="text-size-large">{t('Large')}</Label>
-									</div>
-								</RadioGroup>
-							</TableCell>
-						</TableRow>
-
-						<TableRow>
-							<TableCell className="font-medium">{t('Language')}</TableCell>
-							<TableCell>
-								<RadioGroup value={i18n.language} onValueChange={handleLanguageChange}>
-									<div className="flex items-center space-x-2">
-										<RadioGroupItem value="fr" id="language-fr" />
-										<Label htmlFor="language-fr">{t('French')}</Label>
-									</div>
-									<div className="flex items-center space-x-2">
-										<RadioGroupItem value="en" id="language-en" />
-										<Label htmlFor="language-en">{t('English')}</Label>
-									</div>
-								</RadioGroup>
-							</TableCell>
-						</TableRow>
-					</TableBody>
-				</Table>
-			</div>
-		</div>
+					<div className="space-y-2 w-full">
+						<label className="block text-lg font-medium">{t('Accessibility.Language')}</label>
+						<div className="flex space-x-2">
+							<Button
+								variant={i18n.language === "fr" ? "outline" : "default"}
+								onClick={() => handleLanguageChange("fr")}
+							>
+								{t('Accessibility.French')}
+							</Button>
+							<Button
+								variant={i18n.language === "en" ? "outline" : "default"}
+								onClick={() => handleLanguageChange("en")}
+							>
+								{t('Accessibility.English')}
+							</Button>
+						</div>
+					</div>
+				</div>
+			</CardContent>
+		</Card>
 	);
 };
 
