@@ -1,31 +1,27 @@
 {
-  "SidebarAccessibility": "Accessibility",
-  "Status": "Status",
-  "On": "On",
-  "Off": "Off",
-  "Area": "Area",
-  "HomeSidebar": "Home",
-  "Documentation": "Documentation",
-  "Admin": "Admin",
-  "Backend settings": "Backend settings",
-  "Users management": "Users management",
-  "User": "User",
-  "Profile information": "Profile information",
-  "Profile services": "Profile services",
-  "Log out": "Log out",
-  "Username": "Username",
-
+  "Sidebar": {
+    "Area": "Area",
+    "User": "User",
+    "Admin": "Admin",
+    "HomeSidebar": "Home",
+    "Documentation": "Documentation",
+    "BackendSettings": "Backend settings",
+    "UsersManagement": "Users management",
+    "ProfileInformations": "Profile informations",
+    "ProfileServices": "Profile services",
+    "AccessibilitySidebar": "Accessibility",
+    "Username": "Username",
+    "LogOut": "Log out"
+  },
   "Accessibility": {
     "Customize": "Accessibility",
     "Description": "Application customization panel",
-
     "ColorBlindness": "Color Blindness",
     "Regular vision": "Regular vision",
     "Deuteranopia": "Deuteranopia",
     "Protanopia": "Protanopia",
     "Tritanopia": "Tritanopia",
     "Monochromacy": "Monochromacy",
-
     "ColorTheme": "Color",
     "Zinc": "Zinc",
     "Slate": "Slate",
@@ -39,22 +35,18 @@
     "Blue": "Blue",
     "Yellow": "Yellow",
     "Violet": "Violet",
-
     "ModeTheme": "Mode",
     "Light": "Light",
     "Dark": "Dark",
     "System": "System",
-
     "Language": "Language",
     "English": "English",
     "French": "French",
-
     "Text size adjustment": "Text size adjustment",
     "Small": "Small",
     "Medium": "Medium",
     "Large": "Large"
   },
-
   "Welcome": {
     "description": "Connect your favorite services to automate your actions with ease.",
     "accessApp": "Access the application",
