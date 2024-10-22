@@ -83,6 +83,9 @@
     "save": "Sauvegarder",
     "admin": "Admin",
     "user": "Utilisateur",
-    "delete": "Supprimer"
+    "confirmDeleteTitle": "Confirmer la suppression",
+    "confirmDeleteDescription": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+    "cancel": "Annuler",
+    "confirm": "Supprimer"
   }
 }
