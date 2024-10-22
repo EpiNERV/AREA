@@ -20,6 +20,7 @@ export interface IUser extends Document {
   totp_enabled: boolean;
   role: 'user' | 'admin';
   services: IService[];
+  workflows: mongoose.Schema.Types.ObjectId[];
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -67,6 +68,10 @@ const userSchema = new Schema<IUser>(
         connectedAt: { type: Date, },
       },
     ],
+  workflows: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Workflow',
+}]
   },
   { timestamps: true }
 );
