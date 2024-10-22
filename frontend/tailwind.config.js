@@ -3,6 +3,14 @@
 
 module.exports = {
     darkMode: ['class'],
+	safelist: [
+		{
+			pattern: /theme-(zinc|slate|stone|gray|neutral|red|rose|orange|green|blue|yellow|violet)/,
+		},
+		{
+			pattern: /colorblind-(deuteranopia|protanopia|tritanopia|monochromacy)/,
+		},
+	],
     theme: {
     	extend: {
     		colors: {
