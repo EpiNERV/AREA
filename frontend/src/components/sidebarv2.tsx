@@ -49,7 +49,7 @@ export function AppSidebar() {
 		},
 		{
 			key: 'userManagement',
-			title: t('User management'),
+			title: t('Users management'),
 			url: "/user-management",
 			icon: UserIcon,
 		},
@@ -58,7 +58,7 @@ export function AppSidebar() {
 	const UserMenu = [
 		{
 			key: 'profileInformation',
-			title: t('Profile information'),
+			title: t('Profile informations'),
 			url: "/user/profile_informations",
 			icon: Settings,
 			className: ''
