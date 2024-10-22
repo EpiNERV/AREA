@@ -1,46 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-// shadcn/ui v2 components imported individually
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Edit, Trash2 } from "lucide-react"; // Icons from lucide-react
-
-// react-hook-form and zod for form handling and validation
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogAction, AlertDialogCancel, AlertDialogTitle, AlertDialogDescription } from '@/components/ui/alert-dialog';
+import { Edit, Trash2, Plus } from "lucide-react";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useTranslation } from 'react-i18next';
+import { fetchWorkflows, createWorkflow, updateWorkflow, deleteWorkflow } from '@/lib/api/workflow';
 
-// API functions for interacting with the backend
-import { fetchWorkflows, createWorkflow, updateWorkflow, deleteWorkflow } from '@/lib/api/workflow'; // Adjust the path accordingly
-
-// Define the Workflow interface
 interface Workflow {
   _id: string;
   name: string;
 }
 
-// Define the form validation schema using zod
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
 });
 
-// Infer the form data type from the schema
 type FormData = z.infer<typeof formSchema>;
 
 const Home: React.FC = () => {
+  const { t } = useTranslation();
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [currentWorkflow, setCurrentWorkflow] = useState<Workflow | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
+  const [workflowToDelete, setWorkflowToDelete] = useState<Workflow | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch workflows from the real API
     const fetchWorkflowsData = async () => {
       try {
         const data = await fetchWorkflows();
@@ -52,7 +47,6 @@ const Home: React.FC = () => {
     fetchWorkflowsData();
   }, []);
 
-  // Filter workflows based on the search term
   const filteredWorkflows = workflows.filter((workflow) =>
     workflow.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -61,7 +55,6 @@ const Home: React.FC = () => {
     navigate(`/workflow/${workflowId}`);
   };
 
-  // Handle adding a new workflow and closing the dialog
   const handleWorkflowCreated = async (name: string) => {
     try {
       const newWorkflow = await createWorkflow(name);
@@ -72,7 +65,6 @@ const Home: React.FC = () => {
     }
   };
 
-  // Handle updating a workflow
   const handleWorkflowUpdated = async (id: string, name: string) => {
     try {
       const updatedWorkflow = await updateWorkflow(id, name);
@@ -85,159 +77,144 @@ const Home: React.FC = () => {
     }
   };
 
-  // Handle deleting a workflow
-  const handleWorkflowDeleted = async (id: string) => {
-    try {
-      await deleteWorkflow(id);
-      setWorkflows((prev) => prev.filter((wf) => wf._id !== id));
-    } catch (err) {
-      console.error('Error deleting workflow:', err);
+  const handleWorkflowDeleted = async () => {
+    if (workflowToDelete) {
+      try {
+        await deleteWorkflow(workflowToDelete._id);
+        setWorkflows((prev) => prev.filter((wf) => wf._id !== workflowToDelete._id));
+        setIsDeleteDialogOpen(false);
+      } catch (err) {
+        console.error('Error deleting workflow:', err);
+      }
     }
   };
 
-  // Open edit dialog with selected workflow
   const openEditDialog = (workflow: Workflow) => {
     setCurrentWorkflow(workflow);
     setIsEditDialogOpen(true);
   };
 
+  const openDeleteDialog = (workflow: Workflow) => {
+    setWorkflowToDelete(workflow);
+    setIsDeleteDialogOpen(true);
+  };
+
   return (
-    <div className="flex flex-col items-center p-4 bg-gray-100 min-h-screen">
-      <aside
-        className="w-full max-w-6xl p-6 bg-white shadow-lg rounded-lg overflow-auto"
-        style={{ boxShadow: '2px 0px 10px rgba(0, 0, 0, 0.1)' }}
-      >
-        {/* Header with Search and Add Button */}
-        <div className="flex flex-col sm:flex-row items-center justify-between mb-6 space-y-4 sm:space-y-0">
-          <Input
-            type="text"
-            placeholder="Search workflows..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1"
-            disabled={false}
-          />
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="w-full sm:w-auto">Add Workflow</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-lg">
-              <DialogHeader>
-                <DialogTitle>Create New Workflow</DialogTitle>
-                <DialogDescription>
-                  Fill in the details to create a new workflow.
-                </DialogDescription>
-              </DialogHeader>
-              <NewWorkflowForm onWorkflowCreated={handleWorkflowCreated} />
-            </DialogContent>
-          </Dialog>
-        </div>
+    <div className="flex flex-col items-center p-4 w-full h-full">
+      <div className="flex justify-center items-center mb-4">
+        <h1 className="text-4xl font-bold">{t('Home.title')}</h1>
+      </div>
 
-        {/* Grid of Workflow Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredWorkflows.map((workflow) => (
-            <Card
-              key={workflow._id}
-              onClick={() => handleCardClick(workflow._id)}
-              className="relative cursor-pointer p-6 flex flex-col justify-center items-center h-32 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors"
-            >
-              <p className="text-lg font-semibold text-center">{workflow.name}</p>
-              {/* Edit and Delete Buttons */}
-              <button
-                className="absolute top-2 right-2 flex space-x-2"
-                onClick={(e) => e.stopPropagation()}
-				onKeyDown={(e) => e.stopPropagation()}
-				tabIndex={0}
-				// Prevent card click
-              >
+      <div className="flex justify-center items-center space-x-4 mb-4">
+        <Input
+          type="text"
+          placeholder={t('Home.searchPlaceholder')}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-64"
+        />
+        <Button onClick={() => setIsAddDialogOpen(true)} className="bg-green-600 hover:bg-green-700 flex items-center space-x-2">
+          <Plus className="w-4 h-4" />
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+        {filteredWorkflows.map((workflow) => (
+          <Card
+            key={workflow._id}
+            className="cursor-pointer"
+            onClick={() => handleCardClick(workflow._id)}
+          >
+            <div className="flex justify-between items-center p-4">
+              <p className="text-lg font-semibold">{workflow.name}</p>
+              <div className="flex space-x-2">
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="icon"
-                  onClick={() => openEditDialog(workflow)}
-                  className="text-white hover:text-blue-300 p-1"
-                  aria-label="Edit Workflow"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openEditDialog(workflow);
+                  }}
                 >
-                  <Edit size={16} />
+                  <Edit className="w-4 h-4" />
                 </Button>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-white hover:text-red-400 p-1"
-                      aria-label="Delete Workflow"
-                    >
-                      <Trash2 size={16} />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-sm">
-                    <DialogHeader>
-                      <DialogTitle>Delete Workflow</DialogTitle>
-                      <DialogDescription>
-                        Are you sure you want to delete the workflow "{workflow.name}"? This action cannot be undone.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="flex justify-end space-x-2 mt-4">
-                      <Button
-                        variant="secondary"
-                        onClick={() => {}}
-                        type="button"
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        onClick={() => handleWorkflowDeleted(workflow._id)}
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </button>
-            </Card>
-          ))}
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openDeleteDialog(workflow);
+                  }}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {filteredWorkflows.length === 0 && (
+        <div className="mt-10 text-center text-gray-500">
+          {t('Home.noWorkflowsFound')}
         </div>
+      )}
 
-        {/* No Workflows Found Message */}
-        {filteredWorkflows.length === 0 && (
-          <div className="mt-10 text-center text-gray-500">
-            No workflows found. Try adjusting your search or add a new workflow.
-          </div>
-        )}
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('Home.createWorkflowTitle')}</DialogTitle>
+            <DialogDescription>
+              {t('Home.createWorkflowDescription')}
+            </DialogDescription>
+          </DialogHeader>
+          <NewWorkflowForm onWorkflowCreated={handleWorkflowCreated} />
+        </DialogContent>
+      </Dialog>
 
-        {/* Edit Workflow Dialog */}
-        {currentWorkflow && (
-          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-            <DialogTrigger asChild>
-              {/* Invisible trigger */}
-              <span></span>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-lg">
-              <DialogHeader>
-                <DialogTitle>Edit Workflow</DialogTitle>
-                <DialogDescription>
-                  Modify the name of the workflow.
-                </DialogDescription>
-              </DialogHeader>
-              <EditWorkflowForm
-                workflow={currentWorkflow}
-                onWorkflowUpdated={handleWorkflowUpdated}
-              />
-            </DialogContent>
-          </Dialog>
-        )}
-      </aside>
+      {currentWorkflow && (
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t('Home.editWorkflowTitle')}</DialogTitle>
+              <DialogDescription>
+                {t('Home.editWorkflowDescription')}
+              </DialogDescription>
+            </DialogHeader>
+            <EditWorkflowForm
+              workflow={currentWorkflow}
+              onWorkflowUpdated={handleWorkflowUpdated}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('Home.deleteWorkflowTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('Home.deleteWorkflowDescription', { workflowName: workflowToDelete?.name })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('Home.cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleWorkflowDeleted}>
+              {t('Home.delete')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
 
-// NewWorkflowForm Component
 interface NewWorkflowFormProps {
   onWorkflowCreated: (newWorkflow: string) => void;
 }
 
 const NewWorkflowForm: React.FC<NewWorkflowFormProps> = ({ onWorkflowCreated }) => {
+  const { t } = useTranslation();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -264,10 +241,10 @@ const NewWorkflowForm: React.FC<NewWorkflowFormProps> = ({ onWorkflowCreated }) 
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Workflow Name</FormLabel>
+              <FormLabel>{t('Home.workflowName')}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Enter workflow name"
+                  placeholder={t('Home.workflowNamePlaceholder')}
                   {...field}
                   className="w-full"
                 />
@@ -276,22 +253,20 @@ const NewWorkflowForm: React.FC<NewWorkflowFormProps> = ({ onWorkflowCreated }) 
             </FormItem>
           )}
         />
-        <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2">
+        <div className="flex justify-end space-x-2">
           <Button
             variant="secondary"
             onClick={() => reset()}
             type="button"
             disabled={isSubmitting}
-            className="w-full sm:w-auto"
           >
-            Reset
+            {t('Home.reset')}
           </Button>
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full sm:w-auto"
           >
-            {isSubmitting ? 'Creating...' : 'Create'}
+            {isSubmitting ? t('Home.creating') : t('Home.create')}
           </Button>
         </div>
       </form>
@@ -299,13 +274,13 @@ const NewWorkflowForm: React.FC<NewWorkflowFormProps> = ({ onWorkflowCreated }) 
   );
 };
 
-// EditWorkflowForm Component
 interface EditWorkflowFormProps {
   workflow: Workflow;
   onWorkflowUpdated: (id: string, name: string) => void;
 }
 
 const EditWorkflowForm: React.FC<EditWorkflowFormProps> = ({ workflow, onWorkflowUpdated }) => {
+  const { t } = useTranslation();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -332,10 +307,10 @@ const EditWorkflowForm: React.FC<EditWorkflowFormProps> = ({ workflow, onWorkflo
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Workflow Name</FormLabel>
+              <FormLabel>{t('Home.workflowName')}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Enter new workflow name"
+                  placeholder={t('Home.workflowNamePlaceholder')}
                   {...field}
                   className="w-full"
                 />
@@ -344,22 +319,20 @@ const EditWorkflowForm: React.FC<EditWorkflowFormProps> = ({ workflow, onWorkflo
             </FormItem>
           )}
         />
-        <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2">
+        <div className="flex justify-end space-x-2">
           <Button
             variant="secondary"
             onClick={() => reset()}
             type="button"
             disabled={isSubmitting}
-            className="w-full sm:w-auto"
           >
-            Reset
+            {t('Home.reset')}
           </Button>
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full sm:w-auto"
           >
-            {isSubmitting ? 'Updating...' : 'Update'}
+            {isSubmitting ? t('Home.updating') : t('Home.update')}
           </Button>
         </div>
       </form>
