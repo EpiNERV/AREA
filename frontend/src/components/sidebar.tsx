@@ -126,7 +126,7 @@ export function AppSidebar() {
 						<SidebarMenuButton asChild>
 							<a href="/accessibility">
 								<HelpingHandIcon />
-								<span>{t('Accessibility')}</span>
+								<span>{t('SidebarAccessibility')}</span>
 							</a>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
