@@ -75,6 +75,16 @@ const UserManagement = () => {
 		setIsDialogOpen(true);
 	};
 
+	const editUser = (id: number, updatedUser: User): Promise<User[]> => {
+		return new Promise((resolve) => {
+			setTimeout(() => {
+				const userIndex = mockUsers.findIndex((user) => user.id === id);
+				mockUsers[userIndex] = { ...updatedUser };
+				resolve([...mockUsers]);
+			}, 500);
+		});
+	};
+
 	const handleSaveChanges = async () => {
 		if (currentUser) {
 			const updatedUsers = await editUser(currentUser.id, currentUser);
@@ -212,7 +222,6 @@ const UserManagement = () => {
 				</DialogContent>
 			</Dialog>
 
-			{/* AlertDialog for confirming delete */}
 			<AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
