@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Edit, Trash } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogAction, AlertDialogCancel, AlertDialogTitle, AlertDialogDescription } from '@/components/ui/alert-dialog';
 import { useTranslation } from 'react-i18next';
 
 interface User {
@@ -22,6 +23,8 @@ const UserManagement = () => {
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
+	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+	const [userToDelete, setUserToDelete] = useState<User | null>(null); // Track the user to be deleted
 
 	const mockUsers: User[] = [
 		{ id: 1, username: 'Alice', email: 'alice@example.com', workflows: 5, userType: 'Admin', lastConnection: '20-10-2024' },
@@ -30,11 +33,6 @@ const UserManagement = () => {
 	];
 
 	const fetchUsers = useCallback((): Promise<User[]> => {
-		const mockUsers: User[] = [
-			{ id: 1, username: 'Alice', email: 'alice@example.com', workflows: 5, userType: 'Admin', lastConnection: '20-10-2024' },
-			{ id: 2, username: 'Bob', email: 'bob@example.com', workflows: 3, userType: 'User', lastConnection: '20-09-2024' },
-			{ id: 3, username: 'Charlie', email: 'charlie@example.com', workflows: 7, userType: 'User', lastConnection: '20-08-2024' },
-		];
 		return new Promise((resolve) => {
 			setTimeout(() => {
 				resolve(mockUsers);
@@ -59,19 +57,17 @@ const UserManagement = () => {
 		});
 	};
 
-	const editUser = (id: number, updatedUser: User): Promise<User[]> => {
-		return new Promise((resolve) => {
-			setTimeout(() => {
-				const userIndex = mockUsers.findIndex((user) => user.id === id);
-				mockUsers[userIndex] = { ...updatedUser };
-				resolve([...mockUsers]);
-			}, 500);
-		});
+	const handleDeleteUser = async () => {
+		if (userToDelete) {
+			const updatedUsers = await deleteUser(userToDelete.id);
+			setUsers(updatedUsers);
+			setIsDeleteDialogOpen(false);
+		}
 	};
 
-	const handleDeleteUser = async (id: number) => {
-		const updatedUsers = await deleteUser(id);
-		setUsers(updatedUsers);
+	const handleOpenDeleteDialog = (user: User) => {
+		setUserToDelete(user); // Set the user to be deleted
+		setIsDeleteDialogOpen(true); // Open the delete confirmation dialog
 	};
 
 	const handleOpenEditDialog = (user: User) => {
@@ -169,7 +165,7 @@ const UserManagement = () => {
 								<Button variant="outline" size="sm" onClick={() => handleOpenEditDialog(user)}>
 									<Edit className="w-4 h-4" />
 								</Button>
-								<Button variant="destructive" size="sm" onClick={() => handleDeleteUser(user.id)}>
+								<Button variant="destructive" size="sm" onClick={() => handleOpenDeleteDialog(user)}>
 									<Trash className="w-4 h-4" />
 								</Button>
 							</TableCell>
@@ -178,6 +174,7 @@ const UserManagement = () => {
 				</TableBody>
 			</Table>
 
+			{/* Dialog for editing user */}
 			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
 				<DialogContent>
 					<DialogHeader>
@@ -214,6 +211,20 @@ const UserManagement = () => {
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
+
+			{/* AlertDialog for confirming delete */}
+			<AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>{t('UserManagement.confirmDeleteTitle')}</AlertDialogTitle>
+						<AlertDialogDescription>{t('UserManagement.confirmDeleteDescription')}</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>{t('UserManagement.cancel')}</AlertDialogCancel>
+						<AlertDialogAction onClick={handleDeleteUser}>{t('UserManagement.confirm')}</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 };
