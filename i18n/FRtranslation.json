@@ -1,4 +1,27 @@
 {
+  "Theme Mode": "Mode Thème",
+  "Color Theme": "Thème de Couleur",
+  "System": "Système",
+  "Default": "Défaut",
+  "Clair": "Clair",
+  "Sombre": "Sombre",
+  "Système": "Système",
+  "Zync": "Zync",
+  "Ardoise": "Ardoise",
+  "Pierre": "Pierre",
+  "Gris": "Gris",
+  "Neutre": "Neutre",
+  "Rouge": "Rouge",
+  "Rose": "Rose",
+  "Orange": "Orange",
+  "Vert": "Vert",
+  "Bleu": "Bleu",
+  "Jaune": "Jaune",
+  "Violet": "Violet",
+  "Select Color Theme": "Sélectionnez le Thème de Couleur",
+
+
+
   "Accessibility": "Accessibilité",
   "Status": "Statut",
   "Colorblind mode": "Mode daltonien",

@@ -1,4 +1,23 @@
 {
+  "Theme Mode": "Theme Mode",
+  "Color Theme": "Color Theme",
+  "System": "System",
+  "Default": "Default",
+  "Zync": "Zync",
+  "Ardoise": "Slate",
+  "Pierre": "Stone",
+  "Gris": "Gray",
+  "Neutre": "Neutral",
+  "Rouge": "Red",
+  "Rose": "Rose",
+  "Orange": "Orange",
+  "Vert": "Green",
+  "Bleu": "Blue",
+  "Jaune": "Yellow",
+  "Violet": "Violet",
+  "Select Color Theme": "Select Color Theme",
+
+
   "Accessibility": "Accessibility",
   "Status": "Status",
   "Colorblind mode": "Colorblind mode",
