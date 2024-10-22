@@ -2,17 +2,11 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useTheme } from "@/components/ThemeProvider"
 import { useTranslation } from 'react-i18next';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 
 const Accessibility = () => {
-	const { setTheme, theme } = useTheme();
+	const { themeMode, setThemeMode, themeColor, setThemeColor } = useTheme();
 	const { i18n, t } = useTranslation();
 
 	const handleLanguageChange = (language: string) => {
@@ -37,7 +31,6 @@ const Accessibility = () => {
 					</TableHeader>
 
 					<TableBody>
-						{/* Colorblind Mode */}
 						<TableRow>
 							<TableCell className="font-medium">{t('Colorblind mode')}</TableCell>
 							<TableCell>
@@ -54,24 +47,51 @@ const Accessibility = () => {
 							</TableCell>
 						</TableRow>
 
-						{/* Theme */}
 						<TableRow>
-							<TableCell className="font-medium">{t('Theme')}</TableCell>
+							<TableCell className="font-medium">{t('Mode')}</TableCell>
 							<TableCell>
-								<RadioGroup value={theme} onValueChange={setTheme}>
+								<RadioGroup value={themeMode} onValueChange={setThemeMode}>
 									<div className="flex items-center space-x-2">
 										<RadioGroupItem value="light" id="theme-light" />
-										<Label htmlFor="theme-light">{t('Light')}</Label>
+										<Label htmlFor="theme-light">{t('Clair')}</Label>
 									</div>
 									<div className="flex items-center space-x-2">
 										<RadioGroupItem value="dark" id="theme-dark" />
-										<Label htmlFor="theme-dark">{t('Dark')}</Label>
+										<Label htmlFor="theme-dark">{t('Sombre')}</Label>
+									</div>
+									<div className="flex items-center space-x-2">
+										<RadioGroupItem value="system" id="theme-system" />
+										<Label htmlFor="theme-system">{t('Système')}</Label>
 									</div>
 								</RadioGroup>
 							</TableCell>
 						</TableRow>
 
-						{/* Text Size Adjustment */}
+						<TableRow>
+							<TableCell className="font-medium">{t('Couleur')}</TableCell>
+							<TableCell>
+								<Select value={themeColor} onValueChange={setThemeColor}>
+									<SelectTrigger className="w-[200px]">
+										<SelectValue placeholder={t('Sélectionner la couleur du thème')} />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="zync">{t('Zync')}</SelectItem>
+										<SelectItem value="slate">{t('Ardoise')}</SelectItem>
+										<SelectItem value="stone">{t('Pierre')}</SelectItem>
+										<SelectItem value="gray">{t('Gris')}</SelectItem>
+										<SelectItem value="neutral">{t('Neutre')}</SelectItem>
+										<SelectItem value="red">{t('Rouge')}</SelectItem>
+										<SelectItem value="rose">{t('Rose')}</SelectItem>
+										<SelectItem value="orange">{t('Orange')}</SelectItem>
+										<SelectItem value="green">{t('Vert')}</SelectItem>
+										<SelectItem value="blue">{t('Bleu')}</SelectItem>
+										<SelectItem value="yellow">{t('Jaune')}</SelectItem>
+										<SelectItem value="violet">{t('Violet')}</SelectItem>
+									</SelectContent>
+								</Select>
+							</TableCell>
+						</TableRow>
+
 						<TableRow>
 							<TableCell className="font-medium">{t('Text size adjustment')}</TableCell>
 							<TableCell>
@@ -92,7 +112,6 @@ const Accessibility = () => {
 							</TableCell>
 						</TableRow>
 
-						{/* Language */}
 						<TableRow>
 							<TableCell className="font-medium">{t('Language')}</TableCell>
 							<TableCell>
