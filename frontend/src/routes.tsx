@@ -44,7 +44,7 @@ function AppRoutes() {
 						<Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
 						<Route path="/NewWorkflow" element={<ProtectedRoute><NewWorkflow /></ProtectedRoute>} />
 						<Route path="/backend-settings" element={<ProtectedRoute><BackendSettings /></ProtectedRoute>} />
-						<Route path="/user-management" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
+						<Route path="/users-management" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
 						<Route path="/accessibility" element={<ProtectedRoute><Accessibility /></ProtectedRoute>} />
 			
 						{/* Profile */}
