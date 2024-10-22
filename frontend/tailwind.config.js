@@ -6,10 +6,6 @@ module.exports = {
     theme: {
     	extend: {
     		colors: {
-    			page_background: '#f3f4ff',
-    			navbar_background: '#e6e7f2',
-    			navbar_Text: '#000000',
-    			navbar_profile_background: '#4b5670',
     			background: 'hsl(var(--background))',
     			foreground: 'hsl(var(--foreground))',
     			card: {
