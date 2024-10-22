@@ -57,5 +57,32 @@
     "changePasswordDescription": "Change your password within this card.",
     "currentPassword": "Current password",
     "newPassword": "New password"
+  },
+
+  "UserManagement": {
+    "title": "Users Management",
+    "searchPlaceholder": "Search by username",
+    "sortBy": "Sort by",
+    "usernameAsc": "Username (A-Z)",
+    "usernameDesc": "Username (Z-A)",
+    "emailAsc": "Email (A-Z)",
+    "emailDesc": "Email (Z-A)",
+    "workflowsAsc": "Workflows (Ascending)",
+    "workflowsDesc": "Workflows (Descending)",
+    "userTypeAsc": "User Type (Admin First)",
+    "userTypeDesc": "User Type (User First)",
+    "lastConnectionAsc": "Last Connection (Newest)",
+    "lastConnectionDesc": "Last Connection (Oldest)",
+    "username": "Username",
+    "email": "Email",
+    "workflows": "Number of Workflows",
+    "userType": "User Type",
+    "lastConnection": "Last Connection",
+    "actions": "Actions",
+    "editUser": "Edit User",
+    "save": "Save",
+    "admin": "Admin",
+    "user": "User",
+    "delete": "Delete"
   }
 }
