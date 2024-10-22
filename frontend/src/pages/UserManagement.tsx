@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Edit, Trash } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { useTranslation } from 'react-i18next';
 
 interface User {
 	id: number;
@@ -16,10 +17,11 @@ interface User {
 }
 
 const UserManagement = () => {
+	const { t } = useTranslation();
 	const [users, setUsers] = useState<User[]>([]);
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
-	const [currentUser, setCurrentUser] = useState<User | null>(null); // Nullable type
+	const [currentUser, setCurrentUser] = useState<User | null>(null);
 
 	const mockUsers: User[] = [
 		{ id: 1, username: 'Alice', email: 'alice@example.com', workflows: 5, userType: 'Admin', lastConnection: '20-10-2024' },
@@ -109,13 +111,13 @@ const UserManagement = () => {
 	return (
 		<div className="flex flex-col w-full h-full">
 			<div className="flex justify-center items-center mb-4">
-				<h1 className="text-4xl font-bold">Users Management</h1>
+				<h1 className="text-4xl font-bold">{t('UserManagement.title')}</h1>
 			</div>
 
 			<div className="flex justify-center items-center space-x-4 mb-4">
 				<Input
 					type="text"
-					placeholder="Search by username"
+					placeholder={t('UserManagement.searchPlaceholder')}
 					className="p-2 border rounded w-64"
 					value={searchTerm}
 					onChange={(e) => setSearchTerm(e.target.value)}
@@ -125,20 +127,20 @@ const UserManagement = () => {
 					handleSort(field, direction);
 				}}>
 					<SelectTrigger className="w-[200px]">
-						<SelectValue placeholder="Sort by" />
+						<SelectValue placeholder={t('UserManagement.sortBy')} />
 					</SelectTrigger>
 					<SelectContent>
 						<SelectGroup>
-							<SelectItem value="username:asc">Username (A-Z)</SelectItem>
-							<SelectItem value="username:desc">Username (Z-A)</SelectItem>
-							<SelectItem value="email:asc">Email (A-Z)</SelectItem>
-							<SelectItem value="email:desc">Email (Z-A)</SelectItem>
-							<SelectItem value="workflows:asc">Workflows (Ascending)</SelectItem>
-							<SelectItem value="workflows:desc">Workflows (Descending)</SelectItem>
-							<SelectItem value="userType:asc">User Type (Admin First)</SelectItem>
-							<SelectItem value="userType:desc">User Type (User First)</SelectItem>
-							<SelectItem value="lastConnection:asc">Last Connection (Newest)</SelectItem>
-							<SelectItem value="lastConnection:desc">Last Connection (Oldest)</SelectItem>
+							<SelectItem value="username:asc">{t('UserManagement.usernameAsc')}</SelectItem>
+							<SelectItem value="username:desc">{t('UserManagement.usernameDesc')}</SelectItem>
+							<SelectItem value="email:asc">{t('UserManagement.emailAsc')}</SelectItem>
+							<SelectItem value="email:desc">{t('UserManagement.emailDesc')}</SelectItem>
+							<SelectItem value="workflows:asc">{t('UserManagement.workflowsAsc')}</SelectItem>
+							<SelectItem value="workflows:desc">{t('UserManagement.workflowsDesc')}</SelectItem>
+							<SelectItem value="userType:asc">{t('UserManagement.userTypeAsc')}</SelectItem>
+							<SelectItem value="userType:desc">{t('UserManagement.userTypeDesc')}</SelectItem>
+							<SelectItem value="lastConnection:asc">{t('UserManagement.lastConnectionAsc')}</SelectItem>
+							<SelectItem value="lastConnection:desc">{t('UserManagement.lastConnectionDesc')}</SelectItem>
 						</SelectGroup>
 					</SelectContent>
 				</Select>
@@ -147,12 +149,12 @@ const UserManagement = () => {
 			<Table className="mt-4 mx-auto w-[800px]">
 				<TableHeader>
 					<TableRow>
-						<TableHead>Username</TableHead>
-						<TableHead>Email</TableHead>
-						<TableHead>Number of Workflows</TableHead>
-						<TableHead>User Type</TableHead>
-						<TableHead>Last Connection</TableHead>
-						<TableHead>Actions</TableHead>
+						<TableHead>{t('UserManagement.username')}</TableHead>
+						<TableHead>{t('UserManagement.email')}</TableHead>
+						<TableHead>{t('UserManagement.workflows')}</TableHead>
+						<TableHead>{t('UserManagement.userType')}</TableHead>
+						<TableHead>{t('UserManagement.lastConnection')}</TableHead>
+						<TableHead>{t('UserManagement.actions')}</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -179,7 +181,7 @@ const UserManagement = () => {
 			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Edit User</DialogTitle>
+						<DialogTitle>{t('UserManagement.editUser')}</DialogTitle>
 					</DialogHeader>
 					<div className="space-y-4">
 						<Input
@@ -202,13 +204,13 @@ const UserManagement = () => {
 								<SelectValue placeholder="Select User Type" />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="Admin">Admin</SelectItem>
-								<SelectItem value="User">User</SelectItem>
+								<SelectItem value="Admin">{t('UserManagement.admin')}</SelectItem>
+								<SelectItem value="User">{t('UserManagement.user')}</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>
 					<DialogFooter>
-						<Button onClick={handleSaveChanges}>Save</Button>
+						<Button onClick={handleSaveChanges}>{t('UserManagement.save')}</Button>
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
