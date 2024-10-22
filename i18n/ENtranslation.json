@@ -15,7 +15,7 @@
   "English": "English",
   "French": "French",
   "Area": "Area",
-  "Home": "Home",
+  "HomeSidebar": "Home",
   "Documentation": "Documentation",
   "Admin": "Admin",
   "Backend settings": "Backend settings",
@@ -171,5 +171,25 @@
     "confirmDeleteDescription": "Are you sure you want to delete this user? This action cannot be undone.",
     "cancel": "Cancel",
     "confirm": "Delete"
+  },
+  "Home": {
+    "title": "Workflows Management",
+    "searchPlaceholder": "Search workflows...",
+    "noWorkflowsFound": "No workflows found. Try adjusting your search or add a new workflow.",
+    "createWorkflowTitle": "Create New Workflow",
+    "createWorkflowDescription": "Fill in the details to create a new workflow.",
+    "editWorkflowTitle": "Edit Workflow",
+    "editWorkflowDescription": "Modify the name of the workflow.",
+    "workflowName": "Workflow Name",
+    "workflowNamePlaceholder": "Enter workflow name",
+    "reset": "Reset",
+    "create": "Create",
+    "creating": "Creating...",
+    "update": "Update",
+    "updating": "Updating...",
+    "deleteWorkflowTitle": "Delete Workflow",
+    "deleteWorkflowDescription": "Are you sure you want to delete the workflow \"{{workflowName}}\"? This action cannot be undone.",
+    "cancel": "Cancel",
+    "delete": "Delete"
   }
 }

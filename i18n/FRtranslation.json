@@ -15,7 +15,7 @@
   "English": "Anglais",
   "French": "Français",
   "Area": "Area",
-  "Home": "Accueil",
+  "HomeSidebar": "Accueil",
   "Documentation": "Documentation",
   "Admin": "Administration",
   "Backend settings": "Paramètres du backend",
@@ -171,5 +171,25 @@
     "confirmDeleteDescription": "Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.",
     "cancel": "Annuler",
     "confirm": "Supprimer"
+  },
+  "Home": {
+    "title": "Gestion des Workflows",
+    "searchPlaceholder": "Rechercher des workflows...",
+    "noWorkflowsFound": "Aucun workflow trouvé. Essayez d'ajuster votre recherche ou ajoutez un nouveau workflow.",
+    "createWorkflowTitle": "Créer un nouveau Workflow",
+    "createWorkflowDescription": "Remplissez les détails pour créer un nouveau workflow.",
+    "editWorkflowTitle": "Modifier le Workflow",
+    "editWorkflowDescription": "Modifiez le nom du workflow.",
+    "workflowName": "Nom du Workflow",
+    "workflowNamePlaceholder": "Entrez le nom du workflow",
+    "reset": "Réinitialiser",
+    "create": "Créer",
+    "creating": "Création en cours...",
+    "update": "Mettre à jour",
+    "updating": "Mise à jour en cours...",
+    "deleteWorkflowTitle": "Supprimer le Workflow",
+    "deleteWorkflowDescription": "Êtes-vous sûr de vouloir supprimer le workflow \"{{workflowName}}\" ? Cette action est irréversible.",
+    "cancel": "Annuler",
+    "delete": "Supprimer"
   }
 }
