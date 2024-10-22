@@ -57,19 +57,22 @@ router.post('/auth/register', async (req: Request, res: Response, next: NextFunc
 // POST /api/v1/user/auth/login
 router.post('/auth/login', async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
-  
+
   if (!email || !password) {
     res.status(400).json({ status: 'error', message: 'Email and password are required' });
     return;
   }
-  
+
   try {
     const user = await User.findOne({ email });
     if (!user || !(await user.comparePassword(password))) {
       res.status(401).json({ status: 'error', message: 'Invalid email or password' });
     } else {
       const tokens = generateTokens(user);
-      
+
+      user.last_connection = new Date();
+      user.save();
+
       res.status(200).json({
         status: 'success',
         message: 'Login successful',
