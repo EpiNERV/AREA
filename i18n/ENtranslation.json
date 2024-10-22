@@ -124,7 +124,7 @@
     "currentPassword": "Current password",
     "newPassword": "New password"
   },
-  "UserManagement": {
+  "UsersManagement": {
     "title": "Users Management",
     "searchPlaceholder": "Search by username",
     "sortBy": "Sort by",

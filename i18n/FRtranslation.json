@@ -124,7 +124,7 @@
     "currentPassword": "Mot de passe actuel",
     "newPassword": "Nouveau mot de passe"
   },
-  "UserManagement": {
+  "UsersManagement": {
     "title": "Gestion des utilisateurs",
     "searchPlaceholder": "Rechercher par nom d'utilisateur",
     "sortBy": "Trier par",
