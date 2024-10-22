@@ -25,6 +25,23 @@
   "Profile services": "Services du profil",
   "Log out": "Déconnexion",
   "Username": "Nom d'utilisateur",
+  "Welcome": {
+    "description": "Connectez vos services préférés pour automatiser vos actions en toute simplicité.",
+    "accessApp": "Accès à l'application",
+    "howItWorks": "Comment ça marche ?",
+    "step1": {
+      "title": "1. Connectez vos comptes",
+      "description": "Synchronisez vos comptes Google, GitHub, Discord, et plus encore."
+    },
+    "step2": {
+      "title": "2. Créez des actions",
+      "description": "Sélectionnez un déclencheur et choisissez une action correspondante."
+    },
+    "step3": {
+      "title": "3. Laissez la magie opérer",
+      "description": "Votre action se déclenche automatiquement à chaque fois que la condition est remplie."
+    }
+  },
   "AuthVerification": {
     "title": "Vérification OTP",
     "description": "Entrez le code de vérification que nous venons d'envoyer à votre adresse email.",

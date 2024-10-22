@@ -25,6 +25,23 @@
   "Profile services": "Profile services",
   "Log out": "Log out",
   "Username": "Username",
+  "Welcome": {
+    "description": "Connect your favorite services to automate your actions with ease.",
+    "accessApp": "Access the application",
+    "howItWorks": "How it works?",
+    "step1": {
+      "title": "1. Connect your accounts",
+      "description": "Sync your Google, GitHub, Discord accounts, and more."
+    },
+    "step2": {
+      "title": "2. Create actions",
+      "description": "Select a trigger and choose a corresponding action."
+    },
+    "step3": {
+      "title": "3. Let the magic happen",
+      "description": "Your action is triggered automatically whenever the condition is met."
+    }
+  },
   "AuthVerification": {
     "title": "OTP Verification",
     "description": "Enter the verification code we just sent to your email address.",
