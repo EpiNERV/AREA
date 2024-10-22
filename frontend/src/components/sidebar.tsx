@@ -28,13 +28,13 @@ export function AppSidebar() {
 	const AreaList = [
 		{
 			key: 'home',
-			title: t('HomeSidebar'),
+			title: t('Sidebar.HomeSidebar'),
 			url: "/home",
 			icon: Home,
 		},
 		{
 			key: 'documentation',
-			title: t('Documentation'),
+			title: t('Sidebar.Documentation'),
 			url: "/documentation",
 			icon: Search,
 		},
@@ -43,13 +43,13 @@ export function AppSidebar() {
 	const AdminList = [
 		{
 			key: 'backendSettings',
-			title: t('Backend settings'),
+			title: t('Sidebar.BackendSettings'),
 			url: "/backend-settings",
 			icon: Settings,
 		},
 		{
 			key: 'usersManagement',
-			title: t('Users management'),
+			title: t('Sidebar.UsersManagement'),
 			url: "/users-management",
 			icon: UserIcon,
 		},
@@ -58,21 +58,21 @@ export function AppSidebar() {
 	const UserMenu = [
 		{
 			key: 'profileInformation',
-			title: t('Profile informations'),
+			title: t('Sidebar.ProfileInformations'),
 			url: "/user/profile_informations",
 			icon: Settings,
 			className: ''
 		},
 		{
 			key: 'profileServices',
-			title: t('Profile services'),
+			title: t('Sidebar.ProfileServices'),
 			url: "/user/profile_services",
 			icon: BadgeCheck,
 			className: ''
 		},
 		{
 			key: 'logout',
-			title: t('Log out'),
+			title: t('Sidebar.LogOut'),
 			icon: LogOut,
 			onClick: () => {
 				logout();
@@ -83,10 +83,10 @@ export function AppSidebar() {
 
 	return (
 		<Sidebar variant="sidebar" collapsible="icon">
-			<SidebarHeader>{t('Area')}</SidebarHeader>
+			<SidebarHeader>{t('Sidebar.Area')}</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel>{t('Area')}</SidebarGroupLabel>
+					<SidebarGroupLabel>{t('Sidebar.User')}</SidebarGroupLabel>
 					<SidebarGroupContent>
 						<SidebarMenu>
 							{AreaList.map((item) => (
@@ -101,7 +101,7 @@ export function AppSidebar() {
 							))}
 						</SidebarMenu>
 					</SidebarGroupContent>
-					<SidebarGroupLabel>{t('Admin')}</SidebarGroupLabel>
+					<SidebarGroupLabel>{t('Sidebar.Admin')}</SidebarGroupLabel>
 					<SidebarGroupContent>
 						<SidebarMenu>
 							{AdminList.map((item) => (
@@ -120,13 +120,13 @@ export function AppSidebar() {
 			</SidebarContent>
 
 			<SidebarFooter>
-				<SidebarGroupLabel>{t('User')}</SidebarGroupLabel>
+				<SidebarGroupLabel>{t('Sidebar.User')}</SidebarGroupLabel>
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<SidebarMenuButton asChild>
 							<a href="/accessibility">
 								<HelpingHandIcon />
-								<span>{t('SidebarAccessibility')}</span>
+								<span>{t('Sidebar.AccessibilitySidebar')}</span>
 							</a>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
@@ -134,7 +134,7 @@ export function AppSidebar() {
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<SidebarMenuButton>
-									<UserIcon /> {t('Username')}
+									<UserIcon /> {t('Sidebar.Username')}
 									<ChevronUp className="ml-auto" />
 								</SidebarMenuButton>
 							</DropdownMenuTrigger>
