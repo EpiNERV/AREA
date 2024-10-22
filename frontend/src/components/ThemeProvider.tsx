@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 type ThemeMode = "dark" | "light" | "system";
 type ThemeColor =
-	| "zync"
+	| "zinc"
 	| "slate"
 	| "stone"
 	| "gray"
@@ -16,6 +16,12 @@ type ThemeColor =
 	| "blue"
 	| "yellow"
 	| "violet";
+type ColorBlindnessMode =
+	| "regular"
+	| "deuteranopia"
+	| "protanopia"
+	| "tritanopia"
+	| "monochromacy";
 
 type ThemeProviderProps = {
 	children: React.ReactNode;
@@ -26,6 +32,8 @@ type ThemeProviderState = {
 	setThemeMode: (mode: ThemeMode) => void;
 	themeColor: ThemeColor;
 	setThemeColor: (color: ThemeColor) => void;
+	colorBlindnessMode: ColorBlindnessMode;
+	setColorBlindnessMode: (mode: ColorBlindnessMode) => void;
 };
 
 const ThemeContext = createContext<ThemeProviderState | undefined>(undefined);
@@ -35,7 +43,10 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 		() => (localStorage.getItem("theme-mode") as ThemeMode) || "system"
 	);
 	const [themeColor, setThemeColorState] = useState<ThemeColor>(
-		() => (localStorage.getItem("theme-color") as ThemeColor) || "zync"
+		() => (localStorage.getItem("theme-color") as ThemeColor) || "zinc"
+	);
+	const [colorBlindnessMode, setColorBlindnessModeState] = useState<ColorBlindnessMode>(
+		() => (localStorage.getItem("color-blindness-mode") as ColorBlindnessMode) || "regular"
 	);
 
 	useEffect(() => {
@@ -67,7 +78,37 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 			"theme-violet"
 		);
 		root.classList.add(`theme-${themeColor}`);
-	}, [themeMode, themeColor]);
+
+		// Gérer le mode de daltonisme
+		root.classList.remove(
+			"colorblind-deuteranopia",
+			"colorblind-protanopia",
+			"colorblind-tritanopia",
+			"colorblind-monochromacy"
+		);
+		if (colorBlindnessMode !== "regular") {
+			root.classList.add(`colorblind-${colorBlindnessMode}`);
+		}
+
+		// Si Monochromacy est sélectionné, forcer le thème à Neutral
+		if (colorBlindnessMode === "monochromacy") {
+			root.classList.remove(
+				"theme-zync",
+				"theme-slate",
+				"theme-stone",
+				"theme-gray",
+				"theme-neutral",
+				"theme-red",
+				"theme-rose",
+				"theme-orange",
+				"theme-green",
+				"theme-blue",
+				"theme-yellow",
+				"theme-violet"
+			);
+			root.classList.add(`theme-neutral`);
+		}
+	}, [themeMode, themeColor, colorBlindnessMode]);
 
 	const value = useMemo(
 		() => ({
@@ -81,8 +122,13 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 				localStorage.setItem("theme-color", color);
 				setThemeColorState(color);
 			},
+			colorBlindnessMode,
+			setColorBlindnessMode: (mode: ColorBlindnessMode) => {
+				localStorage.setItem("color-blindness-mode", mode);
+				setColorBlindnessModeState(mode);
+			},
 		}),
-		[themeMode, themeColor]
+		[themeMode, themeColor, colorBlindnessMode]
 	);
 
 	return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
