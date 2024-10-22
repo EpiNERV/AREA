@@ -11,7 +11,7 @@ AxiosInstance.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(new Error(error))
+  (error) => Promise.reject(error)
 );
 
 AxiosInstance.interceptors.response.use(
@@ -34,7 +34,7 @@ AxiosInstance.interceptors.response.use(
         return Promise.reject(new Error("Error when refreshing token: " + refreshError));
       }
     }
-    return Promise.reject(new Error(error));
+    return Promise.reject(error);
   }
 );
 
