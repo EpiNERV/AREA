@@ -48,9 +48,9 @@ export function AppSidebar() {
 			icon: Settings,
 		},
 		{
-			key: 'userManagement',
+			key: 'usersManagement',
 			title: t('Users management'),
-			url: "/user-management",
+			url: "/users-management",
 			icon: UserIcon,
 		},
 	];
