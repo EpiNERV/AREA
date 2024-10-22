@@ -14,7 +14,6 @@
   "Language": "Language",
   "English": "English",
   "French": "French",
-
   "Area": "Area",
   "Home": "Home",
   "Documentation": "Documentation",
@@ -26,7 +25,75 @@
   "Profile services": "Profile services",
   "Log out": "Log out",
   "Username": "Username",
-
+  "AuthVerification": {
+    "title": "OTP Verification",
+    "description": "Enter the verification code we just sent to your email address.",
+    "verify": "Verify",
+    "didNotReceive": "Didn't receive the code?",
+    "resend": "Resend"
+  },
+  "PasswordChanged": {
+    "title": "Password Changed!",
+    "description": "Your password has been changed successfully.",
+    "backToLogin": "Back to Login"
+  },
+  "RegisterPage": {
+    "welcome": "Welcome 👋",
+    "description": "Register to start creating and managing your projects.",
+    "username": "Username",
+    "enterUsername": "Enter your username",
+    "email": "Email",
+    "enterEmail": "Enter your email",
+    "emailInvalid": "Please enter a valid email.",
+    "password": "Password",
+    "enterPassword": "Enter your password",
+    "hidePassword": "Hide password",
+    "showPassword": "Show password",
+    "confirmPassword": "Confirm Password",
+    "confirmYourPassword": "Confirm your password",
+    "hideConfirmPassword": "Hide confirm password",
+    "showConfirmPassword": "Show confirm password",
+    "passwordsNotMatch": "Passwords do not match.",
+    "agreeAndRegister": "Agree and Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "login": "Login",
+    "criteria": {
+      "minLength": "At least 8 characters",
+      "uppercase": "At least one uppercase letter",
+      "lowercase": "At least one lowercase letter",
+      "number": "At least one number",
+      "specialChar": "At least one special character"
+    }
+  },
+  "LoginPage": {
+    "emailRequired": "Please enter your email address.",
+    "emailInvalid": "Please enter a valid email address.",
+    "loginFailed": "Login failed. Please check your email and password and try again.",
+    "formErrors": "The form contains errors.",
+    "welcomeBack": "Welcome Back",
+    "description": "Login to continue managing your workflows.",
+    "email": "Email",
+    "enterEmail": "Enter your email",
+    "password": "Password",
+    "enterPassword": "Enter your password",
+    "hidePassword": "Hide password",
+    "showPassword": "Show password",
+    "login": "Login",
+    "forgotPassword": "Forgot Password?",
+    "orLoginWith": "Or Login with",
+    "noAccount": "Don’t have an account?",
+    "registerNow": "Register Now"
+  },
+  "PasswordForgotten": {
+    "title": "Forgot Password?",
+    "description": "Don’t worry! It happens. Please enter the email address linked with your account.",
+    "enterEmail": "Enter your email",
+    "emailPlaceholder": "Enter your email",
+    "emailRequired": "Please enter your email address.",
+    "sendCode": "Send Code",
+    "rememberPassword": "Remember Password?",
+    "login": "Login"
+  },
   "ProfileServices": {
     "services": {
       "discord": "Discord",
@@ -42,7 +109,6 @@
     "disconnectionFailed": "Failed to disconnect from {{service_name}}.",
     "disconnected": "Disconnected from {{service_name}}."
   },
-
   "ProfileInfos": {
     "changeUsername": "Change username",
     "changeUsernameDescription": "Change your username within this card.",
@@ -58,7 +124,6 @@
     "currentPassword": "Current password",
     "newPassword": "New password"
   },
-
   "UserManagement": {
     "title": "Users Management",
     "searchPlaceholder": "Search by username",

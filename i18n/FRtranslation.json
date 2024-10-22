@@ -14,7 +14,6 @@
   "Language": "Langue",
   "English": "Anglais",
   "French": "Français",
-
   "Area": "Area",
   "Home": "Accueil",
   "Documentation": "Documentation",
@@ -26,7 +25,75 @@
   "Profile services": "Services du profil",
   "Log out": "Déconnexion",
   "Username": "Nom d'utilisateur",
-
+  "AuthVerification": {
+    "title": "Vérification OTP",
+    "description": "Entrez le code de vérification que nous venons d'envoyer à votre adresse email.",
+    "verify": "Vérifier",
+    "didNotReceive": "Vous n'avez pas reçu le code ?",
+    "resend": "Renvoyer"
+  },
+  "PasswordChanged": {
+    "title": "Mot de passe modifié !",
+    "description": "Votre mot de passe a été modifié avec succès.",
+    "backToLogin": "Retour à la connexion"
+  },
+  "RegisterPage": {
+    "welcome": "Bienvenue 👋",
+    "description": "Inscrivez-vous pour commencer à créer et gérer vos projets.",
+    "username": "Nom d'utilisateur",
+    "enterUsername": "Entrez votre nom d'utilisateur",
+    "email": "Email",
+    "enterEmail": "Entrez votre email",
+    "emailInvalid": "Veuillez entrer un email valide.",
+    "password": "Mot de passe",
+    "enterPassword": "Entrez votre mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "showPassword": "Afficher le mot de passe",
+    "confirmPassword": "Confirmez le mot de passe",
+    "confirmYourPassword": "Confirmez votre mot de passe",
+    "hideConfirmPassword": "Masquer la confirmation du mot de passe",
+    "showConfirmPassword": "Afficher la confirmation du mot de passe",
+    "passwordsNotMatch": "Les mots de passe ne correspondent pas.",
+    "agreeAndRegister": "Accepter et s'inscrire",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "login": "Connexion",
+    "criteria": {
+      "minLength": "Au moins 8 caractères",
+      "uppercase": "Au moins une lettre majuscule",
+      "lowercase": "Au moins une lettre minuscule",
+      "number": "Au moins un chiffre",
+      "specialChar": "Au moins un caractère spécial"
+    }
+  },
+  "LoginPage": {
+    "emailRequired": "Veuillez entrer votre adresse email.",
+    "emailInvalid": "Veuillez entrer une adresse email valide.",
+    "loginFailed": "Échec de la connexion. Veuillez vérifier votre email et votre mot de passe et réessayer.",
+    "formErrors": "Le formulaire contient des erreurs.",
+    "welcomeBack": "Bon retour",
+    "description": "Connectez-vous pour continuer à gérer vos workflows.",
+    "email": "Email",
+    "enterEmail": "Entrez votre email",
+    "password": "Mot de passe",
+    "enterPassword": "Entrez votre mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "showPassword": "Afficher le mot de passe",
+    "login": "Connexion",
+    "forgotPassword": "Mot de passe oublié ?",
+    "orLoginWith": "Ou connectez-vous avec",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "registerNow": "Inscrivez-vous maintenant"
+  },
+  "PasswordForgotten": {
+    "title": "Mot de passe oublié ?",
+    "description": "Pas d'inquiétude ! Cela arrive. Veuillez entrer l'adresse email associée à votre compte.",
+    "enterEmail": "Entrez votre email",
+    "emailPlaceholder": "Entrez votre email",
+    "emailRequired": "Veuillez entrer votre adresse email.",
+    "sendCode": "Envoyer le code",
+    "rememberPassword": "Vous vous souvenez de votre mot de passe ?",
+    "login": "Connexion"
+  },
   "ProfileServices": {
     "services": {
       "discord": "Discord",
@@ -42,7 +109,6 @@
     "disconnectionFailed": "Échec de la déconnexion de {{service_name}}.",
     "disconnected": "Déconnecté de {{service_name}}."
   },
-
   "ProfileInfos": {
     "changeUsername": "Changer le nom d'utilisateur",
     "changeUsernameDescription": "Modifiez votre nom d'utilisateur dans cette carte.",
@@ -58,7 +124,6 @@
     "currentPassword": "Mot de passe actuel",
     "newPassword": "Nouveau mot de passe"
   },
-
   "UserManagement": {
     "title": "Gestion des utilisateurs",
     "searchPlaceholder": "Rechercher par nom d'utilisateur",
@@ -86,7 +151,7 @@
     "admin": "Administrateur",
     "user": "Utilisateur",
     "confirmDeleteTitle": "Confirmer la suppression",
-    "confirmDeleteDescription": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+    "confirmDeleteDescription": "Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.",
     "cancel": "Annuler",
     "confirm": "Supprimer"
   }
