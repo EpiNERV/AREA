@@ -1,55 +1,16 @@
+// src/components/UsersManagement.tsx
+
 import { useCallback, useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button.tsx';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table.tsx';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx';
+import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Edit, Trash, Plus } from 'lucide-react';
-import { Input } from '@/components/ui/input.tsx';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog.tsx';
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogAction, AlertDialogCancel, AlertDialogTitle, AlertDialogDescription } from '@/components/ui/alert-dialog.tsx';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogAction, AlertDialogCancel, AlertDialogTitle, AlertDialogDescription } from '@/components/ui/alert-dialog';
 import { useTranslation } from 'react-i18next';
-
-// Move mockUsers outside the component to prevent redefinition on each render
-let mockUsers: User[] = [
-	{ id: 1, username: 'Alice', email: 'alice@example.com', nbr_workflow: 5, role: 'Admin', last_connection: '20-10-2024' },
-	{ id: 2, username: 'Bob', email: 'bob@example.com', nbr_workflow: 3, role: 'User', last_connection: '20-09-2024' },
-	{ id: 3, username: 'Charlie', email: 'charlie@example.com', nbr_workflow: 7, role: 'User', last_connection: '20-08-2024' },
-];
-
-interface User {
-	id: number;
-	username: string;
-	email: string;
-	nbr_workflow: number;
-	role: 'Admin' | 'User';
-	last_connection: string;
-	password?: string;
-}
-
-// Refactored editUser function with reduced nesting
-const editUser = async (id: number, updatedUser: User): Promise<User[]> => {
-	await new Promise<void>((resolve) => setTimeout(resolve, 500));
-	const userIndex = mockUsers.findIndex((user) => user.id === id);
-	if (userIndex !== -1) {
-		mockUsers[userIndex] = { ...updatedUser };
-	}
-	return [...mockUsers];
-};
-
-// Refactored deleteUser function with reduced nesting
-const deleteUser = async (id: number): Promise<User[]> => {
-	await new Promise<void>((resolve) => setTimeout(resolve, 500));
-	mockUsers = mockUsers.filter((user) => user.id !== id);
-	return [...mockUsers];
-};
-
-// Refactored fetchUsers with useCallback and moved mockUsers outside to resolve ESLint warning
-const fetchUsers = (): Promise<User[]> => {
-	return new Promise((resolve) => {
-		setTimeout(() => {
-			resolve([...mockUsers]); // Return a copy to prevent external mutations
-		}, 500);
-	});
-};
+import { createUser, fetchUsers, updateUser, deleteUser, User } from 'sdk-api';
+import axiosInstance from '@/lib/auth/axiosInstance';
 
 const UsersManagement = () => {
 	const { t } = useTranslation();
@@ -60,81 +21,112 @@ const UsersManagement = () => {
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 	const [userToDelete, setUserToDelete] = useState<User | null>(null);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [error, setError] = useState<string | null>(null);
 
-	// Use useCallback without dependencies since fetchUsers doesn't depend on any external variables
-	const memoizedFetchUsers = useCallback((): Promise<User[]> => {
-		return fetchUsers();
-	}, []);
+	const memoizedFetchUsers = useCallback(async () => {
+		setLoading(true);
+		setError(null);
+		try {
+			const fetchedUsers = await fetchUsers(axiosInstance);
+			console.log('fetchUsers:', fetchedUsers);
+			setUsers(fetchedUsers);
+		} catch (err) {
+			console.error('Erreur lors de la récupération des utilisateurs :', err);
+			setError(t('UsersManagement.errorFetchingUsers'));
+		} finally {
+			setLoading(false);
+		}
+	}, [t]);
 
 	useEffect(() => {
-		const fetchData = async () => {
-			const data = await memoizedFetchUsers();
-			setUsers(data);
-		};
-		void fetchData();
+		void memoizedFetchUsers();
 	}, [memoizedFetchUsers]);
 
 	const handleDeleteUser = async () => {
 		if (userToDelete) {
-			const updatedUsers = await deleteUser(userToDelete.id);
-			setUsers(updatedUsers);
-			setIsDeleteDialogOpen(false);
+			console.log('Deleting user:', userToDelete);
+			try {
+				await deleteUser(axiosInstance, userToDelete.id);
+				setUsers(users.filter((user) => user.id !== userToDelete.id));
+				setIsDeleteDialogOpen(false);
+				setUserToDelete(null);
+			} catch (err) {
+				console.error('Erreur lors de la suppression de l\'utilisateur :', err);
+				setError(t('UsersManagement.errorDeletingUser'));
+			}
 		}
 	};
 
 	const handleOpenDeleteDialog = (user: User) => {
-		setUserToDelete(user); // Set the user to be deleted
-		setIsDeleteDialogOpen(true); // Open the delete confirmation dialog
+		setUserToDelete(user);
+		setIsDeleteDialogOpen(true);
 	};
 
 	const handleOpenEditDialog = (user: User) => {
 		setCurrentUser(user);
-		setIsNewUser(false); // Set isNewUser to false since we are editing
+		setIsNewUser(false);
 		setIsDialogOpen(true);
 	};
 
 	const handleOpenAddDialog = () => {
 		setCurrentUser({
-			id: Date.now(),
+			id: '',
 			username: '',
 			email: '',
-			role: 'User',
+			role: 'user',
 			nbr_workflow: 0,
 			last_connection: new Date().toISOString().slice(0, 10),
 			password: '',
 		});
-		setIsNewUser(true); // Set isNewUser to true since we are adding a new user
+		setIsNewUser(true);
 		setIsDialogOpen(true);
 	};
 
 	const handleSaveChanges = async () => {
 		if (currentUser) {
-			if (isNewUser) {
-				// Simulate adding a new user
-				mockUsers = [...mockUsers, currentUser];
-				setUsers([...users, currentUser]);
-			} else {
-				const updatedUsers = await editUser(currentUser.id, currentUser);
-				setUsers(updatedUsers);
+			try {
+				if (isNewUser) {
+					const createdUser = await createUser(axiosInstance, {
+						username: currentUser.username,
+						email: currentUser.email,
+						password: currentUser.password || '',
+						role: currentUser.role,
+					});
+					setUsers([...users, createdUser]);
+				} else {
+					const updatedUser = await updateUser(axiosInstance, currentUser.id, {
+						username: currentUser.username,
+						email: currentUser.email,
+						role: currentUser.role,
+					});
+					setUsers(users.map((user) => (user.id === updatedUser.id ? updatedUser : user)));
+				}
+				setIsDialogOpen(false);
+				setCurrentUser(null);
+			} catch (err) {
+				console.error('Erreur lors de la sauvegarde des modifications :', err);
+				setError(isNewUser ? t('UsersManagement.errorCreatingUser') : t('UsersManagement.errorUpdatingUser'));
 			}
-			setIsDialogOpen(false);
 		}
 	};
 
 	const handleSort = (field: keyof User, direction: 'asc' | 'desc') => {
 		const sortedUsers = [...users].sort((a, b) => {
+			let valueA: any = a[field];
+			let valueB: any = b[field];
+
 			if (field === 'last_connection') {
-				const dateA = new Date(a.last_connection.split('-').reverse().join('-')).getTime();
-				const dateB = new Date(b.last_connection.split('-').reverse().join('-')).getTime();
-				return direction === 'asc' ? dateB - dateA : dateA - dateB;
-			} else if (typeof a[field] === 'string' && typeof b[field] === 'string') {
-				return direction === 'asc'
-					? (a[field]).localeCompare(b[field])
-					: (b[field]).localeCompare(a[field]);
+				valueA = new Date(b.last_connection).getTime();
+				valueB = new Date(a.last_connection).getTime();
+			}
+
+			if (typeof valueA === 'string' && typeof valueB === 'string') {
+				return direction === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
+			} else if (typeof valueA === 'number' && typeof valueB === 'number') {
+				return direction === 'asc' ? valueA - valueB : valueB - valueA;
 			} else {
-				return direction === 'asc'
-					? (a[field] as number) - (b[field] as number)
-					: (b[field] as number) - (a[field] as number);
+				return 0;
 			}
 		});
 		setUsers(sortedUsers);
@@ -188,40 +180,47 @@ const UsersManagement = () => {
 					onClick={handleOpenAddDialog}
 				>
 					<Plus className="w-4 h-4" />
+					{t('UsersManagement.addUser')}
 				</Button>
 			</div>
 
-			<Table className="mt-4 mx-auto w-[800px]">
-				<TableHeader>
-					<TableRow>
-						<TableHead>{t('UsersManagement.username')}</TableHead>
-						<TableHead>{t('UsersManagement.email')}</TableHead>
-						<TableHead>{t('UsersManagement.workflows')}</TableHead>
-						<TableHead>{t('UsersManagement.userType')}</TableHead>
-						<TableHead>{t('UsersManagement.lastConnection')}</TableHead>
-						<TableHead>{t('UsersManagement.actions')}</TableHead>
-					</TableRow>
-				</TableHeader>
-				<TableBody>
-					{filteredUsers.map((user) => (
-						<TableRow key={user.id}>
-							<TableCell>{user.username}</TableCell>
-							<TableCell>{user.email}</TableCell>
-							<TableCell>{user.nbr_workflow}</TableCell>
-							<TableCell>{user.role}</TableCell>
-							<TableCell>{user.last_connection}</TableCell>
-							<TableCell className="flex space-x-2">
-								<Button variant="outline" size="sm" onClick={() => handleOpenEditDialog(user)}>
-									<Edit className="w-4 h-4" />
-								</Button>
-								<Button variant="destructive" size="sm" onClick={() => handleOpenDeleteDialog(user)}>
-									<Trash className="w-4 h-4" />
-								</Button>
-							</TableCell>
+			{error && <div className="text-red-500 text-center mb-4">{error}</div>}
+
+			{loading ? (
+				<p className="text-center">{t('UsersManagement.loading')}</p>
+			) : (
+				<Table className="mt-4 mx-auto w-[800px]">
+					<TableHeader>
+						<TableRow>
+							<TableHead>{t('UsersManagement.username')}</TableHead>
+							<TableHead>{t('UsersManagement.email')}</TableHead>
+							<TableHead>{t('UsersManagement.workflows')}</TableHead>
+							<TableHead>{t('UsersManagement.userType')}</TableHead>
+							<TableHead>{t('UsersManagement.lastConnection')}</TableHead>
+							<TableHead>{t('UsersManagement.actions')}</TableHead>
 						</TableRow>
-					))}
-				</TableBody>
-			</Table>
+					</TableHeader>
+					<TableBody>
+						{filteredUsers.map((user) => (
+							<TableRow key={user.id}>
+								<TableCell>{user.username}</TableCell>
+								<TableCell>{user.email}</TableCell>
+								<TableCell>{user.nbr_workflow}</TableCell>
+								<TableCell>{user.role}</TableCell>
+								<TableCell>{new Date(user.last_connection).toLocaleDateString()}</TableCell>
+								<TableCell className="flex space-x-2">
+									<Button variant="outline" size="sm" onClick={() => handleOpenEditDialog(user)}>
+										<Edit className="w-4 h-4" />
+									</Button>
+									<Button variant="destructive" size="sm" onClick={() => handleOpenDeleteDialog(user)}>
+										<Trash className="w-4 h-4" />
+									</Button>
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+			)}
 
 			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
 				<DialogContent>
@@ -240,6 +239,7 @@ const UsersManagement = () => {
 									prev ? { ...prev, username: e.target.value } : prev
 								)
 							}
+							required
 						/>
 						<Input
 							type="email"
@@ -250,10 +250,11 @@ const UsersManagement = () => {
 									prev ? { ...prev, email: e.target.value } : prev
 								)
 							}
+							required
 						/>
 						<Select
-							value={currentUser?.role ?? 'User'}
-							onValueChange={(value: 'Admin' | 'User') =>
+							value={currentUser?.role ?? 'user'}
+							onValueChange={(value: 'admin' | 'user') =>
 								setCurrentUser((prev) =>
 									prev ? { ...prev, role: value } : prev
 								)
@@ -263,8 +264,10 @@ const UsersManagement = () => {
 								<SelectValue placeholder={t('UsersManagement.selectUserType')} />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="Admin">{t('UsersManagement.admin')}</SelectItem>
-								<SelectItem value="User">{t('UsersManagement.user')}</SelectItem>
+								<SelectGroup>
+									<SelectItem value="admin">{t('UsersManagement.admin')}</SelectItem>
+									<SelectItem value="user">{t('UsersManagement.user')}</SelectItem>
+								</SelectGroup>
 							</SelectContent>
 						</Select>
 
@@ -278,11 +281,14 @@ const UsersManagement = () => {
 										prev ? { ...prev, password: e.target.value } : prev
 									)
 								}
+								required
 							/>
 						)}
 					</div>
 					<DialogFooter>
-						<Button onClick={handleSaveChanges}>{t('UsersManagement.save')}</Button>
+						<Button onClick={handleSaveChanges}>
+							{isNewUser ? t('UsersManagement.create') : t('UsersManagement.save')}
+						</Button>
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
@@ -291,7 +297,9 @@ const UsersManagement = () => {
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>{t('UsersManagement.confirmDeleteTitle')}</AlertDialogTitle>
-						<AlertDialogDescription>{t('UsersManagement.confirmDeleteDescription')}</AlertDialogDescription>
+						<AlertDialogDescription>
+							{t('UsersManagement.confirmDeleteDescription')}
+						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>{t('UsersManagement.cancel')}</AlertDialogCancel>

@@ -1,1 +1,2 @@
 export { fetchWorkflows, createWorkflow, updateWorkflow, deleteWorkflow, Workflow } from './workflow';
+export { createUser, fetchUsers, updateUser, deleteUser, User, CreateUserData, UpdateUserData } from './usersManagement';
