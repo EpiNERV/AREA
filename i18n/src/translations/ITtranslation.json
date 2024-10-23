@@ -199,7 +199,11 @@
     "confirmDeleteTitle": "Conferma eliminazione",
     "confirmDeleteDescription": "Sei sicuro di voler eliminare questo utente? Questa azione non può essere annullata.",
     "cancel": "Annulla",
-    "confirm": "Elimina"
+    "confirm": "Elimina",
+    "errorFetchingUsers": "Errore nel recupero degli utenti.",
+    "errorDeletingUser": "Errore nell'eliminazione dell'utente.",
+    "errorCreatingUser": "Errore nella creazione dell'utente.",
+    "errorUpdatingUser": "Errore nell'aggiornamento dell'utente."
   },
   "Home": {
     "title": "Gestione Workflows",

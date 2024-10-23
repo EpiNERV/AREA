@@ -199,7 +199,11 @@
     "confirmDeleteTitle": "Löschung bestätigen",
     "confirmDeleteDescription": "Sind Sie sicher, dass Sie diesen Benutzer löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
     "cancel": "Abbrechen",
-    "confirm": "Löschen"
+    "confirm": "Löschen",
+    "errorFetchingUsers": "Fehler beim Abrufen der Benutzer.",
+    "errorDeletingUser": "Fehler beim Löschen des Benutzers.",
+    "errorCreatingUser": "Fehler bei der Erstellung des Benutzers.",
+    "errorUpdatingUser": "Fehler beim Aktualisieren des Benutzers."
   },
   "Home": {
     "title": "Workflows-Verwaltung",

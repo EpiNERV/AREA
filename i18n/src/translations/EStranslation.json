@@ -199,7 +199,11 @@
     "confirmDeleteTitle": "Confirmar eliminación",
     "confirmDeleteDescription": "¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.",
     "cancel": "Cancelar",
-    "confirm": "Eliminar"
+    "confirm": "Eliminar",
+    "errorFetchingUsers": "Error al obtener usuarios.",
+    "errorDeletingUser": "Error al eliminar el usuario.",
+    "errorCreatingUser": "Error al crear el usuario.",
+    "errorUpdatingUser": "Error al actualizar el usuario."
   },
   "Home": {
     "title": "Gestión de Workflows",
