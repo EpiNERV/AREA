@@ -1,17 +1,8 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 import { genSalt, hash, compare } from 'bcrypt';
+import jsonServicesList from "./default_services_list.json";
+import Service from './service';
 
-// Interface for the User's connected services
-export interface IService {
-  name: string;
-  key: string;
-  connected: boolean;
-  token: string | null;
-  refreshToken: string | null;
-  connectedAt: Date;
-}
-
-// Interface that extends the mongoose Document
 export interface IUser extends Document {
   email: string;
   username: string;
@@ -19,12 +10,12 @@ export interface IUser extends Document {
   totp_secret?: string;
   totp_enabled: boolean;
   role: 'user' | 'admin';
-  services: IService[];
+  services: Schema.Types.ObjectId;
+
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-// User Schema
-const userSchema = new Schema<IUser>(
+const UserSchema = new Schema<IUser>(
   {
     email: {
       type: String,
@@ -57,22 +48,16 @@ const userSchema = new Schema<IUser>(
       enum: ['user', 'admin'],
       default: 'user',
     },
-    services: [
-      {
-        name: { type: String, required: true, },
-        key: { type: String, required: true, },
-        connected: { type: Boolean, default: false, },
-        token: { type: String, },
-        refreshToken: { type: String, },
-        connectedAt: { type: Date, },
-      },
-    ],
+    services: {
+      type: Schema.Types.ObjectId,
+      ref: 'Service',
+    },
   },
   { timestamps: true }
 );
 
 // Pre-save middleware to hash the password before saving
-userSchema.pre('save', async function (next) {
+UserSchema.pre('save', async function (next) {
   const user = this as IUser;
 
   if (!user.isModified('password')) return next();
@@ -82,27 +67,37 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// Pre-save middleware to add default services when the user is created
-userSchema.pre('save', async function (next) {
+// Pre-save middleware to add default services if the user is new
+UserSchema.pre('save', async function (next) {
   const user = this as IUser;
 
-  if (user.isNew) {
-    const defaultServices: IService[] = [
-      { name: 'Discord', key: 'discord', connected: false, token: '', refreshToken: '', connectedAt: new Date() },
-      { name: 'Twitter', key: 'twitter', connected: false, token: '', refreshToken: '', connectedAt: new Date() },
-    ];
+  if (!user.isNew) return next();
 
-    user.services = defaultServices;
-  }
+  // Query the services from the JSON
+  const services = jsonServicesList.map(service => ({
+    name: service.displayedName ,
+    key: service.key,
+    connected: false,
+  }));
+
+  // Create a Service document and save it
+  const service = new Service({
+    user: user._id,
+    services,
+  });
+  await service.save();
+
+  // Link it to the user
+  user.services = service._id as Schema.Types.ObjectId;
 
   next();
 });
 
 // Method to compare passwords
-userSchema.methods.comparePassword = async function (candidatePassword: string) {
+UserSchema.methods.comparePassword = async function (candidatePassword: string) {
   return compare(candidatePassword, this.password);
 };
 
 // Export the User model
-const User = mongoose.model<IUser>('User', userSchema);
+const User = model<IUser>('User', UserSchema);
 export default User;

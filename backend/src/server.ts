@@ -1,6 +1,6 @@
 import app, { connectDB } from './app';
 import dotenv from 'dotenv';
-import ServiceInfo from './models/serviceInfo';
+import ServiceInfo from './models/servicesList';
 
 dotenv.config();
 
@@ -10,6 +10,8 @@ const startServer = async () => {
   try {
     await connectDB();
     await ServiceInfo.seed();
+    await ServiceInfo.updateAllUsersServices();
+
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });

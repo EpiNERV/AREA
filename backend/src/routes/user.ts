@@ -2,8 +2,9 @@ import express, { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { hash } from 'bcrypt';
 import User, { IUser } from '../models/user';
-import ServiceInfo, { IServiceInfo } from '../models/serviceInfo';
 import authMiddleware from '../middleware/auth';
+import Service from '../models/service';
+import ServicesList from '../models/servicesList';
 
 const router = express.Router();
 
@@ -179,37 +180,51 @@ router.delete('/totp', authMiddleware, async (req: Request, res: Response, next:
   User Service routes
 */
 
-// GET /api/v1/services - Fetch all services with connection status for the authenticated user
+// GET /api/v1/user/services - Fetch all services with connection status for the authenticated user
 router.get('/services', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await User.findById(req.body.user._id);
-
     if (!user) {
       res.status(404).json({ status: 'error', message: 'User not found' });
       return;
     }
 
-    res.status(200).json(user.services);
+    const user_services_doc = await Service.findOne({ user: user._id });
+    if (!user_services_doc) {
+      res.status(404).json({ status: 'error', message: 'Services not found in User' });
+      return;
+    }
+    res.status(200).json(user_services_doc.services);
+
   } catch (err) {
     next(err);
   }
 });
 
-// POST /api/v1/services/connect/:name - Returns the route to start an OAuth flow
-router.get('/services/connect/:name', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+// POST /api/v1/user/services/connect/:key - Returns the route to start an OAuth flow
+router.get('/services/connect/:key', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await User.findById(req.body.user._id);
-
     if (!user) {
       res.status(404).json({ status: 'error', message: 'User not found' });
       return;
     }
-    
-    const { name } = req.params;
-    const service_info = await ServiceInfo.findOne({ name }) as IServiceInfo;
 
-    if (!service_info) {
+    const user_services_doc = await Service.findOne({ user: user._id });
+    if (!user_services_doc) {
+      res.status(404).json({ status: 'error', message: 'Services not found in User' });
+      return;
+    }
+    const { key } = req.params;
+    const target_service = user_services_doc.services.find((service) => service.key === key);
+    if (!target_service) {
       res.status(404).json({ status: 'error', message: 'Service not found' });
+      return;
+    }
+    // Get service info from servicesList collection
+    const service_info = await ServicesList.findOne({ name: target_service.key });
+    if (!service_info) {
+      res.status(404).json({ status: 'error', message: 'Service not found in ServicesList' });
       return;
     }
 
@@ -221,7 +236,7 @@ router.get('/services/connect/:name', authMiddleware, async (req: Request, res: 
 });
 
 
-// POST /api/v1/services/disconnect/:serviceKey - Disconnect a user from a service
+// POST /api/v1/user/services/disconnect/:serviceKey - Disconnect a user from a service
 router.post('/services/disconnect/:serviceKey', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   res.status(400).json({ status: 'error', message: 'Not implemented' });
   return;
