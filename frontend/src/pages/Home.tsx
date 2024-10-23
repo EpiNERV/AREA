@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useTranslation } from 'react-i18next';
-import { fetchWorkflows, createWorkflow, updateWorkflow, deleteWorkflow } from 'api-sdk';
+import { fetchWorkflows, createWorkflow, updateWorkflow, deleteWorkflow } from 'sdk-api';
 import AxiosInstance from '@/lib/auth/axiosInstance.tsx';
 
 interface Workflow {
