@@ -18,6 +18,15 @@ const AuthVerification = () => {
 		navigate('/home', { replace: true });
 	};
 
+	const OTP_SLOTS = [
+		{ id: 'otp-slot-1', index: 0 },
+		{ id: 'otp-slot-2', index: 1 },
+		{ id: 'otp-slot-3', index: 2 },
+		{ id: 'otp-slot-4', index: 3 },
+		{ id: 'otp-slot-5', index: 4 },
+		{ id: 'otp-slot-6', index: 5 },
+	];
+
 	return (
 		<div className="flex h-screen">
 			<SelectLanguageAndTheme/>
@@ -42,8 +51,8 @@ const AuthVerification = () => {
 									autoFocus
 								>
 									<InputOTPGroup>
-										{[...Array(6)].map((_, index) => (
-											<InputOTPSlot key={index} index={index}/>
+										{OTP_SLOTS.map((slot) => (
+											<InputOTPSlot key={slot.id} index={slot.index} />
 										))}
 									</InputOTPGroup>
 								</InputOTP>
@@ -56,7 +65,7 @@ const AuthVerification = () => {
 
 						<div className="mt-4 text-center">
 							<p className="text-sm text-gray-600">
-							{t('AuthVerification.didNotReceive')}{' '}
+								{t('AuthVerification.didNotReceive')}{' '}
 								<button
 									onClick={() => {
 										console.log('Resend OTP');
