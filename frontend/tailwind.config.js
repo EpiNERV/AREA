@@ -3,13 +3,17 @@
 
 module.exports = {
     darkMode: ['class'],
+	safelist: [
+		{
+			pattern: /theme-(zinc|slate|stone|gray|neutral|red|rose|orange|green|blue|yellow|violet)/,
+		},
+		{
+			pattern: /colorblind-(deuteranopia|protanopia|tritanopia|monochromacy)/,
+		},
+	],
     theme: {
     	extend: {
     		colors: {
-    			page_background: '#f3f4ff',
-    			navbar_background: '#e6e7f2',
-    			navbar_Text: '#000000',
-    			navbar_profile_background: '#4b5670',
     			background: 'hsl(var(--background))',
     			foreground: 'hsl(var(--foreground))',
     			card: {
@@ -49,6 +53,16 @@ module.exports = {
     				'3': 'hsl(var(--chart-3))',
     				'4': 'hsl(var(--chart-4))',
     				'5': 'hsl(var(--chart-5))'
+    			},
+    			sidebar: {
+    				DEFAULT: 'hsl(var(--sidebar-background))',
+    				foreground: 'hsl(var(--sidebar-foreground))',
+    				primary: 'hsl(var(--sidebar-primary))',
+    				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+    				accent: 'hsl(var(--sidebar-accent))',
+    				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+    				border: 'hsl(var(--sidebar-border))',
+    				ring: 'hsl(var(--sidebar-ring))'
     			}
     		},
     		borderRadius: {
