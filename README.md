@@ -8,10 +8,25 @@ Run the db:
 docker compose -f docker-compose.dev.yml up -d
 ```
 
+Build the i18n sdk:
+```bash
+cd i18n
+npm install
+npm run build
+```
+
+Build the api sdk:
+```bash
+cd sdk
+npm install
+npm run build
+```
+
 Run the front
 ```bash
 cd frontend
 npm install
+npm install ../i18n ../sdk
 npm run dev
 ```
 
