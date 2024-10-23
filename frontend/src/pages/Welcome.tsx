@@ -1,51 +1,15 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { useTheme } from '@/components/ThemeProvider';
 import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-
+import { SelectLanguageAndTheme } from "@/components/SelectLanguageAndTheme.tsx";
+l
 const Welcome: React.FC = () => {
-  const { theme, setTheme } = useTheme();
-  const { t, i18n } = useTranslation();
-
-  const handleLanguageChange = (language: string) => {
-    i18n
-      .changeLanguage(language)
-      .then(() => {
-        localStorage.setItem('language', language);
-      })
-      .catch((error) => {
-        console.error('Failed to change language:', error);
-      });
-  };
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
-      <div className="absolute top-4 right-4 flex space-x-4">
-        <Select value={theme} onValueChange={setTheme}>
-          <SelectTrigger className="w-[120px]">
-            <SelectValue placeholder={t('Theme')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="light">{t('Light')}</SelectItem>
-            <SelectItem value="dark">{t('Dark')}</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={i18n.language}
-          onValueChange={(value) => handleLanguageChange(value)}
-        >
-          <SelectTrigger className="w-[120px]">
-            <SelectValue placeholder={t('Language')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="en">{t('English')}</SelectItem>
-            <SelectItem value="fr">{t('French')}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <SelectLanguageAndTheme/>
 
       <div className="text-center mb-10">
         <h1 className="text-4xl font-bold">Area</h1>
