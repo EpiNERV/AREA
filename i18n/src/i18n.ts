@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { initReactI18next } from 'react-i18next';
 
 import translationEN from './translations/ENtranslation.json';
 import translationFR from './translations/FRtranslation.json';
@@ -65,7 +66,7 @@ const initializeI18n = async () => {
 		const savedLanguage = await getSavedLanguage();
 
 		await i18n
-			.use(LanguageDetector)
+			.use(initReactI18next)
 			.init({
 				resources,
 				lng: savedLanguage,
