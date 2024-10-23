@@ -8,6 +8,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogAction, AlertDialogCancel, AlertDialogTitle, AlertDialogDescription } from '@/components/ui/alert-dialog.tsx';
 import { useTranslation } from 'react-i18next';
 
+// Move mockUsers outside the component to prevent redefinition on each render
+let mockUsers: User[] = [
+	{ id: 1, username: 'Alice', email: 'alice@example.com', nbr_workflow: 5, role: 'Admin', last_connection: '20-10-2024' },
+	{ id: 2, username: 'Bob', email: 'bob@example.com', nbr_workflow: 3, role: 'User', last_connection: '20-09-2024' },
+	{ id: 3, username: 'Charlie', email: 'charlie@example.com', nbr_workflow: 7, role: 'User', last_connection: '20-08-2024' },
+];
+
 interface User {
 	id: number;
 	username: string;
@@ -17,6 +24,32 @@ interface User {
 	last_connection: string;
 	password?: string;
 }
+
+// Refactored editUser function with reduced nesting
+const editUser = async (id: number, updatedUser: User): Promise<User[]> => {
+	await new Promise<void>((resolve) => setTimeout(resolve, 500));
+	const userIndex = mockUsers.findIndex((user) => user.id === id);
+	if (userIndex !== -1) {
+		mockUsers[userIndex] = { ...updatedUser };
+	}
+	return [...mockUsers];
+};
+
+// Refactored deleteUser function with reduced nesting
+const deleteUser = async (id: number): Promise<User[]> => {
+	await new Promise<void>((resolve) => setTimeout(resolve, 500));
+	mockUsers = mockUsers.filter((user) => user.id !== id);
+	return [...mockUsers];
+};
+
+// Refactored fetchUsers with useCallback and moved mockUsers outside to resolve ESLint warning
+const fetchUsers = (): Promise<User[]> => {
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			resolve([...mockUsers]); // Return a copy to prevent external mutations
+		}, 500);
+	});
+};
 
 const UsersManagement = () => {
 	const { t } = useTranslation();
@@ -28,36 +61,18 @@ const UsersManagement = () => {
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 	const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
-	const mockUsers: User[] = [
-		{ id: 1, username: 'Alice', email: 'alice@example.com', nbr_workflow: 5, role: 'Admin', last_connection: '20-10-2024' },
-		{ id: 2, username: 'Bob', email: 'bob@example.com', nbr_workflow: 3, role: 'User', last_connection: '20-09-2024' },
-		{ id: 3, username: 'Charlie', email: 'charlie@example.com', nbr_workflow: 7, role: 'User', last_connection: '20-08-2024' },
-	];
-
-	const fetchUsers = useCallback((): Promise<User[]> => {
-		return new Promise((resolve) => {
-			setTimeout(() => {
-				resolve(mockUsers);
-			}, 500);
-		});
+	// Use useCallback without dependencies since fetchUsers doesn't depend on any external variables
+	const memoizedFetchUsers = useCallback((): Promise<User[]> => {
+		return fetchUsers();
 	}, []);
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const data = await fetchUsers();
+			const data = await memoizedFetchUsers();
 			setUsers(data);
 		};
-		fetchData().then();
-	}, [fetchUsers]);
-
-	const deleteUser = (id: number): Promise<User[]> => {
-		return new Promise((resolve) => {
-			setTimeout(() => {
-				const updatedUsers = mockUsers.filter((user) => user.id !== id);
-				resolve(updatedUsers);
-			}, 500);
-		});
-	};
+		void fetchData();
+	}, [memoizedFetchUsers]);
 
 	const handleDeleteUser = async () => {
 		if (userToDelete) {
@@ -79,24 +94,24 @@ const UsersManagement = () => {
 	};
 
 	const handleOpenAddDialog = () => {
-		setCurrentUser({ id: Date.now(), username: '', email: '', role: 'User', nbr_workflow: 0, last_connection: new Date().toISOString().slice(0, 10), password: '' });
+		setCurrentUser({
+			id: Date.now(),
+			username: '',
+			email: '',
+			role: 'User',
+			nbr_workflow: 0,
+			last_connection: new Date().toISOString().slice(0, 10),
+			password: '',
+		});
 		setIsNewUser(true); // Set isNewUser to true since we are adding a new user
 		setIsDialogOpen(true);
-	};
-
-	const editUser = (id: number, updatedUser: User): Promise<User[]> => {
-		return new Promise((resolve) => {
-			setTimeout(() => {
-				const userIndex = mockUsers.findIndex((user) => user.id === id);
-				mockUsers[userIndex] = { ...updatedUser };
-				resolve([...mockUsers]);
-			}, 500);
-		});
 	};
 
 	const handleSaveChanges = async () => {
 		if (currentUser) {
 			if (isNewUser) {
+				// Simulate adding a new user
+				mockUsers = [...mockUsers, currentUser];
 				setUsers([...users, currentUser]);
 			} else {
 				const updatedUsers = await editUser(currentUser.id, currentUser);
@@ -114,10 +129,12 @@ const UsersManagement = () => {
 				return direction === 'asc' ? dateB - dateA : dateA - dateB;
 			} else if (typeof a[field] === 'string' && typeof b[field] === 'string') {
 				return direction === 'asc'
-					? (a[field] as string).localeCompare(b[field] as string)
-					: (b[field] as string).localeCompare(a[field] as string);
+					? (a[field]).localeCompare(b[field])
+					: (b[field]).localeCompare(a[field]);
 			} else {
-				return direction === 'asc' ? (a[field] as number) - (b[field] as number) : (b[field] as number) - (a[field] as number);
+				return direction === 'asc'
+					? (a[field] as number) - (b[field] as number)
+					: (b[field] as number) - (a[field] as number);
 			}
 		});
 		setUsers(sortedUsers);
@@ -141,10 +158,12 @@ const UsersManagement = () => {
 					value={searchTerm}
 					onChange={(e) => setSearchTerm(e.target.value)}
 				/>
-				<Select onValueChange={(value) => {
-					const [field, direction] = value.split(':') as [keyof User, 'asc' | 'desc'];
-					handleSort(field, direction);
-				}}>
+				<Select
+					onValueChange={(value) => {
+						const [field, direction] = value.split(':') as [keyof User, 'asc' | 'desc'];
+						handleSort(field, direction);
+					}}
+				>
 					<SelectTrigger className="w-[200px]">
 						<SelectValue placeholder={t('UsersManagement.sortBy')} />
 					</SelectTrigger>
@@ -164,7 +183,10 @@ const UsersManagement = () => {
 					</SelectContent>
 				</Select>
 
-				<Button className="bg-green-600 hover:bg-green-700 text-white flex items-center space-x-2" onClick={() => handleOpenAddDialog()}>
+				<Button
+					className="bg-green-600 hover:bg-green-700 text-white flex items-center space-x-2"
+					onClick={handleOpenAddDialog}
+				>
 					<Plus className="w-4 h-4" />
 				</Button>
 			</div>
@@ -204,27 +226,41 @@ const UsersManagement = () => {
 			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>{isNewUser ? t('UsersManagement.addUser') : t('UsersManagement.editUser')}</DialogTitle>
+						<DialogTitle>
+							{isNewUser ? t('UsersManagement.addUser') : t('UsersManagement.editUser')}
+						</DialogTitle>
 					</DialogHeader>
 					<div className="space-y-4">
 						<Input
 							type="text"
 							placeholder={t('UsersManagement.username')}
-							value={currentUser?.username || ''}
-							onChange={(e) => setCurrentUser((prev) => (prev ? { ...prev, username: e.target.value } : prev))}
+							value={currentUser?.username ?? ''}
+							onChange={(e) =>
+								setCurrentUser((prev) =>
+									prev ? { ...prev, username: e.target.value } : prev
+								)
+							}
 						/>
 						<Input
 							type="email"
 							placeholder={t('UsersManagement.email')}
-							value={currentUser?.email || ''}
-							onChange={(e) => setCurrentUser((prev) => (prev ? { ...prev, email: e.target.value } : prev))}
+							value={currentUser?.email ?? ''}
+							onChange={(e) =>
+								setCurrentUser((prev) =>
+									prev ? { ...prev, email: e.target.value } : prev
+								)
+							}
 						/>
 						<Select
-							value={currentUser?.role || 'User'}
-							onValueChange={(value: 'Admin' | 'User') => setCurrentUser((prev) => (prev ? { ...prev, role: value } : prev))}
+							value={currentUser?.role ?? 'User'}
+							onValueChange={(value: 'Admin' | 'User') =>
+								setCurrentUser((prev) =>
+									prev ? { ...prev, role: value } : prev
+								)
+							}
 						>
 							<SelectTrigger>
-								<SelectValue placeholder="Select User Type" />
+								<SelectValue placeholder={t('UsersManagement.selectUserType')} />
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value="Admin">{t('UsersManagement.admin')}</SelectItem>
@@ -236,8 +272,12 @@ const UsersManagement = () => {
 							<Input
 								type="password"
 								placeholder={t('UsersManagement.password')}
-								value={currentUser?.password || ''}
-								onChange={(e) => setCurrentUser((prev) => (prev ? { ...prev, password: e.target.value } : prev))}
+								value={currentUser?.password ?? ''}
+								onChange={(e) =>
+									setCurrentUser((prev) =>
+										prev ? { ...prev, password: e.target.value } : prev
+									)
+								}
 							/>
 						)}
 					</div>

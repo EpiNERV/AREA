@@ -44,7 +44,7 @@ const Home: React.FC = () => {
         console.error('Error fetching workflows:', error);
       }
     };
-    fetchWorkflowsData();
+    void fetchWorkflowsData();
   }, []);
 
   const filteredWorkflows = workflows.filter((workflow) =>
