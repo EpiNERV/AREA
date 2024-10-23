@@ -1,28 +1,10 @@
-import { View, StyleSheet } from 'react-native'
-import React from 'react'
-import { Slot } from 'expo-router';
+import MainLayout from '@/components/MainLayout';
 
-export default function _layout() {
-    return (
-        <View style={styles.container}>
-            <Slot />
-        </View>
-    );
+export default function HomeLayout() {
+  const routes = [
+    { name: 'login', options: { title: 'Login' } },
+    { name: 'register', options: { title: 'Register' } },
+  ];
+
+  return <MainLayout routes={routes} />;
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    buttonContainer: {
-        alignItems: 'center',
-    },
-    header: {
-        backgroundColor: 'green',
-        justifyContent: "center",
-        alignItems: 'center',
-    }
-});
