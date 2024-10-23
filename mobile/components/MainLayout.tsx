@@ -7,7 +7,8 @@ import { useMaterial3Theme } from '@pchmn/expo-material3-theme';
 import { useColorScheme } from 'react-native';
 import { ThemeProp } from 'react-native-paper/lib/typescript/types';
 import { Stack } from 'expo-router';
-import CustomAppBar from '@/components/CustomAppBar';
+import CustomStackAppBar from '@/components/CustomStackAppBar';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 type MainLayoutProps = {
   routes: {
@@ -16,7 +17,7 @@ type MainLayoutProps = {
   }[];
 };
 
-export default function MainLayout({ routes }: MainLayoutProps) {
+export default function MainLayout({ routes }: Readonly<MainLayoutProps>) {
   const colorScheme = useColorScheme();
   const { theme } = useMaterial3Theme();
 
@@ -25,11 +26,13 @@ export default function MainLayout({ routes }: MainLayoutProps) {
       ? { ...MD3DarkTheme, colors: theme.dark }
       : { ...MD3LightTheme, colors: theme.light };
 
+  const customAppBar = (props: NativeStackHeaderProps) => <CustomStackAppBar {... props} />;
+
   return (
     <PaperProvider theme={paperTheme}>
       <Stack
         screenOptions={{
-          header: (props) => <CustomAppBar {...props} />,
+          header: customAppBar
         }}
       >
         {routes.map((route) => (
