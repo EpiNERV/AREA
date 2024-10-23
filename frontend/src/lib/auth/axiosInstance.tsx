@@ -2,7 +2,12 @@ import axios from 'axios';
 import { refreshAccessToken } from './TokenManager';
 const AxiosInstance = axios.create({
   baseURL: 'http://localhost:5000/api/v1',
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
+
+
 AxiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
@@ -11,7 +16,7 @@ AxiosInstance.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(new Error(error))
+  (error) => Promise.reject(error)
 );
 
 AxiosInstance.interceptors.response.use(
@@ -34,7 +39,7 @@ AxiosInstance.interceptors.response.use(
         return Promise.reject(new Error("Error when refreshing token: " + refreshError));
       }
     }
-    return Promise.reject(new Error(error));
+    return Promise.reject(error);
   }
 );
 

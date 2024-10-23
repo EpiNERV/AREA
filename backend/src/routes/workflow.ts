@@ -1,13 +1,20 @@
 import express, { Request, Response, NextFunction } from 'express';
 import authMiddleware from '../middleware/auth';
 import Workflow from '../models/workflow';
+import User from '../models/user';
 
 const router = express.Router();
 
 // GET /api/v1/workflows - Get all workflows
 router.get('/', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const workflows = await Workflow.find();
+    const { user } = req.body;
+    const workflowList = await User.findById(user._id).select('workflows').exec();
+    if (!workflowList) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+    const workflows = await Workflow.find({ _id: { $in: workflowList.workflows } });
     res.status(200).json(workflows);
   } catch (err) {
     next(err);
@@ -17,13 +24,19 @@ router.get('/', authMiddleware, async (req: Request, res: Response, next: NextFu
 // POST /api/v1/workflows - Create a new workflow
 router.post('/', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name } = req.body;
+    const { name, user } = req.body;
     if (!name) {
       res.status(400).json({ message: 'Workflow name is required' });
       return;
     }
     const newWorkflow = new Workflow({ name });
     await newWorkflow.save();
+    if (!user) {
+      res.status(400).json({ message: 'User not found' });
+      return;
+    }
+    user.workflows.push(newWorkflow._id);
+    await user.save();
     res.status(201).json(newWorkflow);
   } catch (err) {
     next(err);
@@ -56,6 +69,7 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response, next: Nex
 // DELETE /api/v1/workflows/:id - Delete a workflow
 router.delete('/:id', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const { user } = req.body;
     const { id } = req.params;
 
     try {
@@ -65,6 +79,11 @@ router.delete('/:id', authMiddleware, async (req: Request, res: Response, next: 
         res.status(404).json({ message: 'Workflow not found' });
         return;
       }
+
+      await User.updateOne(
+        { _id: user._id },
+        { $pull: { workflows: deletedWorkflow._id } }
+      );
 
       res.status(204).send();
     } catch (err) {

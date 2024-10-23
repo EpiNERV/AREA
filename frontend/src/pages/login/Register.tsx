@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { CheckIcon, Cross1Icon, EyeOpenIcon, EyeNoneIcon } from "@radix-ui/react-icons";
-import axios from "axios";
-import { useTheme } from "@/components/ThemeProvider"
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { CheckIcon, Cross1Icon, EyeOpenIcon, EyeNoneIcon } from '@radix-ui/react-icons';
+import axios from 'axios';
+import { useTranslation } from 'react-i18next';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { SelectLanguageAndTheme } from "@/components/SelectLanguageAndTheme.tsx";
 
 const PasswordCriteria = ({ label, isValid }: { label: string; isValid: boolean }) => (
   <div className="flex items-center">
@@ -14,30 +16,29 @@ const PasswordCriteria = ({ label, isValid }: { label: string; isValid: boolean 
     ) : (
       <Cross1Icon className="text-red-500 mr-2" />
     )}
-    <span className={`${isValid ? "text-green-500" : "text-red-500"}`}>{label}</span>
+    <span className={isValid ? 'text-green-500' : 'text-red-500'}>{label}</span>
   </div>
 );
 
 const Register = () => {
-  const { theme, setTheme } = useTheme()
-  if (theme === "dark")
-      setTheme("light")
+  const { t } = useTranslation();
 
   const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   });
 
   const [errors, setErrors] = useState({
-    email: "",
-    passwordMatch: "",
+    email: '',
+    passwordMatch: '',
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showPasswordCriteria, setShowPasswordCriteria] = useState(false);
 
   const navigate = useNavigate();
 
@@ -45,7 +46,7 @@ const Register = () => {
     minLength: formData.password.length >= 8,
     hasUppercase: /[A-Z]/.test(formData.password),
     hasLowercase: /[a-z]/.test(formData.password),
-	hasNumber: /\d/.test(formData.password),
+    hasNumber: /\d/.test(formData.password),
     hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(formData.password),
   };
 
@@ -53,14 +54,23 @@ const Register = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
 
-    if (name === "email") {
-      validateEmail(value);
-    }
-    if (name === "confirmPassword" || name === "password") {
-      validatePasswords(formData.password, value);
-    }
+    setFormData((prevFormData) => {
+      const updatedFormData = { ...prevFormData, [name]: value };
+
+      if (name === 'email') {
+        validateEmail(value);
+      }
+
+      if (name === 'password' || name === 'confirmPassword') {
+        validatePasswords(
+          name === 'password' ? value : updatedFormData.password,
+          name === 'confirmPassword' ? value : updatedFormData.confirmPassword
+        );
+      }
+
+      return updatedFormData;
+    });
   };
 
   const validateEmail = (value: string) => {
@@ -68,10 +78,10 @@ const Register = () => {
     if (!emailRegex.test(value)) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        email: "Please enter a valid email.",
+        email: t('RegisterPage.emailInvalid'),
       }));
     } else {
-      setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
+      setErrors((prevErrors) => ({ ...prevErrors, email: '' }));
     }
   };
 
@@ -79,10 +89,18 @@ const Register = () => {
     if (password !== confirmPassword) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        passwordMatch: "Passwords do not match.",
+        passwordMatch: t('RegisterPage.passwordsNotMatch'),
       }));
     } else {
-      setErrors((prevErrors) => ({ ...prevErrors, passwordMatch: "" }));
+      setErrors((prevErrors) => ({ ...prevErrors, passwordMatch: '' }));
+    }
+  };
+
+  const handlePasswordBlur = () => {
+    if (formData.password && !isPasswordComplex) {
+      setShowPasswordCriteria(true);
+    } else {
+      setShowPasswordCriteria(false);
     }
   };
 
@@ -90,171 +108,180 @@ const Register = () => {
     e.preventDefault();
     if (!errors.email && !errors.passwordMatch && isPasswordComplex) {
       try {
-        await axios.post("http://localhost:5000/api/v1/user/auth/register", {
+        await axios.post('http://localhost:5000/api/v1/user/auth/register', {
           email: formData.email,
           password: formData.password,
           username: formData.username,
         });
 
-        navigate("/login", { replace: true });
+        navigate('/login', { replace: true });
       } catch (error: any) {
         setErrorMessage(error.response.data.message);
       }
     } else {
-      console.log("Form contains errors.");
+      console.log('Error in form.');
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-50">
-      <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold mb-4">Welcome 👋</h1>
-        <p className="text-gray-600 mb-6">
-          Register to start creating and managing your projects.
-        </p>
-        {errorMessage && (
-          <p className="text-red-500 text-sm mb-4">{errorMessage}</p>
-        )}
+    <div className="flex h-screen">
+      <SelectLanguageAndTheme/>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <Label htmlFor="username">Username</Label>
-            <Input
-              id="username"
-              name="username"
-              type="text"
-              value={formData.username}
-              onChange={handleChange}
-              placeholder="Enter your username"
-              className="mt-2 w-full"
-            />
-          </div>
-
-          <div className="mb-4">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              className="mt-2 w-full"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+      <div className="w-full flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-3xl font-bold mb-4">{t('RegisterPage.welcome')}</CardTitle>
+            <CardDescription className="mb-6 text-gray-600">
+              {t('RegisterPage.description')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {errorMessage && (
+              <p className="text-red-500 text-sm mb-4">{errorMessage}</p>
             )}
-          </div>
 
-          <div className="mb-4 relative">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              className="mt-2 w-full"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-9 text-gray-600"
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? (
-                <EyeNoneIcon className="h-5 w-5" />
-              ) : (
-                <EyeOpenIcon className="h-5 w-5" />
-              )}
-            </button>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <Label htmlFor="username">{t('RegisterPage.username')}</Label>
+                <Input
+                  id="username"
+                  name="username"
+                  type="text"
+                  value={formData.username}
+                  onChange={handleChange}
+                  placeholder={t('RegisterPage.enterUsername')}
+                  className="mt-2 w-full"
+                />
+              </div>
 
-            <div className="mt-2">
-              <PasswordCriteria label="At least 8 characters" isValid={passwordCriteria.minLength} />
-              <PasswordCriteria label="At least one uppercase letter" isValid={passwordCriteria.hasUppercase} />
-              <PasswordCriteria label="At least one lowercase letter" isValid={passwordCriteria.hasLowercase} />
-              <PasswordCriteria label="At least one number" isValid={passwordCriteria.hasNumber} />
-              <PasswordCriteria label="At least one special character" isValid={passwordCriteria.hasSpecialChar} />
+              <div className="mb-4">
+                <Label htmlFor="email">{t('RegisterPage.email')}</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder={t('RegisterPage.enterEmail')}
+                  className="mt-2 w-full"
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
+              </div>
+
+              <div className="mb-4 relative">
+                <Label htmlFor="password">{t('RegisterPage.password')}</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={formData.password}
+                  onChange={handleChange}
+                  onBlur={handlePasswordBlur}
+                  placeholder={t('RegisterPage.enterPassword')}
+                  className="mt-2 w-full"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-9 text-gray-600"
+                  aria-label={showPassword ? t('RegisterPage.hidePassword') : t('RegisterPage.showPassword')}
+                >
+                  {showPassword ? (
+                    <EyeNoneIcon className="h-5 w-5" />
+                  ) : (
+                    <EyeOpenIcon className="h-5 w-5" />
+                  )}
+                </button>
+
+                {showPasswordCriteria && (
+                  <div className="mt-2">
+                    {!passwordCriteria.minLength && (
+                      <PasswordCriteria
+                        label={t('RegisterPage.criteria.minLength')}
+                        isValid={passwordCriteria.minLength}
+                      />
+                    )}
+                    {!passwordCriteria.hasUppercase && (
+                      <PasswordCriteria
+                        label={t('RegisterPage.criteria.uppercase')}
+                        isValid={passwordCriteria.hasUppercase}
+                      />
+                    )}
+                    {!passwordCriteria.hasLowercase && (
+                      <PasswordCriteria
+                        label={t('RegisterPage.criteria.lowercase')}
+                        isValid={passwordCriteria.hasLowercase}
+                      />
+                    )}
+                    {!passwordCriteria.hasNumber && (
+                      <PasswordCriteria
+                        label={t('RegisterPage.criteria.number')}
+                        isValid={passwordCriteria.hasNumber}
+                      />
+                    )}
+                    {!passwordCriteria.hasSpecialChar && (
+                      <PasswordCriteria
+                        label={t('RegisterPage.criteria.specialChar')}
+                        isValid={passwordCriteria.hasSpecialChar}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="mb-4 relative">
+                <Label htmlFor="confirmPassword">{t('RegisterPage.confirmPassword')}</Label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder={t('RegisterPage.confirmYourPassword')}
+                  className="mt-2 w-full"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-9 text-gray-600"
+                  aria-label={showConfirmPassword ? t('RegisterPage.hideConfirmPassword') : t('RegisterPage.showConfirmPassword')}
+                >
+                  {showConfirmPassword ? (
+                    <EyeNoneIcon className="h-5 w-5" />
+                  ) : (
+                    <EyeOpenIcon className="h-5 w-5" />
+                  )}
+                </button>
+                {errors.passwordMatch && (
+                  <p className="text-red-500 text-sm mt-1">{errors.passwordMatch}</p>
+                )}
+              </div>
+
+              <Button
+                type="submit"
+                className={`w-full ${
+                  !errors.email && !errors.passwordMatch && isPasswordComplex
+                    ? ''
+                    : 'opacity-50 cursor-not-allowed'
+                }`}
+                disabled={!!errors.email || !!errors.passwordMatch || !isPasswordComplex}
+              >
+                {t('RegisterPage.agreeAndRegister')}
+              </Button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-gray-600">
+                {t('RegisterPage.alreadyHaveAccount')}{' '}
+                <a href="/login" className="text-blue-500 hover:underline">
+                  {t('RegisterPage.login')}
+                </a>
+              </p>
             </div>
-          </div>
-
-          <div className="mb-4 relative">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input
-              id="confirmPassword"
-              name="confirmPassword"
-              type={showConfirmPassword ? "text" : "password"}
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm your password"
-              className="mt-2 w-full"
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-9 text-gray-600"
-              aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
-            >
-              {showConfirmPassword ? (
-                <EyeNoneIcon className="h-5 w-5" />
-              ) : (
-                <EyeOpenIcon className="h-5 w-5" />
-              )}
-            </button>
-            {errors.passwordMatch && (
-              <p className="text-red-500 text-sm mt-1">{errors.passwordMatch}</p>
-            )}
-          </div>
-
-          <Button
-            type="submit"
-            className={`w-full text-white ${
-              !errors.email && !errors.passwordMatch && isPasswordComplex
-                ? "bg-blue-500 hover:bg-blue-600"
-                : "bg-gray-600 cursor-not-allowed"
-            }`}
-            disabled={!!errors.email || !!errors.passwordMatch || !isPasswordComplex}
-          >
-            Agree and Register
-          </Button>
-
-          <div className="mt-6">
-            <p className="text-center text-gray-600">Or Register with</p>
-            <div className="flex justify-center mt-4 space-x-4">
-              <button className="bg-gray-200 p-2 rounded-full">
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
-                  alt="Google"
-                  className="h-6 w-6"
-                />
-              </button>
-              <button className="bg-gray-200 p-2 rounded-full">
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/733/733547.png"
-                  alt="Facebook"
-                  className="h-6 w-6"
-                />
-              </button>
-              <button className="bg-gray-200 p-2 rounded-full">
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/731/731985.png"
-                  alt="Apple"
-                  className="h-6 w-6"
-                />
-              </button>
-            </div>
-          </div>
-        </form>
-
-        <div className="mt-6 text-center">
-          <p className="text-gray-600">
-            Already have an account?{" "}
-            <a href="/login" className="text-blue-500 hover:underline">
-              Login
-            </a>
-          </p>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
