@@ -18,6 +18,7 @@ router.get('/users/', authMiddleware, adminMiddleware, async (req: Request, res:
             return;
         }
         const usersJson = users.map(user => ({
+            id: user.id,
             email: user.email,
             username: user.username,
             role: user.role,
