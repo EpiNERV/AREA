@@ -1,5 +1,5 @@
 {
-  "name": "i18n-sdk",
+  "name": "sdk-i18n",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
