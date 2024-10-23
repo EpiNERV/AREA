@@ -199,7 +199,11 @@
     "confirmDeleteTitle": "确认删除",
     "confirmDeleteDescription": "您确定要删除此用户吗？此操作无法撤销。",
     "cancel": "取消",
-    "confirm": "删除"
+    "confirm": "删除",
+    "errorFetchingUsers": "获取用户时出错。",
+    "errorDeletingUser": "删除用户时出错。",
+    "errorCreatingUser": "创建用户时出错。",
+    "errorUpdatingUser": "更新用户时出错。"
   },
   "Home": {
     "title": "Workflows 管理",

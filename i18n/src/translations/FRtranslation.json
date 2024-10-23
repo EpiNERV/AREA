@@ -199,7 +199,11 @@
     "confirmDeleteTitle": "Confirmer la suppression",
     "confirmDeleteDescription": "Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.",
     "cancel": "Annuler",
-    "confirm": "Supprimer"
+    "confirm": "Supprimer",
+    "errorFetchingUsers": "Erreur lors de la récupération des utilisateurs.",
+    "errorDeletingUser": "Erreur lors de la suppression de l'utilisateur.",
+    "errorCreatingUser": "Erreur lors de la création de l'utilisateur.",
+    "errorUpdatingUser": "Erreur lors de la mise à jour de l'utilisateur."
   },
   "Home": {
     "title": "Gestion des Workflows",

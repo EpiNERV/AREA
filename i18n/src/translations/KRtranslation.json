@@ -199,7 +199,11 @@
     "confirmDeleteTitle": "삭제 확인",
     "confirmDeleteDescription": "이 사용자를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
     "cancel": "취소",
-    "confirm": "삭제"
+    "confirm": "삭제",
+    "errorFetchingUsers": "사용자를 가져오는 중 오류가 발생했습니다.",
+    "errorDeletingUser": "사용자를 삭제하는 중 오류가 발생했습니다.",
+    "errorCreatingUser": "사용자를 생성하는 중 오류가 발생했습니다.",
+    "errorUpdatingUser": "사용자를 업데이트하는 중 오류가 발생했습니다."
   },
   "Home": {
     "title": "Workflows 관리",

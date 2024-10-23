@@ -199,7 +199,11 @@
     "confirmDeleteTitle": "削除の確認",
     "confirmDeleteDescription": "このユーザーを削除してもよろしいですか？この操作は元に戻せません。",
     "cancel": "キャンセル",
-    "confirm": "削除"
+    "confirm": "削除",
+    "errorFetchingUsers": "ユーザーの取得中にエラーが発生しました。",
+    "errorDeletingUser": "ユーザーの削除中にエラーが発生しました。",
+    "errorCreatingUser": "ユーザーの作成中にエラーが発生しました。",
+    "errorUpdatingUser": "ユーザーの更新中にエラーが発生しました。"
   },
   "Home": {
     "title": "Workflows管理",

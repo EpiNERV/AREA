@@ -199,7 +199,11 @@
     "confirmDeleteTitle": "Подтвердить удаление",
     "confirmDeleteDescription": "Вы уверены, что хотите удалить этого пользователя? Это действие нельзя отменить.",
     "cancel": "Отмена",
-    "confirm": "Удалить"
+    "confirm": "Удалить",
+    "errorFetchingUsers": "Ошибка при получении пользователей.",
+    "errorDeletingUser": "Ошибка при удалении пользователя.",
+    "errorCreatingUser": "Ошибка при создании пользователя.",
+    "errorUpdatingUser": "Ошибка при обновлении пользователя."
   },
   "Home": {
     "title": "Управление Workflows",
