@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { SelectLanguageAndTheme } from "@/components/SelectLanguageAndTheme.tsx";
-l
+
 const Welcome: React.FC = () => {
   const { t } = useTranslation();
 
