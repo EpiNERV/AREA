@@ -1,5 +1,3 @@
-// Accessibility.tsx
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useTheme } from "@/components/ThemeProvider";
@@ -82,8 +80,8 @@ const Accessibility = () => {
 									onClick={() => setColorBlindnessMode(option.value)}
 									className="flex items-center space-x-2"
 								>
-									{option.iconColors.map((iconColor, index) => (
-										<EyeOff key={index} className={`w-5 h-5 ${iconColor}`} />
+									{option.iconColors.map((iconColor) => (
+										<EyeOff key={iconColor} className={`w-5 h-5 ${iconColor}`} />
 									))}
 									<span>{t(`Accessibility.${option.name}`)}</span>
 								</Button>
@@ -97,8 +95,8 @@ const Accessibility = () => {
 									onClick={() => setColorBlindnessMode(option.value)}
 									className="flex items-center space-x-2"
 								>
-									{option.iconColors.map((iconColor, index) => (
-										<EyeOff key={index} className={`w-5 h-5 ${iconColor}`} />
+									{option.iconColors.map((iconColor) => (
+										<EyeOff key={iconColor} className={`w-5 h-5 ${iconColor}`} />
 									))}
 									<span>{t(`Accessibility.${option.name}`)}</span>
 								</Button>
