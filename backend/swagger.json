@@ -1,0 +1,439 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Area Backend API",
+    "description": "API Area"
+  },
+  "host": "localhost:5000",
+  "basePath": "/api/v1",
+  "schemes": ["http"],
+  "paths": {
+    "/workflows": {
+      "get": {
+        "summary": "Get all workflows",
+        "description": "Retrieve a list of all workflows",
+        "tags": ["Workflows"],
+        "operationId": "getWorkflows",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of workflows",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Workflow"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new workflow",
+        "description": "Create a new workflow by providing the workflow name",
+        "tags": ["Workflows"],
+        "operationId": "createWorkflow",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Workflow object that needs to be created",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WorkflowInput"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Workflow created successfully",
+            "schema": {
+              "$ref": "#/definitions/Workflow"
+            }
+          },
+          "400": {
+            "description": "Workflow name is required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/workflows/{id}": {
+      "put": {
+        "summary": "Update a workflow",
+        "description": "Update an existing workflow by providing its ID and a new name",
+        "tags": ["Workflows"],
+        "operationId": "updateWorkflow",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "ID of the workflow to update",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Updated workflow object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WorkflowInput"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workflow updated successfully",
+            "schema": {
+              "$ref": "#/definitions/Workflow"
+            }
+          },
+          "400": {
+            "description": "Invalid workflow ID or missing fields"
+          },
+          "404": {
+            "description": "Workflow not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a workflow",
+        "description": "Delete an existing workflow by providing its ID",
+        "tags": ["Workflows"],
+        "operationId": "deleteWorkflow",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "ID of the workflow to delete",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Workflow deleted successfully"
+          },
+          "400": {
+            "description": "Invalid workflow ID"
+          },
+          "404": {
+            "description": "Workflow not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/user/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "description": "Create a new user account",
+        "tags": ["User"],
+        "operationId": "registerUser",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User registration details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserRegister"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "409": {
+            "description": "Email already in use"
+          }
+        }
+      }
+    },
+    "/user/auth/login": {
+      "post": {
+        "summary": "User login",
+        "description": "Authenticate a user and return tokens",
+        "tags": ["User"],
+        "operationId": "loginUser",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User login credentials",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Invalid email or password"
+          }
+        }
+      }
+    },
+    "/user/auth/refresh_token": {
+      "post": {
+        "summary": "Refresh access token",
+        "description": "Generate a new access token using the refresh token",
+        "tags": ["User"],
+        "operationId": "refreshToken",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "refresh_token",
+            "description": "Refresh token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New tokens generated",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "access_token": {
+                  "type": "string"
+                },
+                "refresh_token": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Refresh token is required"
+          },
+          "401": {
+            "description": "Invalid refresh token"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "summary": "Get user information",
+        "description": "Retrieve the authenticated user's information",
+        "tags": ["User"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User details",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update user information",
+        "description": "Update the user's information (email, password, etc.)",
+        "tags": ["User"],
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User details to update",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
+    "/user/totp": {
+      "delete": {
+        "summary": "Disable TOTP",
+        "description": "Disable two-factor authentication (TOTP) for the authenticated user",
+        "tags": ["User"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "TOTP disabled successfully",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "TOTP is already disabled"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Workflow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "WorkflowInput": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": ["name"]
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "totp_enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "UserRegister": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      },
+      "required": ["email", "password", "username"]
+    },
+    "UserLogin": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "required": ["email", "password"]
+    },
+    "UserUpdate": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "BearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}

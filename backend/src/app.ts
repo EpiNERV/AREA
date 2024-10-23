@@ -7,6 +7,8 @@ import workflowRoutes from './routes/workflow';
 import errorHandler from './middleware/error';
 import cors from 'cors';
 import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from '../swagger.json';
 
 dotenv.config();
 
@@ -47,6 +49,7 @@ export const connectDB = async () => {
 app.use('/api/v1', helloRoutes);
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/workflow', workflowRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(errorHandler);
 
 export default app;
