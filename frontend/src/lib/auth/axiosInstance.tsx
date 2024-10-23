@@ -2,7 +2,12 @@ import axios from 'axios';
 import { refreshAccessToken } from './TokenManager';
 const AxiosInstance = axios.create({
   baseURL: 'http://localhost:5000/api/v1',
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
+
+
 AxiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');

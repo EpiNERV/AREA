@@ -11,7 +11,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useTranslation } from 'react-i18next';
-import { fetchWorkflows, createWorkflow, updateWorkflow, deleteWorkflow } from '@/lib/api/workflow';
+import { fetchWorkflows, createWorkflow, updateWorkflow, deleteWorkflow } from 'api-sdk';
+import AxiosInstance from '@/lib/auth/axiosInstance.tsx';
 
 interface Workflow {
   _id: string;
@@ -38,7 +39,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchWorkflowsData = async () => {
       try {
-        const data = await fetchWorkflows();
+        const data = await fetchWorkflows(AxiosInstance);
         setWorkflows(data);
       } catch (error) {
         console.error('Error fetching workflows:', error);
@@ -57,7 +58,7 @@ const Home: React.FC = () => {
 
   const handleWorkflowCreated = async (name: string) => {
     try {
-      const newWorkflow = await createWorkflow(name);
+      const newWorkflow = await createWorkflow(AxiosInstance, name);
       setWorkflows((prev) => [...prev, newWorkflow]);
       setIsAddDialogOpen(false);
     } catch (err) {
@@ -67,7 +68,7 @@ const Home: React.FC = () => {
 
   const handleWorkflowUpdated = async (id: string, name: string) => {
     try {
-      const updatedWorkflow = await updateWorkflow(id, name);
+      const updatedWorkflow = await updateWorkflow(AxiosInstance, id, name);
       setWorkflows((prev) =>
         prev.map((wf) => (wf._id === updatedWorkflow._id ? updatedWorkflow : wf))
       );
@@ -80,7 +81,7 @@ const Home: React.FC = () => {
   const handleWorkflowDeleted = async () => {
     if (workflowToDelete) {
       try {
-        await deleteWorkflow(workflowToDelete._id);
+        await deleteWorkflow(AxiosInstance, workflowToDelete._id);
         setWorkflows((prev) => prev.filter((wf) => wf._id !== workflowToDelete._id));
         setIsDeleteDialogOpen(false);
       } catch (err) {

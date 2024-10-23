@@ -4,6 +4,7 @@ import { useTheme } from "@/components/ThemeProvider/useTheme";
 import { useEffect } from "react";
 import { useTranslation } from 'react-i18next';
 import { EyeOff } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 const Accessibility = () => {
 	const { themeMode, setThemeMode, themeColor, setThemeColor, colorBlindnessMode, setColorBlindnessMode } = useTheme();
@@ -64,108 +65,165 @@ const Accessibility = () => {
 	};
 
 	return (
-		<Card className="w-full items-center justify-center max-w-lg mx-auto">
-			<CardContent>
-				<div className="flex flex-col items-center justify-center w-full h-full space-y-8">
-					<h2 className="text-2xl font-semibold">{t('Accessibility.Customize')}</h2>
-					<p className="text-center">{t('Accessibility.Description')}</p>
+		<div className="flex items-center justify-center min-h-screen"> {/* Conteneur flex centré */}
+			<Card className="w-full max-w-4xl mx-auto"> {/* Augmentation de la largeur maximale */}
+				<CardContent>
+					<div className="flex flex-col items-center justify-center w-full h-full space-y-8">
+						<h2 className="text-2xl font-semibold">{t('Accessibility.Customize')}</h2>
+						<p className="text-center">{t('Accessibility.Description')}</p>
 
-					<div className="space-y-2 w-full">
-						<label className="block text-lg font-medium">{t('Accessibility.ColorBlindness')}</label>
-						<div className="grid grid-cols-3 gap-2">
-							{colorBlindOptions.slice(0, 3).map((option) => (
-								<Button
-									key={option.value}
-									variant={colorBlindnessMode === option.value ? "outline" : "default"}
-									onClick={() => setColorBlindnessMode(option.value)}
-									className="flex items-center space-x-2"
-								>
-									{option.iconColors.map((iconColor) => (
-										<EyeOff key={iconColor} className={`w-5 h-5 ${iconColor}`} />
-									))}
-									<span>{t(`Accessibility.${option.name}`)}</span>
-								</Button>
-							))}
-						</div>
-						<div className="grid grid-cols-2 gap-2">
-							{colorBlindOptions.slice(3).map((option) => (
-								<Button
-									key={option.value}
-									variant={colorBlindnessMode === option.value ? "outline" : "default"}
-									onClick={() => setColorBlindnessMode(option.value)}
-									className="flex items-center space-x-2"
-								>
-									{option.iconColors.map((iconColor) => (
-										<EyeOff key={iconColor} className={`w-5 h-5 ${iconColor}`} />
-									))}
-									<span>{t(`Accessibility.${option.name}`)}</span>
-								</Button>
-							))}
+						{/* Conteneur principal avec deux colonnes */}
+						<div className="flex flex-col md:flex-row w-full space-y-8 md:space-y-0 md:space-x-8">
+							{/* Colonne de gauche */}
+							<div className="flex-1 space-y-6">
+								{/* Color Blindness */}
+								<div className="space-y-2">
+									<label className="block text-lg font-medium">{t('Accessibility.ColorBlindness')}</label>
+									<div className="grid grid-cols-3 gap-2">
+										{colorBlindOptions.slice(0, 3).map((option) => (
+											<Button
+												key={option.value}
+												variant={colorBlindnessMode === option.value ? "outline" : "default"}
+												onClick={() => setColorBlindnessMode(option.value)}
+												className="flex items-center space-x-2"
+											>
+												{option.iconColors.map((iconColor) => (
+													<EyeOff key={iconColor} className={`w-5 h-5 ${iconColor}`} />
+												))}
+												<span>{t(`Accessibility.${option.name}`)}</span>
+											</Button>
+										))}
+									</div>
+									<div className="grid grid-cols-2 gap-2">
+										{colorBlindOptions.slice(3).map((option) => (
+											<Button
+												key={option.value}
+												variant={colorBlindnessMode === option.value ? "outline" : "default"}
+												onClick={() => setColorBlindnessMode(option.value)}
+												className="flex items-center space-x-2"
+											>
+												{option.iconColors.map((iconColor) => (
+													<EyeOff key={iconColor} className={`w-5 h-5 ${iconColor}`} />
+												))}
+												<span>{t(`Accessibility.${option.name}`)}</span>
+											</Button>
+										))}
+									</div>
+								</div>
+
+								{/* Color Theme */}
+								<div className="space-y-2">
+									<label className="block text-lg font-medium">{t('Accessibility.ColorTheme')}</label>
+									<div className="grid grid-cols-3 gap-2">
+										{colorOptions.map((color) => (
+											<Button
+												key={color.value}
+												variant={themeColor === color.value ? "outline" : "default"}
+												onClick={() => setThemeColor(color.value)}
+												className="flex items-center space-x-2"
+												disabled={isColorSelectionDisabled}
+											>
+												<span className={`w-4 h-4 rounded-full ${color.colorClass}`}></span>
+												<span>{t(`Accessibility.${color.name}`)}</span>
+											</Button>
+										))}
+									</div>
+								</div>
+
+								{/* Mode Theme */}
+								<div className="space-y-2">
+									<label className="block text-lg font-medium">{t('Accessibility.ModeTheme')}</label>
+									<div className="flex space-x-2">
+										<Button
+											variant={themeMode === "light" ? "outline" : "default"}
+											onClick={() => setThemeMode("light")}
+										>
+											{t('Accessibility.Light')}
+										</Button>
+										<Button
+											variant={themeMode === "dark" ? "outline" : "default"}
+											onClick={() => setThemeMode("dark")}
+										>
+											{t('Accessibility.Dark')}
+										</Button>
+										<Button
+											variant={themeMode === "system" ? "outline" : "default"}
+											onClick={() => setThemeMode("system")}
+										>
+											{t('Accessibility.System')}
+										</Button>
+									</div>
+								</div>
+							</div>
+
+							{/* Séparateur */}
+							<Separator orientation="vertical" className="hidden md:block" /> {/* Vertical pour les écrans moyens et plus */}
+
+							{/* Colonne de droite */}
+							<div className="flex-1 space-y-2">
+								<label className="block text-lg font-medium">{t('Accessibility.Language')}</label>
+								<div className="grid grid-cols-3 gap-2">
+									<Button
+										variant={i18n.language === "fr" ? "outline" : "default"}
+										onClick={() => handleLanguageChange("fr")}
+									>
+										{t('Accessibility.French')}
+									</Button>
+									<Button
+										variant={i18n.language === "en" ? "outline" : "default"}
+										onClick={() => handleLanguageChange("en")}
+									>
+										{t('Accessibility.English')}
+									</Button>
+									<Button
+										variant={i18n.language === "de" ? "outline" : "default"}
+										onClick={() => handleLanguageChange("de")}
+									>
+										{t('Accessibility.German')}
+									</Button>
+									<Button
+										variant={i18n.language === "es" ? "outline" : "default"}
+										onClick={() => handleLanguageChange("es")}
+									>
+										{t('Accessibility.Spanish')}
+									</Button>
+									<Button
+										variant={i18n.language === "it" ? "outline" : "default"}
+										onClick={() => handleLanguageChange("it")}
+									>
+										{t('Accessibility.Italian')}
+									</Button>
+									<Button
+										variant={i18n.language === "ru" ? "outline" : "default"}
+										onClick={() => handleLanguageChange("ru")}
+									>
+										{t('Accessibility.Russian')}
+									</Button>
+									<Button
+										variant={i18n.language === "zh" ? "outline" : "default"}
+										onClick={() => handleLanguageChange("zh")}
+									>
+										{t('Accessibility.Chinese')}
+									</Button>
+									<Button
+										variant={i18n.language === "ja" ? "outline" : "default"}
+										onClick={() => handleLanguageChange("ja")}
+									>
+										{t('Accessibility.Japanese')}
+									</Button>
+									<Button
+										variant={i18n.language === "ko" ? "outline" : "default"}
+										onClick={() => handleLanguageChange("ko")}
+									>
+										{t('Accessibility.Korean')}
+									</Button>
+								</div>
+							</div>
 						</div>
 					</div>
-
-					<div className="space-y-2 w-full">
-						<label className="block text-lg font-medium">{t('Accessibility.ColorTheme')}</label>
-						<div className="grid grid-cols-3 gap-2">
-							{colorOptions.map((color) => (
-								<Button
-									key={color.value}
-									variant={themeColor === color.value ? "outline" : "default"}
-									onClick={() => setThemeColor(color.value)}
-									className="flex items-center space-x-2"
-									disabled={isColorSelectionDisabled}
-								>
-									<span className={`w-4 h-4 rounded-full ${color.colorClass}`}></span>
-									<span>{t(`Accessibility.${color.name}`)}</span>
-								</Button>
-							))}
-						</div>
-					</div>
-
-					<div className="space-y-2 w-full">
-						<label className="block text-lg font-medium">{t('Accessibility.ModeTheme')}</label>
-						<div className="flex space-x-2">
-							<Button
-								variant={themeMode === "light" ? "outline" : "default"}
-								onClick={() => setThemeMode("light")}
-							>
-								{t('Accessibility.Light')}
-							</Button>
-							<Button
-								variant={themeMode === "dark" ? "outline" : "default"}
-								onClick={() => setThemeMode("dark")}
-							>
-								{t('Accessibility.Dark')}
-							</Button>
-							<Button
-								variant={themeMode === "system" ? "outline" : "default"}
-								onClick={() => setThemeMode("system")}
-							>
-								{t('Accessibility.System')}
-							</Button>
-						</div>
-					</div>
-
-					<div className="space-y-2 w-full">
-						<label className="block text-lg font-medium">{t('Accessibility.Language')}</label>
-						<div className="flex space-x-2">
-							<Button
-								variant={i18n.language === "fr" ? "outline" : "default"}
-								onClick={() => handleLanguageChange("fr")}
-							>
-								{t('Accessibility.French')}
-							</Button>
-							<Button
-								variant={i18n.language === "en" ? "outline" : "default"}
-								onClick={() => handleLanguageChange("en")}
-							>
-								{t('Accessibility.English')}
-							</Button>
-						</div>
-					</div>
-				</div>
-			</CardContent>
-		</Card>
+				</CardContent>
+			</Card>
+		</div>
 	);
 };
 
