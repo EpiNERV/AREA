@@ -4,6 +4,7 @@ import { hash } from 'bcrypt';
 import User, { IUser } from '../models/user';
 import ServiceInfo, { IServiceInfo } from '../models/serviceInfo';
 import authMiddleware from '../middleware/auth';
+import Accessibility from '../models/accessibility';
 
 const router = express.Router();
 
@@ -37,6 +38,11 @@ router.post('/auth/register', async (req: Request, res: Response, next: NextFunc
       res.status(409).json({ status: 'error', message: 'Email is already in use' });
     } else {
       const newUser = new User({ email, password, username });
+
+      const newAccessibility = new Accessibility();
+      newAccessibility.save();
+      newUser.accessibility = newAccessibility.id;
+
       await newUser.save();
 
       const tokens = generateTokens(newUser);
@@ -261,6 +267,24 @@ router.post('/services/disconnect/:serviceKey', authMiddleware, async (req: Requ
   // } catch (err) {
   //   next(err);
   // }
+});
+
+// PATCH /api/v1/user/accessibility - Update user accessibility options
+router.patch('/accessibility', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+  const { color_blindness, color, mode, language } = req.body;
+  try {
+    const user = await User.findById(req.body.user._id);
+    if (!user) {
+      res.status(404).json({ status: 'error', message: 'User not found' });
+      return;
+    }
+
+    const updatedAccessibility = await Accessibility.findByIdAndUpdate(user.accessibility, { color_blindness, color, mode, language }, { new: true });
+
+    res.status(200).json(updatedAccessibility)
+  } catch (err) {
+    next(err);
+  }
 });
 
 export default router;

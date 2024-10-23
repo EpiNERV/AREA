@@ -21,6 +21,7 @@ export interface IUser extends Document {
   role: 'user' | 'admin';
   services: IService[];
   workflows: mongoose.Schema.Types.ObjectId[];
+  accessibility: mongoose.Schema.Types.ObjectId;
   last_connection: Date | null;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
@@ -73,6 +74,12 @@ const userSchema = new Schema<IUser>(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Workflow',
+      }
+    ],
+    accessibility: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Accessibility',
       }
     ],
     last_connection: {

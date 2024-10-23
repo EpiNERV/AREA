@@ -4,6 +4,7 @@ import Workflow from '../models/workflow';
 import User from '../models/user';
 import adminMiddleware from '../middleware/admin';
 import addUserIdToBody from '../middleware/addUserIdToBody';
+import Accessibility from '../models/accessibility';
 
 const router = express.Router();
 
@@ -65,6 +66,11 @@ router.delete('/user/:id/delete', authMiddleware, adminMiddleware, addUserIdToBo
 
         if (!deletedUser) {
             res.status(404).json({ message: 'User not deleted' });
+            return;
+        }
+        const deletedAccessibility = await Accessibility.findByIdAndDelete(deletedUser.accessibility);
+        if (!deletedAccessibility) {
+            res.status(404).json({ message: 'Accessibility setting not deleted' });
             return;
         }
         console.log(deletedUser);
