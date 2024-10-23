@@ -1,120 +1,135 @@
-import { View, Text, TextInput } from 'react-native'
-import React,  { useState } from 'react'
-import { HelloWave } from '@/components/HelloWave';
-import Spacer from '@/components/Spacer';
-import Button from '@/components/Button';
-import { Link, useRouter } from 'expo-router';
-import AxiosInstance from '@/lib/AxiosInstance';
-import { useAuth } from '@/lib/AuthContext';
+import React, { useState } from "react";
+import { View, StyleProp, ViewStyle, TextStyle } from "react-native";
+import { Text, TextInput, Button, HelperText, withTheme } from "react-native-paper";
+import { ThemeProp } from 'react-native-paper/lib/typescript/types';
+import { HelloWave } from "@/components/HelloWave";
+import Spacer from "@/components/Spacer";
+import { Link } from "expo-router";
 
-const s = require('../style');
-
-interface TokenType {
-  tokens: {
-    access_token: string;
-    refresh_token: string;
-  }
-  status: string;
-  message: string;
-}
-
-export default function Register() {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const { login } = useAuth();
-
-  const register = async () => {
-    try {
-      const response = await AxiosInstance.post<TokenType>('/user/auth/register', {
-        username,
-        email,
-        password,
-      });
-      if (response.data.status == "success") {
-        const { access_token, refresh_token } = response.data.tokens;
-        login(access_token, refresh_token);
-        router.replace('/main/home/dashboard');
-      } else {
-        setErrorMessage(`${response.data.message ?? "Error"}`);
-      }
-    } catch (error: any) {
-      setErrorMessage(`${error.response.data.message ?? "Error"}`);
-    }
-  };
+const Register = ({ theme }: Readonly<{ theme: ThemeProp }>) => {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const isParamsValid = () => {
-    return username.length > 0
-      && email.length > 0
-      && password.length >= 6
-      && confirmPassword.length > 0
-      && password === confirmPassword;
-  }
+    return (
+      username.length > 0 &&
+      email.includes('@') &&
+      password.length >= 6 &&
+      confirmPassword.length > 0 &&
+      password === confirmPassword
+    );
+  };
 
-  const getParamErrorMessage = () => {
-    if (username.length === 0) {
-      return "Username is required";
-    } else if (email.length === 0) {
-      return "Email is required";
-    } else if (password.length === 0) {
-      return "Password is required";
-    } else if (password.length < 6) {
-      return "Password must be at least 6 characters";
-    } else if (password !== confirmPassword) {
-      return "Passwords do not match";
-    }
-    return "";
-  }
+  const handleRegister = () => {
+  };
 
   return (
-    <View>
-    <Text style={s.titleText}>Welcome<HelloWave /> </Text>
-    <Text>Register to start creating and managing your projects.</Text>
-    <Spacer size={20} />
-    <TextInput
-      style={s.input}
-      placeholder='Username'
-      autoCapitalize='none'
-      keyboardType="default"
-      value={username}
-      onChangeText={setUsername}
-    />
-    <TextInput
-      style={s.input}
-      placeholder='Email'
-      autoCapitalize='none' 
-      keyboardType="email-address"
-      value={email}
-      onChangeText={setEmail}
-    />
-    <TextInput
-      style={s.input}
-      placeholder='Password' 
-      autoCapitalize='none'
-      secureTextEntry
-      value={password}
-      onChangeText={setPassword}
-    />
-    <TextInput
-      style={s.input}
-      placeholder='Confirm Password'
-      autoCapitalize='none'
-      secureTextEntry
-      value={confirmPassword}
-      onChangeText={setConfirmPassword}
-    />
-    <Spacer size={50} />
-    <Text style={[s.text, { color: 'red', display: isParamsValid() ? 'flex' : "none" }]}>{errorMessage}</Text>
-    <Text style={[s.text, { color: 'red' }]}>{getParamErrorMessage()}</Text>
-    <Button
-      title={"Agree and Register"}
-      onPress={register}
-      enabled={isParamsValid()}
-    />
-      <Text>Already have an account? <Link href={"/welcome/login"}>Login now</Link></Text>
-  </View>
-  )
-}
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: theme.colors ? theme.colors.background : undefined,
+      }}
+    >
+      <Text variant="displayMedium">Welcome <HelloWave /></Text>
+      <Text>Register to start creating and managing your projects.</Text>
+      <Spacer size={20} />
+
+      <TextInput
+        label="Username"
+        mode="outlined"
+        autoCapitalize="none"
+        value={username}
+        onChangeText={setUsername}
+        style={inputStyle}
+      />
+      <HelperText type="error" visible={username.length === 0}>
+        Username is required
+      </HelperText>
+
+      <TextInput
+        label="Email"
+        mode="outlined"
+        keyboardType="email-address"
+        autoCapitalize="none"
+        value={email}
+        onChangeText={setEmail}
+        style={inputStyle}
+      />
+      <HelperText type="error" visible={!email.includes('@')}>
+        Email address is invalid!
+      </HelperText>
+
+      <TextInput
+        label="Password"
+        mode="outlined"
+        secureTextEntry
+        autoCapitalize="none"
+        value={password}
+        onChangeText={setPassword}
+        style={inputStyle}
+      />
+      <HelperText type="error" visible={password.length < 6}>
+        Password must be at least 6 characters
+      </HelperText>
+
+      <TextInput
+        label="Confirm Password"
+        mode="outlined"
+        secureTextEntry
+        autoCapitalize="none"
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        style={inputStyle}
+      />
+      <HelperText type="error" visible={password !== confirmPassword}>
+        Passwords do not match
+      </HelperText>
+
+      <Button
+        mode="contained"
+        onPress={handleRegister}
+        disabled={!isParamsValid()}
+        contentStyle={buttonContentStyle}
+        labelStyle={buttonTextStyle}
+        style={buttonStyle}
+      >
+        Agree and Register
+      </Button>
+      <Spacer size={20} />
+      <Text>
+        Already have an account?
+        <Link href="/welcome/login">
+          <Text style={{color: theme.colors?.primary}}>  Login now</Text>
+        </Link>
+      </Text>
+    </View>
+  );
+};
+
+// Styles
+const inputStyle: StyleProp<ViewStyle> = {
+  width: '80%',
+  marginVertical: 8,
+};
+
+const buttonStyle: StyleProp<ViewStyle> = {
+  width: '70%',
+  marginVertical: 4,
+  alignSelf: 'center',
+};
+
+const buttonContentStyle: StyleProp<ViewStyle> = {
+  flexDirection: "row-reverse",
+  paddingVertical: 8,
+  paddingHorizontal: 16,
+};
+
+const buttonTextStyle: StyleProp<TextStyle> = {
+  fontSize: 16,
+};
+
+export default withTheme(Register);

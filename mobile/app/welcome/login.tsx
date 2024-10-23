@@ -1,73 +1,90 @@
-import { View, Text, TextInput, Alert } from 'react-native';
-import React, { useState } from 'react';
-import { HelloWave } from '@/components/HelloWave';
-import Spacer from '@/components/Spacer';
-import Button from '@/components/Button';
-import {Link, useRouter } from 'expo-router';
-import axios from 'axios';
-import { useAuth } from '@/lib/AuthContext';
+import React, { useState } from "react";
+import { View, StyleProp, ViewStyle, TextStyle } from "react-native";
+import Spacer from "@/components/Spacer";
+import { Button, Text, TextInput, withTheme } from "react-native-paper";
+import { ThemeProp } from 'react-native-paper/lib/typescript/types';
+import { HelloWave } from "@/components/HelloWave";
+import { Link, useRouter } from "expo-router";
 
-
-const s = require('../style');
-
-interface TokenType {
-  tokens: {
-    access_token: string;
-    refresh_token: string;
-  }
-  status: string;
-  message: string;
-}
-
-export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const Login = ({ theme }: Readonly<{ theme: ThemeProp }>) => {
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const router = useRouter();
-  const { login } = useAuth();
-
-  const Login = async () => {
-    try {
-      const response = await axios.post<TokenType>('http://192.168.1.71:5000/api/v1/user/auth/login', {
-        email,
-        password,
-      }); 
-      if (response.data.status == "success") {
-        const { access_token, refresh_token } = response.data.tokens;
-        login(access_token, refresh_token);
-        router.replace('/main/home/dashboard');
-      } else {
-        Alert.alert('Login Failed', `${response.data.message ?? "Error"}`);
-      }
-    } catch (error: any) {
-      console.log(error)
-      Alert.alert('Login Failed', `${error.response.data.message ?? "Error"}`);
-    }
-  };
 
   return (
-    <View>
-      <Text style={s.titleText}>Welcome Back <HelloWave /> </Text>
-      <Text>Sign in to start managing your projects.</Text>
-      <Spacer size={20} />
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: theme.colors ? theme.colors.background : undefined,
+      }}
+    >
+      <Text variant="displayMedium">Welcome Back <HelloWave /></Text>
+      <Spacer />
+      <Text variant="bodyLarge">Sign in to start managing your project</Text>
+      <Spacer size={40} />
+      
       <TextInput
-        style={s.input}
-        placeholder='Enter your Email'
-        autoCapitalize='none'
+        label={"Email"}
         keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail} // Update email state
+        autoCapitalize="none"
+        style={inputStyle}
       />
+      <Spacer />
+      
       <TextInput
-        style={s.input}
-        placeholder='Enter your Password'
-        autoCapitalize='none'
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword} // Update password state
+        label={"Password"}
+        secureTextEntry={!passwordVisible}
+        right={
+          <TextInput.Icon
+            icon={passwordVisible ? "eye-off" : "eye"}
+            onPress={() => setPasswordVisible(!passwordVisible)}
+          />
+        }
+        style={inputStyle}
       />
-      <Spacer size={80} />
-      <Button title={"Login"}  onPress={Login} />
-        <Text>Don't have an account? <Link href={"/welcome/register"}>Register now</Link></Text>
+      <Spacer size={75}/>
+      
+      <Button
+        mode="contained"
+        contentStyle={buttonContentStyle}
+        labelStyle={buttonTextStyle}
+        style={buttonStyle}
+        onPress={() => {router.replace("/main")}}
+      >
+        Submit
+      </Button>
+      
+      <Spacer size={40}/>
+      <Text>
+        Don't have an account?
+        <Link href="/welcome/register">
+          <Text style={{color: theme.colors?.primary}}>  Register now</Text>
+        </Link>
+      </Text>
     </View>
-  )
+  );
 }
+
+const buttonStyle: StyleProp<ViewStyle> = {
+  width: '70%',
+  marginVertical: 4,
+  alignSelf: 'center',
+};
+
+const buttonContentStyle: StyleProp<ViewStyle> = {
+  flexDirection: "row-reverse",
+  paddingVertical: 3,
+  paddingHorizontal: 8,
+  marginVertical: 2,
+};
+
+const buttonTextStyle: StyleProp<TextStyle> = {
+  fontSize: 16,
+};
+
+const inputStyle: StyleProp<ViewStyle> = {
+  width: '80%',
+  marginVertical: 8,
+};
+export default withTheme(Login);
