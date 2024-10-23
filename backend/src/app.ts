@@ -5,7 +5,6 @@ import helloRoutes from './routes/hello';
 import adminRoutes from './routes/admin';
 import userRoutes from './routes/user';
 import workflow from './routes/workflow';
-import testRoutes from './routes/test_route';
 import errorHandler from './middleware/error';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -53,7 +52,6 @@ app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/workflow', workflow);
 
-app.use('/api/v1/test', testRoutes);
 app.use(errorHandler);
 
 export default app;
