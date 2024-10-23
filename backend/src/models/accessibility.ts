@@ -4,7 +4,7 @@ export interface IAccessibility extends Document {
   color_blindness: 'regular' | 'deuteranopia' | 'protanopia' | 'tritanopia' | 'monochromacy'
   color: "zinc" | "slate" | "stone" | "gray" | "neutral" | "red" | "rose" | "orange" | "green" | "blue" | "yellow" | "violet";
   mode: 'light' | 'dark' | 'system';
-  language: 'english' | 'french';
+  language: 'english' | 'french' | 'german' | 'italian' | 'spanish' | 'russian' | 'chinese' | 'japanese' | "korean";
 }
 
 const AccessibilitySchema: Schema = new Schema({
@@ -28,7 +28,7 @@ const AccessibilitySchema: Schema = new Schema({
     },
     language: {
         type: String,
-        enum: ['english', 'french'],
+        enum: ['english', 'french', 'german', 'italian', 'spanish', 'russian', 'chinese', 'japanese', "korean"],
         default: 'english',
         required: true
     },
