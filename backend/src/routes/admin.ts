@@ -1,6 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
 import authMiddleware from '../middleware/auth';
-import Workflow from '../models/workflow';
 import User from '../models/user';
 import adminMiddleware from '../middleware/admin';
 import addUserIdToBody from '../middleware/addUserIdToBody';

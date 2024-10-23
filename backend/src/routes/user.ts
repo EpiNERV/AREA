@@ -248,7 +248,6 @@ router.get('/services/connect/:key', authMiddleware, async (req: Request, res: R
 // POST /api/v1/user/services/disconnect/:serviceKey - Disconnect a user from a service
 router.post('/services/disconnect/:serviceKey', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   res.status(400).json({ status: 'error', message: 'Not implemented' });
-  return;
 
   // const { serviceKey } = req.params;
   // console.log(serviceKey);

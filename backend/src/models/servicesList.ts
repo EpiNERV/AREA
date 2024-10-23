@@ -1,7 +1,6 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 import jsonServicesList from "./default_services_list.json";
 import Spinner from "../utils/spinner";
-import User from "./user";
 import Service, { IServiceDetails } from "./service";
 
 // Parse the JSON file

@@ -10,13 +10,13 @@ class Spinner {
   private spinnerIndex = 0;
   private spinnerInterval!: NodeJS.Timeout;
   private timeoutMilliseconds!: NodeJS.Timeout | null;
-  private steps: Map<number, string> = new Map();
+  private readonly steps: Map<number, string> = new Map();
   private stepsIndex = 0;
   private maxStepsIndex = 0;
   private maxStepsCount = 0;
 
-  private successMessage: string | undefined;
-  private failureMessage: string | undefined;
+  private readonly successMessage: string | undefined;
+  private readonly failureMessage: string | undefined;
 
   // Sets the failure and success messages
   constructor(successMessage?: string, failureMessage?: string) {
@@ -81,7 +81,7 @@ class Spinner {
     this.spinnerInterval = setInterval(() => {
       const next_frame_index = this.spinnerIndex++ % spinnerFrames.length;
       const frame = spinnerFrames[next_frame_index];
-      const stepMessage = this.steps.get(this.stepsIndex) || stepMessageDefault;
+      const stepMessage = this.steps.get(this.stepsIndex) ?? stepMessageDefault;
 
       readline.cursorTo(process.stdout, 0);
       process.stdout.write(`${frame} ${stepMessage}`);
@@ -89,7 +89,7 @@ class Spinner {
 
     if (timeout) {
       this.timeoutMilliseconds = setTimeout(() => {
-        this.stopFailure(timeout_message || 'Operation timed out');
+        this.stopFailure(timeout_message ?? 'Operation timed out');
       }, timeout);
     }
 
@@ -110,8 +110,8 @@ class Spinner {
     this.stepsIndex++;
   }
 
-  private printStepResult(color: (message: string) => string = green, symbol: string) {
-    const stepMessage = this.steps.get(this.stepsIndex) || stepMessageDefault;
+  private printStepResult(color: (message: string) => string = green, symbol: string = '?') {
+    const stepMessage = this.steps.get(this.stepsIndex) ?? stepMessageDefault;
     readline.cursorTo(process.stdout, 0);
     process.stdout.write(`[${this.stepsIndex+1}/~${this.maxStepsCount}] ${symbol} ${color(stepMessage)}`);
     console.log('');
@@ -154,7 +154,7 @@ class Spinner {
       this.printStepResult(green, '✔');
     }
 
-    this._stop(message || this.successMessage || 'Operation successful', green, '✔');
+    this._stop(message ?? this.successMessage ?? 'Operation successful', green, '✔');
   }
 
   /**
@@ -171,7 +171,8 @@ class Spinner {
     if (override) {
       this._stop(`${message}`, red, '✖');
     } else {
-      this._stop(`${this.failureMessage}${message ? (' : [' + message + `]`): ''}`, red, '✖');
+      const format = message ? `: [${message}]` : '';
+      this._stop(`${this.failureMessage}${format}`, red, '✖');
     }
   }
 }
