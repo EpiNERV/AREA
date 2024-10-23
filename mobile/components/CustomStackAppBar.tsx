@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Appbar, Portal, Text } from 'react-native-paper';
+import { Appbar, Portal } from 'react-native-paper';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { usePathname } from 'expo-router';
@@ -8,7 +8,7 @@ import BackendAddressDialog from '@/components/BackendAddressDialog';
 const ADDRESS_KEY = 'backend_address';
 const PORT_KEY = 'backend_port';
 
-const CustomAppBar: React.FC<NativeStackHeaderProps> = ({ navigation, back, options, route }) => {
+const CustomStackAppBar: React.FC<NativeStackHeaderProps> = ({ navigation, back, options, route }) => {
   const [visible, setVisible] = useState(false);
   const [address, setAddress] = useState('localhost');
   const [port, setPort] = useState('8080');
@@ -66,7 +66,7 @@ const CustomAppBar: React.FC<NativeStackHeaderProps> = ({ navigation, back, opti
           {getHeaderAction()}
         </>
         <Appbar.Content title={options.title} />
-        {path_name.startsWith("/welcome") ? 
+        {path_name.startsWith("/welcome") ?
           <Appbar.Action icon="dots-vertical" onPress={showDialog} /> : null
         }
       </Appbar.Header>
@@ -86,4 +86,4 @@ const CustomAppBar: React.FC<NativeStackHeaderProps> = ({ navigation, back, opti
   );
 };
 
-export default CustomAppBar;
+export default CustomStackAppBar;

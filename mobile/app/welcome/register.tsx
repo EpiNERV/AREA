@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleProp, ViewStyle, TextStyle, TouchableOpacity } from "react-native";
+import { View, StyleProp, ViewStyle, TextStyle } from "react-native";
 import { Text, TextInput, Button, HelperText, withTheme } from "react-native-paper";
 import { ThemeProp } from 'react-native-paper/lib/typescript/types';
 import { HelloWave } from "@/components/HelloWave";
