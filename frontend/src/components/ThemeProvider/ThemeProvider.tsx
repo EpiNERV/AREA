@@ -1,42 +1,11 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-
-type ThemeMode = "dark" | "light" | "system";
-type ThemeColor =
-	| "zinc"
-	| "slate"
-	| "stone"
-	| "gray"
-	| "neutral"
-	| "red"
-	| "rose"
-	| "orange"
-	| "green"
-	| "blue"
-	| "yellow"
-	| "violet";
-type ColorBlindnessMode =
-	| "regular"
-	| "deuteranopia"
-	| "protanopia"
-	| "tritanopia"
-	| "monochromacy";
+import React, { useEffect, useMemo, useState } from "react";
+import ThemeContext, { ThemeProviderState, ThemeMode, ThemeColor, ColorBlindnessMode } from "./ThemeContext";
 
 type ThemeProviderProps = {
 	children: React.ReactNode;
 };
 
-type ThemeProviderState = {
-	themeMode: ThemeMode;
-	setThemeMode: (mode: ThemeMode) => void;
-	themeColor: ThemeColor;
-	setThemeColor: (color: ThemeColor) => void;
-	colorBlindnessMode: ColorBlindnessMode;
-	setColorBlindnessMode: (mode: ColorBlindnessMode) => void;
-};
-
-const ThemeContext = createContext<ThemeProviderState | undefined>(undefined);
-
-export function ThemeProvider({ children }: Readonly<ThemeProviderProps>) {
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 	const [themeMode, setThemeMode] = useState<ThemeMode>(
 		() => (localStorage.getItem("theme-mode") as ThemeMode) || "system"
 	);
@@ -50,11 +19,9 @@ export function ThemeProvider({ children }: Readonly<ThemeProviderProps>) {
 	useEffect(() => {
 		const root = window.document.documentElement;
 
-		let mode = themeMode;
+		let mode: ThemeMode = themeMode;
 		if (themeMode === "system") {
-			mode = window.matchMedia("(prefers-color-scheme: dark)").matches
-				? "dark"
-				: "light";
+			mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 		}
 		root.classList.remove("light", "dark");
 		root.classList.add(mode);
@@ -104,7 +71,8 @@ export function ThemeProvider({ children }: Readonly<ThemeProviderProps>) {
 		}
 	}, [themeMode, themeColor, colorBlindnessMode]);
 
-	const value = useMemo(
+	// Memoize the context value to optimize performance
+	const value: ThemeProviderState = useMemo(
 		() => ({
 			themeMode,
 			setThemeMode: (mode: ThemeMode) => {
@@ -126,10 +94,4 @@ export function ThemeProvider({ children }: Readonly<ThemeProviderProps>) {
 	);
 
 	return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
-}
-
-export function useTheme() {
-	const context = useContext(ThemeContext);
-	if (!context) throw new Error("useTheme must be used within a ThemeProvider");
-	return context;
-}
+};

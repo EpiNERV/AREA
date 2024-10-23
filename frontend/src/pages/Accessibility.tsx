@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useTheme } from "@/components/ThemeProvider";
+import { useTheme } from "@/components/ThemeProvider/useTheme";
 import { useEffect } from "react";
 import { useTranslation } from 'react-i18next';
 import { EyeOff } from "lucide-react";

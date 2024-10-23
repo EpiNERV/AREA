@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.tsx";
-import { useTheme } from "@/components/ThemeProvider.tsx";
+import { useTheme } from "@/components/ThemeProvider/useTheme";
 import { useTranslation } from 'react-i18next';
 
 export function SelectLanguageAndTheme() {
