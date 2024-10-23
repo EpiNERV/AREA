@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import helloRoutes from './routes/hello';
+import adminRoutes from './routes/admin';
 import userRoutes from './routes/user';
 import workflow from './routes/workflow';
 import testRoutes from './routes/test_route';
@@ -48,6 +49,7 @@ export const connectDB = async () => {
 };
 
 app.use('/api/v1', helloRoutes);
+app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/workflow', workflow);
 

@@ -1,0 +1,22 @@
+{
+  "name": "sdk-i18n",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "i18next": "^21.6.3",
+    "react-i18next": "^11.15.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.0.0",
+    "i18n": "^0.15.1",
+    "i18next-browser-languagedetector": "^8.0.0"
+  }
+}

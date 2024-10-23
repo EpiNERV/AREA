@@ -1,48 +1,75 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useTheme } from "@/components/ThemeProvider"
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { useTranslation } from 'react-i18next';
+import { SelectLanguageAndTheme } from "@/components/SelectLanguageAndTheme.tsx";
 
 function PasswordForgotten() {
-  const { theme, setTheme } = useTheme()
-  if (theme === "dark")
-    setTheme("light")
+  const { t } = useTranslation();
+
+  const [email, setEmail] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!email) {
+      setErrorMessage(t('PasswordForgotten.emailRequired'));
+      return;
+    }
+
+    console.log('Envoi du code de réinitialisation à :', email);
+  };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-50">
-      <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
-        {/* Title */}
-        <h1 className="text-2xl font-bold mb-2">Forgot Password?</h1>
-        <p className="text-gray-600 mb-6">
-          Don’t worry! It occurs. Please enter the email address linked with your account.
-        </p>
+    <div className="flex h-screen">
+      <SelectLanguageAndTheme/>
 
-        {/* Email Input */}
-        <div className="mb-4">
-          <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-            Enter your email
-          </Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Enter your email"
-            className="mt-2 w-full"
-          />
-        </div>
+      <div className="w-full flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold mb-2">
+              {t('PasswordForgotten.title')}
+            </CardTitle>
+            <CardDescription className="mb-4 text-gray-600">
+              {t('PasswordForgotten.description')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {errorMessage && (
+              <p className="text-red-500 text-sm mb-4">{errorMessage}</p>
+            )}
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <Label htmlFor="email">{t('PasswordForgotten.enterEmail')}</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder={t('PasswordForgotten.emailPlaceholder')}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-2"
+                />
+              </div>
 
-        {/* Send Code Button */}
-        <Button className="w-full bg-black text-white py-2">Send Code</Button>
+              <Button type="submit" className="w-full">
+                {t('PasswordForgotten.sendCode')}
+              </Button>
+            </form>
 
-        {/* Back to login */}
-        <div className="mt-4 text-center">
-          <p className="text-sm text-gray-600">
-            Remember Password?{" "}
-            <a href="/login" className="text-blue-500 hover:underline">
-              Login
-            </a>
-          </p>
-        </div>
+            <div className="mt-4 text-center">
+              <p className="text-sm text-gray-600">
+                {t('PasswordForgotten.rememberPassword')}{' '}
+                <a href="/login" className="text-blue-500 hover:underline">
+                  {t('PasswordForgotten.login')}
+                </a>
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

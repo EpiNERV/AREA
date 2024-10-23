@@ -1,30 +1,22 @@
-import { ReactNode } from 'react';
-import { useLocation } from 'react-router-dom'; // Import du hook useLocation
-import Sidebar from './sidebar';
+import React from 'react';
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/sidebar.tsx"
+import { useLocation } from "react-router-dom";
 
-interface LayoutProps {
-	children: ReactNode;
-}
-
-const Layout = ({ children }: LayoutProps) => {
-	const location = useLocation(); // Obtenir la route actuelle
-	const noNavBarLocations = ['/', '/login', '/register', '/password_forgotten', '/auth_verification', '/password_changed'];
-  	const showNavBar = !noNavBarLocations.includes(location.pathname);
-
+export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
+	const location = useLocation();
+	const noSideBarLocations = ['/', '/login', '/register', '/password_forgotten', '/auth_verification', '/password_changed'];
+	const showSideBade = !noSideBarLocations.includes(location.pathname);
 
 	return (
-		<div className="flex h-screen">
-			{showNavBar && (
-				<div className="min-w-fit w-auto h-full">
-					<Sidebar />
-				</div>
-			)}
-
-			<div className="flex-1 h-full">
-				<main className="p-4">{children}</main>
+		<SidebarProvider>
+			<div className="flex flex-1">
+				{showSideBade && <AppSidebar />}
+				<main className="flex-1 flex flex-col">
+					{showSideBade && <SidebarTrigger />}
+					{children}
+				</main>
 			</div>
-		</div>
+		</SidebarProvider>
 	);
-};
-
-export default Layout;
+}

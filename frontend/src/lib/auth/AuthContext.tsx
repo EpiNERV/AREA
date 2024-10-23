@@ -44,16 +44,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     navigate('/login');
   }, [navigate]);
 
-  const authContectProviderValue = useMemo(() =>
+  const authContextProviderValue = useMemo(() =>
     ({loading, accessToken, login, logout}),
   [loading, accessToken, login, logout]);
   return (
-    <AuthContext.Provider value={authContectProviderValue}>
+    <AuthContext.Provider value={authContextProviderValue}>
       {children}
     </AuthContext.Provider>
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
