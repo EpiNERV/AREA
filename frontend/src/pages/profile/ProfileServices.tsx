@@ -95,26 +95,30 @@ const ProfileServices = () => {
 		const fetchServices = async () => {
 			try {
 				const isMock = true;
-				let initialConnections = {};
+				let initialConnections: Record<string, boolean>;
 
 				if (isMock) {
-					// use mock services for development
 					setServices(mockServices);
-					initialConnections = mockServices.reduce(
-						(acc, service) => ({...acc, [service.key]: service.connected}),
-						{} as Record<string, boolean>
+					initialConnections = mockServices.reduce<Record<string, boolean>>(
+						(acc, service) => {
+							acc[service.key] = service.connected;
+							return acc;
+						},
+						{}
 					);
 				} else {
-					// get services from the backend
 					const response = await AxiosInstance.get<ServiceArray>("/user/services");
 					const servicesData = response.data.map((service: Service) => ({
 						...service,
 						icon: iconMapping[service.key],
 					}));
 					setServices(servicesData);
-					initialConnections = servicesData.reduce(
-						(acc, service) => ({...acc, [service.key]: service.connected}),
-						{} as Record<string, boolean>
+					initialConnections = servicesData.reduce<Record<string, boolean>>(
+						(acc, service) => {
+							acc[service.key] = service.connected;
+							return acc;
+						},
+						{}
 					);
 				}
 
