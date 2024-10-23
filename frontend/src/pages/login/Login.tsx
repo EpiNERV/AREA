@@ -5,11 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import axios from 'axios';
 import { useAuth } from '@/lib/auth/AuthContext';
-import { useTheme } from '@/components/ThemeProvider';
 import { useTranslation } from 'react-i18next';
+import { SelectLanguageAndTheme } from '@/components/SelectLanguageAndTheme';
 
 interface TokenType {
   tokens: {
@@ -19,8 +18,7 @@ interface TokenType {
 }
 
 const Login = () => {
-  const { themeMode, setThemeMode } = useTheme();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -98,46 +96,9 @@ const Login = () => {
     }
   };
 
-  const handleLanguageChange = (language: string) => {
-    i18n
-      .changeLanguage(language)
-      .then(() => {
-        localStorage.setItem('language', language);
-      })
-      .catch((error) => {
-        console.error('Failed to change language:', error);
-      });
-  };
-
   return (
     <div className="flex h-screen">
-      <div className="absolute top-4 right-4 flex space-x-4">
-        {/* Sélection du Mode de Thème */}
-        <Select value={themeMode} onValueChange={setThemeMode}>
-          <SelectTrigger className="w-[120px]">
-            <SelectValue placeholder={t('Accessibility.ModeTheme')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="light">{t('Accessibility.Light')}</SelectItem>
-            <SelectItem value="dark">{t('Accessibility.Dark')}</SelectItem>
-            <SelectItem value="system">{t('Accessibility.System')}</SelectItem>
-          </SelectContent>
-        </Select>
-
-        {/* Sélection de la Langue */}
-        <Select
-          value={i18n.language}
-          onValueChange={(value) => handleLanguageChange(value)}
-        >
-          <SelectTrigger className="w-[120px]">
-            <SelectValue placeholder={t('Accessibility.Language')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="en">{t('Accessibility.English')}</SelectItem>
-            <SelectItem value="fr">{t('Accessibility.French')}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <SelectLanguageAndTheme/>
 
       <div className="w-full flex flex-col justify-center items-center">
         <Card className="w-full max-w-md">
