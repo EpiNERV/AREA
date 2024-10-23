@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 type ThemeMode = "dark" | "light" | "system";
 type ThemeColor =
@@ -36,21 +36,20 @@ type ThemeProviderState = {
 
 const ThemeContext = createContext<ThemeProviderState | undefined>(undefined);
 
-export function ThemeProvider({ children }: ThemeProviderProps) {
-	const [themeMode, setThemeModeState] = useState<ThemeMode>(
+export function ThemeProvider({ children }: Readonly<ThemeProviderProps>) {
+	const [themeMode, setThemeMode] = useState<ThemeMode>(
 		() => (localStorage.getItem("theme-mode") as ThemeMode) || "system"
 	);
-	const [themeColor, setThemeColorState] = useState<ThemeColor>(
+	const [themeColor, setThemeColor] = useState<ThemeColor>(
 		() => (localStorage.getItem("theme-color") as ThemeColor) || "zinc"
 	);
-	const [colorBlindnessMode, setColorBlindnessModeState] = useState<ColorBlindnessMode>(
+	const [colorBlindnessMode, setColorBlindnessMode] = useState<ColorBlindnessMode>(
 		() => (localStorage.getItem("color-blindness-mode") as ColorBlindnessMode) || "regular"
 	);
 
 	useEffect(() => {
 		const root = window.document.documentElement;
 
-		// Gérer le mode (clair/sombre)
 		let mode = themeMode;
 		if (themeMode === "system") {
 			mode = window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -60,9 +59,8 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 		root.classList.remove("light", "dark");
 		root.classList.add(mode);
 
-		// Gérer la couleur du thème
 		root.classList.remove(
-			"theme-zync",
+			"theme-zinc",
 			"theme-slate",
 			"theme-stone",
 			"theme-gray",
@@ -77,7 +75,6 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 		);
 		root.classList.add(`theme-${themeColor}`);
 
-		// Gérer le mode de daltonisme
 		root.classList.remove(
 			"colorblind-deuteranopia",
 			"colorblind-protanopia",
@@ -88,10 +85,9 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 			root.classList.add(`colorblind-${colorBlindnessMode}`);
 		}
 
-		// Si Monochromacy est sélectionné, forcer le thème à Neutral
 		if (colorBlindnessMode === "monochromacy") {
 			root.classList.remove(
-				"theme-zync",
+				"theme-zinc",
 				"theme-slate",
 				"theme-stone",
 				"theme-gray",
@@ -113,17 +109,17 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 			themeMode,
 			setThemeMode: (mode: ThemeMode) => {
 				localStorage.setItem("theme-mode", mode);
-				setThemeModeState(mode);
+				setThemeMode(mode);
 			},
 			themeColor,
 			setThemeColor: (color: ThemeColor) => {
 				localStorage.setItem("theme-color", color);
-				setThemeColorState(color);
+				setThemeColor(color);
 			},
 			colorBlindnessMode,
 			setColorBlindnessMode: (mode: ColorBlindnessMode) => {
 				localStorage.setItem("color-blindness-mode", mode);
-				setColorBlindnessModeState(mode);
+				setColorBlindnessMode(mode);
 			},
 		}),
 		[themeMode, themeColor, colorBlindnessMode]
